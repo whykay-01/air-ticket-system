@@ -1,5 +1,3 @@
--- this is the document with the queries to insert the data to the tables based on the SCHEMA.PDF file
-
 -- a. One Airline name "China Eastern".
 insert into airline(name)
 values ("China Southern"), 

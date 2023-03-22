@@ -1,5 +1,3 @@
--- this is the document with the queries to create the tables based on the SCHEMA.PDF file
-
 -- first of all create a DB
 create database reservation_system;
 -- in case of failure run the query to drop the DB and run the queries again
