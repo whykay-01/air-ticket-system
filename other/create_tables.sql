@@ -1,7 +1,9 @@
--- first of all create a DB
-create database reservation_system;
 -- in case of failure run the query to drop the DB and run the queries again
 -- drop database reservation_system;
+
+-- use reservation_system;
+
+-- create database reservation_system;
 
 create table airport(
     name varchar(255) primary key not null,
