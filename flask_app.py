@@ -5,10 +5,11 @@ import mysql.connector
 app = Flask(__name__)
 
 # Configure MySQL
-conn = mysql.connector.connect(host='localhost',
-                               user='root',
-                               password='',
+conn = mysql.connector.connect(host='127.0.0.1',
+                               user='root@localhost',
+                               password='12345678',
                                database='reservation_system')
+# I believe that this password is accurate
 
 
 # Define a route to hello function
@@ -44,11 +45,10 @@ def loginAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = "SELECT * FROM user WHERE username = '{}' and password = '{}'"
+    query = "SELECT * FROM airline_staff WHERE username = '{}' and password = '{}'"
     cursor.execute(query.format(username, password))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
+    # stores the results of the query in a variable
+    data = cursor.fetchone()  # use fetchall() if you are expecting more than 1 data row
     cursor.close()
     error = None
     if (data):
@@ -61,9 +61,8 @@ def loginAuth():
         error = 'Invalid login or username'
         return render_template('login.html', error=error)
 
+
 # Authenticates the register
-
-
 @app.route('/registerAuth', methods=['GET', 'POST'])
 def registerAuth():
     # grabs information from the forms
@@ -73,7 +72,7 @@ def registerAuth():
     # cursor used to send queries
     cursor = conn.cursor()
     # executes query
-    query = "SELECT * FROM user WHERE username = '{}'"
+    query = "SELECT * FROM airline_staff WHERE username = '{}'"
     cursor.execute(query.format(username))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -84,34 +83,34 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
-        ins = "INSERT INTO user VALUES('{}', '{}')"
+        ins = "INSERT INTO airline_staff VALUES('{}', '{}')"
         cursor.execute(ins.format(username, password))
-        conn.commit()
+        conn.commit()  # commit the newly registered entry to the table
         cursor.close()
         return render_template('index.html')
 
 
-@app.route('/home')
-def home():
-    username = session['username']
-    cursor = conn.cursor()
-    query = "SELECT ts, blog_post FROM blog WHERE username = '{}' ORDER BY ts DESC"
-    cursor.execute(query.format(username))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
+# @app.route('/home')
+# def home():
+#     username = session['username']
+#     cursor = conn.cursor()
+#     query = "SELECT ts, blog_post FROM blog WHERE username = '{}' ORDER BY ts DESC"
+#     cursor.execute(query.format(username))
+#     data1 = cursor.fetchall()
+#     cursor.close()
+#     return render_template('home.html', username=username, posts=data1)
 
 
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-    username = session['username']
-    cursor = conn.cursor()
-    blog = request.form['blog']
-    query = "INSERT INTO blog (blog_post, username) VALUES('{}', '{}')"
-    cursor.execute(query.format(blog, username))
-    conn.commit()
-    cursor.close()
-    return redirect(url_for('home'))
+# @app.route('/post', methods=['GET', 'POST'])
+# def post():
+#     username = session['username']
+#     cursor = conn.cursor()
+#     blog = request.form['blog']
+#     query = "INSERT INTO blog (blog_post, username) VALUES('{}', '{}')"
+#     cursor.execute(query.format(blog, username))
+#     conn.commit()
+#     cursor.close()
+#     return redirect(url_for('home'))
 
 
 @app.route('/logout')
