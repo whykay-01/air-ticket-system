@@ -4,15 +4,35 @@ import mysql.connector
 # Initialize the app from Flask
 app = Flask(__name__)
 
-# Configure MySQL
-conn = mysql.connector.connect(host='127.0.0.1',
-                               user='root@localhost',
-                               password='12345678',
-                               database='reservation_system')
-# I believe that this password is accurate
+# configure database connection
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '12345678'
+app.config['MYSQL_DB'] = 'blog'
 
+# create MySQL connection object
+mysql = mysql.connector.connect(
+    host=app.config['MYSQL_HOST'],
+    user=app.config['MYSQL_USER'],
+    password=app.config['MYSQL_PASSWORD'],
+    database=app.config['MYSQL_DB']
+)
+
+# create a cursor object for executing queries
+cursor = mysql.cursor()
+
+# test the connection
+cursor.execute("SELECT DATABASE()")
+data = cursor.fetchone()
+print("Connected to database:", data[0])
+
+# close the cursor and connection objects
+cursor.close()
+mysql.close()
 
 # Define a route to hello function
+
+
 @app.route('/')
 def welcome():
     if 'username' in session:
@@ -43,7 +63,7 @@ def loginAuth():
     password = request.form['password']
 
     # cursor used to send queries
-    cursor = conn.cursor()
+    cursor = mysql.cursor()
     # executes query
     query = "SELECT * FROM airline_staff WHERE username = '{}' and password = '{}'"
     cursor.execute(query.format(username, password))
@@ -70,7 +90,7 @@ def registerAuth():
     password = request.form['password']
 
     # cursor used to send queries
-    cursor = conn.cursor()
+    cursor = mysql.cursor()
     # executes query
     query = "SELECT * FROM airline_staff WHERE username = '{}'"
     cursor.execute(query.format(username))
@@ -85,7 +105,7 @@ def registerAuth():
     else:
         ins = "INSERT INTO airline_staff VALUES('{}', '{}')"
         cursor.execute(ins.format(username, password))
-        conn.commit()  # commit the newly registered entry to the table
+        mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
         return render_template('index.html')
 
