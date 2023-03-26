@@ -7,15 +7,18 @@ app = Flask(__name__)
 # configure database connection
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '12345678'
-app.config['MYSQL_DB'] = 'blog'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'reservation_system'
 
 # create MySQL connection object
 mysql = mysql.connector.connect(
     host=app.config['MYSQL_HOST'],
     user=app.config['MYSQL_USER'],
     password=app.config['MYSQL_PASSWORD'],
-    database=app.config['MYSQL_DB']
+    database=app.config['MYSQL_DB'],
+    # you might not even need the "port" part of the code, unless you have 2 or more SQL servers
+    # on your local machine
+    port=3307
 )
 
 # create a cursor object for executing queries
