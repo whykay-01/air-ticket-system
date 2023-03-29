@@ -4,6 +4,7 @@
 -- use reservation_system;
 
 -- create database reservation_system;
+use reservation_system;
 
 create table airport(
     name varchar(255) primary key not null,
