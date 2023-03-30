@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 
 my_password = os.getenv('MYSQL_ROOT_PASSWORD')
-# TODO: get the database url from the .env file
-# database_url = os.getenv('DATABASE_URL')
 
 # configure database connection
 app.config['MYSQL_HOST'] = 'localhost'
