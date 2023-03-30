@@ -7,12 +7,13 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 
 my_password = os.getenv('MYSQL_ROOT_PASSWORD')
+my_database = os.getenv('MYSQL_DATABASE')
 
 # configure database connection
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = my_password
-app.config['MYSQL_DB'] = ''
+app.config['MYSQL_DB'] = my_database
 
 # create MySQL connection object
 mysql = mysql.connector.connect(
