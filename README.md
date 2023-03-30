@@ -2,8 +2,8 @@
 
 System requirements:
 
-1. MySQL DBMS, Apache server (one can use XAMPP package -- https://www.apachefriends.org/download.html)
-2. Python3 and Flask python library installed on your system
+1. Docker image of MySQL server
+2. Python3 and Flask python library, and other relevant packages installed on your system
 3. Bootstrap library installed on your local machine (https://getbootstrap.com/)
 
 **To use the docker use the following command after the docker is setted up**
