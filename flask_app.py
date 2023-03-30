@@ -31,6 +31,7 @@ cursor = mysql.cursor()
 # test the connection
 cursor.execute("SELECT DATABASE()")
 data = cursor.fetchone()
+print("____________________________________________________")
 print("Connected to database:", data[0])
 
 # close the cursor and connection objects
