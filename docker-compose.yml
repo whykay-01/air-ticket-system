@@ -1,0 +1,22 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.0.32
+    ports:
+      - "127.0.0.1:3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - "sql_data:/var/lib/mysql"
+      - "sql_log:/var/log/mysql"
+    networks:
+      - default
+volumes:
+  sql_data:
+    driver: local
+  sql_log:
+    driver: local
+
+networks:
+  default:
+    driver: bridge

@@ -1,14 +1,20 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 import mysql.connector
+import os
+from dotenv import load_dotenv
 
 # Initialize the app from Flask
 app = Flask(__name__)
 
+my_password = os.getenv('MYSQL_ROOT_PASSWORD')
+# TODO: get the database url from the .env file
+# database_url = os.getenv('DATABASE_URL')
+
 # configure database connection
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'reservation_system'
+app.config['MYSQL_PASSWORD'] = my_password
+app.config['MYSQL_DB'] = ''
 
 # create MySQL connection object
 mysql = mysql.connector.connect(
@@ -18,7 +24,7 @@ mysql = mysql.connector.connect(
     database=app.config['MYSQL_DB'],
     # you might not even need the "port" part of the code, unless you have 2 or more SQL servers
     # on your local machine
-    port=3307
+    port=3306
 )
 
 # create a cursor object for executing queries
