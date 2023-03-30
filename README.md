@@ -1,5 +1,3 @@
-This is the repo which contains all the files for the databases final project
-
 **The documentation, and the corresponding user guide (including installation procedures) will be updated respectively after the functionality is fully implemented**
 
 System requirements:
