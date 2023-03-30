@@ -20,8 +20,7 @@ mysql = mysql.connector.connect(
     user=app.config['MYSQL_USER'],
     password=app.config['MYSQL_PASSWORD'],
     database=app.config['MYSQL_DB'],
-    # you might not even need the "port" part of the code, unless you have 2 or more SQL servers
-    # on your local machine
+    # you might not even need the "port" part of the code, unless you have multiple MySQL instances running on your machine
     port=3306
 )
 
