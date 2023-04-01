@@ -36,9 +36,8 @@ print("Connected to database:", data[0])
 
 # close the cursor and connection objects
 cursor.close()
-mysql.close()
-
-# Define a route to hello function
+# is it generally okay if we do not close the connection to the database?
+# mysql.close()
 
 
 @app.route('/')
@@ -73,7 +72,7 @@ def loginAuth():
     # cursor used to send queries
     cursor = mysql.cursor()
     # executes query
-    query = "SELECT * FROM airline_staff WHERE username = '{}' and password = '{}'"
+    query = "SELECT * FROM test_register WHERE username = '{}' and password = '{}'"
     cursor.execute(query.format(username, password))
     # stores the results of the query in a variable
     data = cursor.fetchone()  # use fetchall() if you are expecting more than 1 data row
@@ -100,7 +99,7 @@ def registerAuth():
     # cursor used to send queries
     cursor = mysql.cursor()
     # executes query
-    query = "SELECT * FROM airline_staff WHERE username = '{}'"
+    query = "SELECT * FROM test_register WHERE username = '{}'"
     cursor.execute(query.format(username))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -111,7 +110,7 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
-        ins = "INSERT INTO airline_staff VALUES('{}', '{}')"
+        ins = "INSERT INTO test_register VALUES('{}', '{}')"
         cursor.execute(ins.format(username, password))
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
@@ -144,6 +143,7 @@ def registerAuth():
 @app.route('/logout')
 def logout():
     session.pop('username')
+    mysql.close()
     return redirect('/')
 
 
