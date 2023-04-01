@@ -82,7 +82,7 @@ create table tickets_by_booking_agent(
 
 create table permission(
     type varchar(255) not null primary key not null,
-    description varchar(255)
+    description varchar(255) not null
 );
 
 create table airline_staff(

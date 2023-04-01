@@ -195,6 +195,26 @@ insert into airplane
         "Delta"
     );
 
+
+-- Each Airline Staff will also be able to see all in-progress, upcoming, and previous flights 
+-- for the airline that they work for, as well as a list of passengers for the flights.
+insert into permission
+    (
+        type, 
+        description
+    )
+
+    values 
+    (
+        "admin",
+        "able to add new airplanes and flight for the airline they work for"
+    ),
+    (
+        "operator",
+        "set in progress flight statuses in the system"
+    );
+
+
 -- e. Insert At least One airline Staff working for China Eastern.
 insert into airline_staff
     (
@@ -203,7 +223,8 @@ insert into airline_staff
         first_name,
         last_name,
         date_of_birth,
-        airline_name
+        airline_name,
+        permission
     )
     
     values 
@@ -213,7 +234,8 @@ insert into airline_staff
         "Adam",
         "Krok",
         "1988-02-10",
-        "China Southern"
+        "China Southern",
+        "admin"
     ),
     (
         "employee1",
@@ -221,7 +243,8 @@ insert into airline_staff
         "Alice",
         "Johnson",
         "1990-05-10",
-        "Delta"
+        "Delta",
+        "operator"
     ); 
 
 
@@ -331,21 +354,3 @@ insert into tickets_by_booking_agent
         "bookingme@booking.com",
         2 
     );
-
--- Each Airline Staff will also be able to see all in-progress, upcoming, and previous flights 
--- for the airline that they work for, as well as a list of passengers for the flights.
-insert into permission
-    (
-        type, 
-        description
-    )
-
-    values 
-    (
-        "admin",
-        "able to add new airplanes and flight for the airline they work for"
-    ),
-    (
-        "operator",
-        "set in progress flight statuses in the system"
-    )
