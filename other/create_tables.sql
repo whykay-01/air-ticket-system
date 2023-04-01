@@ -67,7 +67,8 @@ create table ticket(
     airline_name varchar(255) not null, 
     flight_id varchar(6) not null, 
     foreign key(airline_name) references airline(name),
-    foreign key(flight_id) references flight(flight_num)
+    foreign key(flight_id) references flight(flight_num),
+    foreign key(customer_email) references customer(email)
 );
 
 
@@ -79,6 +80,11 @@ create table tickets_by_booking_agent(
     primary key (booking_agent_email, ticket_id)
 );
 
+create table permission(
+    type varchar(255) not null primary key not null,
+    description varchar(255)
+);
+
 create table airline_staff(
     username varchar(255) primary key not null, 
     password varchar(255) not null,
@@ -86,10 +92,7 @@ create table airline_staff(
     last_name varchar(255) not null,
     date_of_birth date not null,
     airline_name varchar(255) not null,
-    foreign key(airline_name) references airline(name)
+    permission varchar(255) not null,
+    foreign key(airline_name) references airline(name),
+    foreign key(permission) references permission(type)
 ); 
-
-create table permission(
-    type varchar(255) not null,
-    description varchar(255)
-);

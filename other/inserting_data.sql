@@ -331,3 +331,21 @@ insert into tickets_by_booking_agent
         "bookingme@booking.com",
         2 
     );
+
+-- Each Airline Staff will also be able to see all in-progress, upcoming, and previous flights 
+-- for the airline that they work for, as well as a list of passengers for the flights.
+insert into permission
+    (
+        type, 
+        description
+    )
+
+    values 
+    (
+        "admin",
+        "able to add new airplanes and flight for the airline they work for"
+    ),
+    (
+        "operator",
+        "set in progress flight statuses in the system"
+    )
