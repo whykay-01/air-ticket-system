@@ -36,7 +36,7 @@ print("Connected to database:", data[0])
 
 # close the cursor and connection objects
 cursor.close()
-# is it generally okay if we do not close the connection to the database?
+# TODO: is it generally okay if we do not close the connection to the database?
 # mysql.close()
 
 
@@ -143,6 +143,7 @@ def registerAuth():
 @app.route('/logout')
 def logout():
     session.pop('username')
+    # I am not sure if that's the right place to close the mysql connection
     mysql.close()
     return redirect('/')
 
