@@ -72,7 +72,7 @@ def loginAuth():
     # cursor used to send queries
     cursor = mysql.cursor()
     # executes query
-    query = "SELECT * FROM test_register WHERE username = '{}' and password = '{}'"
+    query = "SELECT * FROM test_register WHERE username = '{}' and password = MD5('{}')"
     cursor.execute(query.format(username, password))
     # stores the results of the query in a variable
     data = cursor.fetchone()  # use fetchall() if you are expecting more than 1 data row
@@ -110,22 +110,24 @@ def registerAuth():
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
-        ins = "INSERT INTO test_register VALUES('{}', '{}')"
+        # encrypting the password
+        ins = "INSERT INTO test_register VALUES('{}', MD5('{}'))"
         cursor.execute(ins.format(username, password))
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
         return render_template('index.html')
 
 
-# @app.route('/home')
-# def home():
-#     username = session['username']
-#     cursor = conn.cursor()
-#     query = "SELECT ts, blog_post FROM blog WHERE username = '{}' ORDER BY ts DESC"
-#     cursor.execute(query.format(username))
-#     data1 = cursor.fetchall()
-#     cursor.close()
-#     return render_template('home.html', username=username, posts=data1)
+@app.route('/home')
+def home():
+    username = session['username']
+    cursor = mysql.cursor()
+    # similar logic for the display of the flight info
+    query = "SELECT * FROM test_register WHERE username = '{}'"
+    cursor.execute(query.format(username))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('home.html', username=username, posts=data1)
 
 
 # @app.route('/post', methods=['GET', 'POST'])
