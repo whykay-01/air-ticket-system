@@ -156,7 +156,6 @@ def home():
     data1 = cursor.fetchall()
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
-
 # booking agent page
 
 
