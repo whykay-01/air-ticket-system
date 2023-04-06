@@ -129,6 +129,48 @@ def home():
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
 
+# airline staff page
+
+
+@app.route('/airline_staff')
+def home():
+    username = session['username']
+    cursor = mysql.cursor()
+    # similar logic for the display of the flight info
+    query = "SELECT * FROM test_register WHERE username = '{}'"
+    cursor.execute(query.format(username))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('home.html', username=username, posts=data1)
+
+# customer page
+
+
+@app.route('/customer_page')
+def home():
+    username = session['username']
+    cursor = mysql.cursor()
+    # similar logic for the display of the flight info
+    query = "SELECT * FROM test_register WHERE username = '{}'"
+    cursor.execute(query.format(username))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('home.html', username=username, posts=data1)
+
+# booking agent page
+
+
+@app.route('/booking_agent')
+def home():
+    username = session['username']
+    cursor = mysql.cursor()
+    # similar logic for the display of the flight info
+    query = "SELECT * FROM test_register WHERE username = '{}'"
+    cursor.execute(query.format(username))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('home.html', username=username, posts=data1)
+
 
 # @app.route('/post', methods=['GET', 'POST'])
 # def post():
