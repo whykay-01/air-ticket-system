@@ -3,6 +3,7 @@
 </head>
 <body>
 <form action="/registerCustomer" method="POST">
+	
 	<input type="email" name = "email" placeholder="your email" required/> </br>
 	<input type="password" name = "password" placeholder="your password" required/></br>
 	<input type="text" name = "name" placeholder="your name" required/> </br>
@@ -16,8 +17,6 @@
 	<input type="text" name = "passport_country" placeholder="USA" required/> </br>
 	<input type="date" name = "date_of_birth" placeholder="01/01/2000" required/></br>
 
-	
-	
 	<input type="submit" value = Register />
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
