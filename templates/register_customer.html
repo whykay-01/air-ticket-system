@@ -2,21 +2,76 @@
 <head>
 </head>
 <body>
-<form action="/registerCustomer" method="POST">
-	
-	<input type="email" name = "email" placeholder="your email" required/> </br>
-	<input type="password" name = "password" placeholder="your password" required/></br>
-	<input type="text" name = "name" placeholder="your name" required/> </br>
-	<input type="text" name = "building_number" placeholder="your building number" required/> </br>
-	<input type="text" name = "street" placeholder="your street" required/> </br>
-	<input type="text" name = "city" placeholder="your city" required/> </br>
-	<input type="text" name = "state" placeholder="your state" required/> </br>
-	<input type="tel" name = "phone_number" placeholder="" required/> </br>
-	<input type="text" name = "passport_number" placeholder="1234567890" required/> </br>
-	<input type="date" name = "passport_expiration" placeholder="01/01/2000" required/></br>
-	<input type="text" name = "passport_country" placeholder="USA" required/> </br>
-	<input type="date" name = "date_of_birth" placeholder="01/01/2000" required/></br>
 
+
+
+
+	<!-- <div class = "registration-form">
+		<input type="email" name = "email" placeholder="your email" required/> </br>
+		<input type="password" name = "password" placeholder="your password" required/></br>
+		<input type="text" name = "name" placeholder="your name" required/> </br>
+		<input type="text" name = "building_number" placeholder="your building number" required/> </br>
+		<input type="text" name = "street" placeholder="your street" required/> </br>
+		<input type="text" name = "city" placeholder="your city" required/> </br>
+		<input type="text" name = "state" placeholder="your state" required/> </br>
+		<input type="tel" name = "phone_number" placeholder="phone number" required/> </br>
+		<input type="text" name = "passport_number" placeholder="passport number" required/> </br>
+		<input type="date" name = "passport_expiration" placeholder="passport expiration date" required/></br>
+		<input type="text" name = "passport_country" placeholder="country" required/> </br>
+		<input type="date" name = "date_of_birth" placeholder="your date of birth" required/></br>
+	</div> -->
+
+<form action="/registerCustomer" method="POST">
+	<div class="form-group">
+		<label for="email">Email</label>
+		<input type="email" class="form-control" name="email" id="email" placeholder="your email" required/>
+	</div>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input type="password" class="form-control" name="password" id="password" placeholder="your password" required/>
+	</div>
+	<div class="form-group">
+		<label for="name">Name</label>
+		<input type="text" class="form-control" name="name" id="name" placeholder="your name" required/>
+	</div>
+	<div class="form-group">
+		<label for="building_number">Building Number</label>
+		<input type="text" class="form-control" name="building_number" id="building_number" placeholder="your building number" required/>
+	</div>
+	<div class="form-group">
+		<label for="street">Street</label>
+		<input type="text" class="form-control" name="street" id="street" placeholder="your street" required/>
+	</div>
+	<div class="form-group">
+		<label for="city">City</label>
+		<input type="text" class="form-control" name="city" id="city" placeholder="your city" required/>
+	</div>
+	<div class="form-group">
+		<label for="state">State</label>
+		<input type="text" class="form-control" name="state" id="state" placeholder="your state" required/>
+	</div>
+	<div class="form-group">
+		<label for="phone_number">Phone Number</label>
+		<input type="tel" class="form-control" name="phone_number" id="phone_number" placeholder="phone number" required/>
+	</div>
+	<div class="form-group">
+		<label for="passport_number">Passport Number</label>
+		<input type="text" class="form-control" name="passport_number" id="passport_number" placeholder="passport number" required/>
+	</div>
+	<div class="form-group">
+		<label for="passport_expiration">Passport Expiration Date</label>
+		<input type="date" class="form-control" name="passport_expiration" id="passport_expiration" placeholder="passport expiration date" required/>
+	</div>
+	<div class="form-group">
+		<label for="passport_country">Country</label>
+		<input type="text" class="form-control" name="passport_country" id="passport_country" placeholder="country" required/>
+	</div>
+	<div class="form-group">
+		<label for="date_of_birth">Date of Birth</label>
+		<input type="date" class="form-control" name="date_of_birth" id="date_of_birth" placeholder="your date of birth" required/>
+	</div>
+
+	
 	<input type="submit" value = Register />
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>

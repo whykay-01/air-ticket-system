@@ -31,7 +31,7 @@ cursor = mysql.cursor()
 # test the connection
 cursor.execute("SELECT DATABASE()")
 data = cursor.fetchone()
-print("____________________________________________________")
+print("_________________________SUCCESS!___________________________")
 print("Connected to database:", data[0])
 
 # close the cursor and connection objects
@@ -142,7 +142,7 @@ def registerCustomer():
     # cursor used to send queries
     cursor = mysql.cursor()
     # executes query
-    query = "SELECT * FROM customer WHERE username = '{}'"
+    query = "SELECT * FROM customer WHERE email = '{}'"
     cursor.execute(query.format(email))
     # stores the results in a variable
     data = cursor.fetchone()
@@ -151,7 +151,7 @@ def registerCustomer():
     if (data):
         # If the previous query returns data, then user exists
         error = "The email is already occupied!"
-        return render_template('register.html', error=error)
+        return render_template('register_customer.html', error=error)
     else:
         # encrypting the password
         ins = "INSERT INTO test_register VALUES('{}', MD5('{}'), '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
