@@ -154,8 +154,8 @@ def registerCustomer():
         return render_template('register_customer.html', error=error)
     else:
         # encrypting the password
-        ins = "INSERT INTO test_register VALUES('{}', MD5('{}'), '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
-        cursor.execute(ins.format(email, password, name, building_number, street, city, state,
+        ins = "INSERT INTO customer VALUES('{}', MD5('{}'), '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
+        cursor.execute(ins.format(email, name, password, building_number, street, city, state,
                        phone_number, passport_number, passport_expiration, passport_country, date_of_birth))
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
