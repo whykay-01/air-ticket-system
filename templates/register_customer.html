@@ -5,7 +5,8 @@
 </head>
 <body>
 	<div class="p-5 form-signin w-50 m-auto">
-		<h1>Register</h1>
+		<h1>New Customer Register Page</h1>
+		<p>Please enter the accurate information</p>
 		{% if error %}
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 		{% endif %}
@@ -60,8 +61,7 @@
 		<input type="date" class="form-control" name="date_of_birth" id="date_of_birth" placeholder="your date of birth" required/>
 	</div>
 
-	
-	<input type="submit" value = Register />
+	<button type="submit" class="btn btn-primary" value = "Register">Submit</button>
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
 	{% endif %}
