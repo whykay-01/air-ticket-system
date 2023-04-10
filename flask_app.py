@@ -60,6 +60,11 @@ def login():
 def register():
     return render_template('register.html')
 
+
+@app.route('/register_customer')
+def register_customer():
+    return render_template('register_customer.html')
+
 # Authenticates the login
 
 
@@ -118,6 +123,45 @@ def registerAuth():
         return render_template('index.html')
 
 
+@app.route('/registerCustomer', methods=['GET', 'POST'])
+def registerCustomer():
+    # grabs information from the forms
+    email = request.form['email']
+    password = request.form['password']
+    name = request.form['name']
+    building_number = request.form['building_number']
+    street = request.form['street']
+    city = request.form['city']
+    state = request.form['state']
+    phone_number = request.form['phone_number']
+    passport_number = request.form['passport_number']
+    passport_expiration = request.form['passport_expiration']
+    passport_country = request.form['passport_country']
+    date_of_birth = request.form['date_of_birth']
+
+    # cursor used to send queries
+    cursor = mysql.cursor()
+    # executes query
+    query = "SELECT * FROM customer WHERE username = '{}'"
+    cursor.execute(query.format(email))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    error = None
+    if (data):
+        # If the previous query returns data, then user exists
+        error = "The email is already occupied!"
+        return render_template('register.html', error=error)
+    else:
+        # encrypting the password
+        ins = "INSERT INTO test_register VALUES('{}', MD5('{}'), '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
+        cursor.execute(ins.format(email, password, name, building_number, street, city, state,
+                       phone_number, passport_number, passport_expiration, passport_country, date_of_birth))
+        mysql.commit()  # commit the newly registered entry to the table
+        cursor.close()
+        return render_template('index.html')
+
+
 @app.route('/home')
 def home():
     username = session['username']
@@ -132,43 +176,43 @@ def home():
 # airline staff page
 
 
-@app.route('/airline_staff')
-def home():
-    username = session['username']
-    cursor = mysql.cursor()
-    # similar logic for the display of the flight info
-    query = "SELECT * FROM test_register WHERE username = '{}'"
-    cursor.execute(query.format(username))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
+# @app.route('/airline_staff')
+# def home():
+#     username = session['username']
+#     cursor = mysql.cursor()
+#     # similar logic for the display of the flight info
+#     query = "SELECT * FROM test_register WHERE username = '{}'"
+#     cursor.execute(query.format(username))
+#     data1 = cursor.fetchall()
+#     cursor.close()
+#     return render_template('home.html', username=username, posts=data1)
 
 # customer page
 
 
-@app.route('/customer_page')
-def home():
-    username = session['username']
-    cursor = mysql.cursor()
-    # similar logic for the display of the flight info
-    query = "SELECT * FROM test_register WHERE username = '{}'"
-    cursor.execute(query.format(username))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
+# @app.route('/customer_page')
+# def home():
+#     username = session['username']
+#     cursor = mysql.cursor()
+#     # similar logic for the display of the flight info
+#     query = "SELECT * FROM test_register WHERE username = '{}'"
+#     cursor.execute(query.format(username))
+#     data1 = cursor.fetchall()
+#     cursor.close()
+#     return render_template('home.html', username=username, posts=data1)
 # booking agent page
 
 
-@app.route('/booking_agent')
-def home():
-    username = session['username']
-    cursor = mysql.cursor()
-    # similar logic for the display of the flight info
-    query = "SELECT * FROM test_register WHERE username = '{}'"
-    cursor.execute(query.format(username))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
+# @app.route('/booking_agent')
+# def home():
+#     username = session['username']
+#     cursor = mysql.cursor()
+#     # similar logic for the display of the flight info
+#     query = "SELECT * FROM test_register WHERE username = '{}'"
+#     cursor.execute(query.format(username))
+#     data1 = cursor.fetchall()
+#     cursor.close()
+#     return render_template('home.html', username=username, posts=data1)
 
 
 # @app.route('/post', methods=['GET', 'POST'])
