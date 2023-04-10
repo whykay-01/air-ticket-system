@@ -1,25 +1,14 @@
 <html>
 <head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 </head>
 <body>
-
-
-
-
-	<!-- <div class = "registration-form">
-		<input type="email" name = "email" placeholder="your email" required/> </br>
-		<input type="password" name = "password" placeholder="your password" required/></br>
-		<input type="text" name = "name" placeholder="your name" required/> </br>
-		<input type="text" name = "building_number" placeholder="your building number" required/> </br>
-		<input type="text" name = "street" placeholder="your street" required/> </br>
-		<input type="text" name = "city" placeholder="your city" required/> </br>
-		<input type="text" name = "state" placeholder="your state" required/> </br>
-		<input type="tel" name = "phone_number" placeholder="phone number" required/> </br>
-		<input type="text" name = "passport_number" placeholder="passport number" required/> </br>
-		<input type="date" name = "passport_expiration" placeholder="passport expiration date" required/></br>
-		<input type="text" name = "passport_country" placeholder="country" required/> </br>
-		<input type="date" name = "date_of_birth" placeholder="your date of birth" required/></br>
-	</div> -->
+	<div class="p-5 form-signin w-50 m-auto">
+		<h1>Register</h1>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
 
 <form action="/registerCustomer" method="POST">
 	<div class="form-group">
@@ -78,5 +67,7 @@
 	{% endif %}
 </form>
 <a href="/">Go back</a>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
 </body>
 </html>

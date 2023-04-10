@@ -6,10 +6,9 @@
 <body class="text-center ">
 	<div class="p-5 form-signin w-50 m-auto">
 <form action="/loginAuth" method="POST">
-	<div class="">
-		<input type="text" name = "username" class="form-control" id="floatingInput" placeholder="username" required/>
-		<input type="password" name = "password" class="form-control" id="floatingPassword" placeholder="password" required/>
-	</div>
+
+	<input type="text" name = "username" class="form-control" id="floatingInput" placeholder="username" required/>
+	<input type="password" name = "password" class="form-control" id="floatingPassword" placeholder="password" required/>
 
 	<button type="submit" value = Login class="btn btn-lg btn-primary">submit</button>
 	{% if error %}
