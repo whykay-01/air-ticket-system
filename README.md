@@ -1,25 +1,39 @@
-**The documentation, and the corresponding user guide (including installation procedures) will be updated respectively after the functionality is fully implemented**
+## Overview
 
-Prereqs you need to succesfully deploy this system:
+This repository contains a reservation system that is currently in development. Once the functionality is fully implemented, the documentation and corresponding user guide (including installation procedures) will be updated.
 
-1. Docker intalled on your system (version does not matter)
-2. The MySQL image on your Docker. Check out the docker-compose.yml file. (INSERT THE COMMAND ONE NEED TO RUN TO START THIS)
-3. Create a .env file in the cloned repo (in the main folder), and manually set the following params:
-   MYSQL_ROOT_PASSWORD= <your_password>
-   MYSQL_DATABASE=<the_name_of_your_database> --> in the case of my repo it's reservation_system
-4. I am using DataGrip for the database management environment, so I recommend you use this way of accessing your data, but feel free to choose the preffered way of doing this
-5. Once 1-4 is satisfied, please start the Docker image of the MySQL, create the database, and manually run the create_tables.sql file first, and inserting_data.sql after. This way you will have some mock data to play around with
-6. After you are done with 1-5, go to the flask_app.py, and manually run the file. After that the system could be accessed here: http://127.0.0.1:5000 (if you have any errors popping up, that might be because your port 5000 might not be available)
+## Prerequisites
 
-System requirements:
+Before deploying the system, ensure that the following prerequisites are met:
 
-1. Docker image of MySQL server
-2. Python3 and Flask python library, and other relevant packages installed on your system
-3. Bootstrap library installed on your local machine (https://getbootstrap.com/)
+- Docker is installed on your system (version does not matter)
+- The MySQL image is available on your Docker. Refer to the docker-compose.yml file for details.
+- A .env file is created in the cloned repository (in the main folder), and the following parameters are set manually:
+  - MYSQL_ROOT_PASSWORD=<your_password>
+  - MYSQL_DATABASE=<the_name_of_your_database> (in the case of this repository, it's "reservation_system")
+- DataGrip is recommended for database management, but you can choose any preferred method.
+- Bootstrap library is installed on your local machine (https://getbootstrap.com/)
 
-**To use the docker use the following command after the docker is setted up**
-docker compose up
+## Deployment
 
-Contributions:
+To deploy the system, follow these steps:
 
-If you have any suggestions / ideas on how to improve the project, please contact me, or submit an issue describing in detail what your suggestion / concert is.
+1. Start the Docker image of the MySQL server.
+2. Create the database and run the create_tables.sql file, then insert_data.sql to populate the database with mock data.
+3. In the flask_app.py file, run the file manually to start the system. The system can be accessed at http://127.0.0.1:5000. If you encounter any errors, check if your port 5000 is available.
+
+## System Requirements
+
+The reservation system requires the following components:
+
+- Docker image of MySQL server
+- Python 3 and Flask Python library, along with other relevant packages, installed on your system
+- Bootstrap library installed on your local machine
+
+## Contributions
+
+If you have any suggestions or ideas on how to improve the project, please contact the project owner or submit an issue describing your suggestion or concern in detail. Contributions are welcome.
+
+## License
+
+This project is licensed under the MIT license.
