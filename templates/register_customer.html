@@ -16,7 +16,7 @@
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 		{% endif %}
 
-<form action="/registerCustomer" method="POST">
+<form id="myForm" action="/registerCustomer" method="POST">
 	<div class="form-group">
 		<label for="email">Email</label>
 		<input type="email" class="form-control" name="email" id="email" placeholder="your email" required/>
@@ -24,6 +24,10 @@
 	<div class="form-group">
 		<label for="password">Password</label>
 		<input type="password" class="form-control" name="password" id="password" placeholder="your password" required/>
+	</div>
+	<div class="form-group">
+		<label for="password">Confirm Password</label>
+		<input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="re-type the password" required/>
 	</div>
 	<div class="form-group">
 		<label for="name">Name</label>
@@ -65,6 +69,19 @@
 		<label for="date_of_birth">Date of Birth</label>
 		<input type="date" class="form-control" name="date_of_birth" id="date_of_birth" placeholder="your date of birth" required/>
 	</div>
+
+	<script>
+		// Function to check if passwords match
+		document.getElementById("myForm").addEventListener("submit", function(event) {
+			var password = document.getElementById("password").value;
+			var confirm_password = document.getElementById("confirm_password").value;
+			
+			if (password !== confirm_password) {
+				event.preventDefault(); // prevent form submission
+				alert("Passwords do not match. Please try again.");
+			}
+		});
+	</script>
 
 	<button type="submit" class="btn btn-primary" value = "Register">Submit</button>
 	{% if error %}
