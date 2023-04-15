@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Search</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Flight Search</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Search for Upcoming Flights</h4>
+                <form id="flightSearchFormA">
+                    <div class="form-group">
+                        <label for="sourceCityA">Source City/Airport Name:</label>
+                        <input type="text" class="form-control" id="sourceCityA" name="sourceCityA" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="destinationCityA">Destination City/Airport Name:</label>
+                        <input type="text" class="form-control" id="destinationCityA" name="destinationCityA"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateA">Date:</label>
+                        <input type="date" class="form-control" id="dateA" name="dateA" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="searchFactorA">Search By:</label>
+                        <select class="form-control" id="searchFactorA" name="searchFactorA" required>
+                            <option value="source">Source City/Airport</option>
+                            <option value="destination">Destination City/Airport</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+                <div class="mt-4">
+                    <h5>Search Results:</h5>
+                    <table class="table table-striped" id="searchResultsA">
+                        <thead>
+                            <tr>
+                                <th>Flight Number</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Search results will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Search for Flight Status</h4>
+                <form id="flightSearchFormB">
+                    <div class="form-group">
+                        <label for="flightNumberB">Flight Number:</label>
+                        <input type="text" class="form-control" id="flightNumberB" name="flightNumberB" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateB">Date:</label>
+                        <input type="date" class="form-control" id="dateB" name="dateB" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="searchFactorB">Search By:</label>
+                        <select class="form-control" id="searchFactorB" name="searchFactorB" required>
+                            <option value="flightNumber">Flight Number</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+                <div class="mt-4">
+                    <h5>Search Results:</h5>
+                    <table class="table table-striped" id="searchResultsB">
+                        <thead>
+                            <tr>
+                                <th>Flight Number</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Search results will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+
+</html>
+           
