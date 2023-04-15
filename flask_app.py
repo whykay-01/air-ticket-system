@@ -65,6 +65,16 @@ def register():
 def register_customer():
     return render_template('register_customer.html')
 
+
+@app.route('/register_staff')
+def register_staff():
+    return render_template('register_staff.html')
+
+
+@app.route('/register_agent')
+def register_agent():
+    return render_template('register_agent.html')
+
 # Authenticates the login
 
 

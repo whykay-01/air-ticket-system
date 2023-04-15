@@ -1,0 +1,104 @@
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+	<style>
+		.error {
+		  border: 1px solid red; /* Red border color for error */
+		}
+	</style>
+</head>
+<body>
+	<header>
+        {% include "navbar.html" %}
+    </header>
+	<div class="p-5 form-signin w-50 m-auto">
+		<h1>New Airline Staff Register Page⚙️</h1>
+		<p>
+			You will be able to edit the information
+			after you register. 
+
+			Note: you will not be able to change your email.
+		</p>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+
+<form id="myForm" action="/registerStaff" method="POST">
+	<div class="form-group">
+		<label for="email">Username</label>
+		<input type="email" class="form-control" name="email" id="email" placeholder="aka your email" required/>
+	</div>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input type="password" class="form-control" name="password" id="password" placeholder="your password" required/>
+	</div>
+	<div class="form-group">
+		<label for="password">Confirm Password</label>
+		<input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="re-type the password" required/>
+	</div>
+	<div class="form-group">
+		<label for="name">First name</label>
+		<input type="text" class="form-control" name="first_name" id="first_name" placeholder="your first name" required/>
+	</div>
+	<div class="form-group">
+		<label for="name">Last name</label>
+		<input type="text" class="form-control" name="last_name" id="last_name" placeholder="your last name" required/>
+	</div>
+	<div class="form-group">
+		<label for="date_of_birth">Date of Birth</label>
+		<input type="date" class="form-control" name="date_of_birth" id="date_of_birth" placeholder="your date of birth" required/>
+	</div>
+	<!-- TODO: tranform this into the selection of the airlines which are already in the DB -->
+	<div class="form-group">
+		<label for="name">Airline Name</label>
+		<input type="text" class="form-control" name="airline_name" id="airline_name" placeholder="airline you work for" required/>
+	</div>
+	<!-- TODO: tranform this into the selection of the possible permissions -->
+	<div class="form-group">
+		<label for="name">Permission</label>
+		<input type="text" class="form-control" name="last_name" id="last_name" placeholder="permission" required/>
+	</div>
+	
+	
+	<script>
+		// Function to check if passwords match
+		document.getElementById("myForm").addEventListener("submit", function(event) {
+			var password = document.getElementById("password").value;
+			var confirm_password = document.getElementById("confirm_password").value;
+        	var passwordField = document.getElementById("password");
+        	var confirmPasswordField = document.getElementById("confirm_password");
+
+			if (password !== confirm_password) {
+				event.preventDefault(); // prevent form submission
+				alert("Passwords do not match. Please try again.");
+				passwordField.classList.add("error"); 
+            	confirmPasswordField.classList.add("error");
+
+			}
+			else {
+            	passwordField.classList.remove("error");
+            	confirmPasswordField.classList.remove("error");
+			};
+		});
+	</script>
+
+	<button type="submit" class="btn btn-primary flex-bottom-right" value = "Register">Submit</button>
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<style>
+	.btn-primary {
+		margin-top: 20px;
+	}
+	.form-group{
+		margin-top: 10px;
+	}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+</body>
+</html>
