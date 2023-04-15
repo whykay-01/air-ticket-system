@@ -148,7 +148,7 @@ def registerCustomer():
     data = cursor.fetchone()
     # use fetchall() if you are expecting more than 1 data row
     error = None
-    if (data):
+    if (data) is not None:
         # If the previous query returns data, then user exists
         error = "The email is already occupied!"
         return render_template('register_customer.html', error=error)
@@ -159,7 +159,7 @@ def registerCustomer():
                        phone_number, passport_number, passport_expiration, passport_country, date_of_birth))
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
-        return render_template('index.html')
+        return render_template('success.html')
 
 
 @app.route('/home')
