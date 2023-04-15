@@ -172,6 +172,52 @@ def registerCustomer():
         return render_template('success.html')
 
 
+@app.route('/registerStaff', methods=['GET', 'POST'])
+def getAirlines():
+    query_for_airlines = "SELECT * FROM airline"
+    cursor = mysql.cursor()
+    cursor.execute(query_for_airlines)
+    airlines = cursor.fetchall()
+    cursor.close()
+    return airlines
+
+
+def registerStaff():
+    # grabs information from the forms
+    username = request.form['username']
+    password = request.form['password']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    date_of_birth = request.form['date_of_birth']
+    airline_name = request.form['airline_name']
+
+    # TODO:think how this should be implemented
+    permission = "EMPTY"
+    airlines = getAirlines()
+    # cursor used to send queries
+    cursor = mysql.cursor()
+
+    # checking whether the USERNAME is in the DB
+    query = "SELECT * FROM airline_staff WHERE username = '{}'"
+    cursor.execute(query.format(username))
+    data = cursor.fetchone()
+    error = None
+    if (data) is not None:
+        # If the previous query returns data, then user exists
+        error = "The username is already occupied! Please choose another one."
+        return render_template('register_staff.html', error=error)
+    else:
+        # encrypting the password
+        ins = "INSERT INTO airline VALUES('{}', MD5('{}'), '{}', '{}', '{}', '{}')"
+        cursor.execute(ins.format(username, password, first_name,
+                       last_name, date_of_birth, airline_name, permission))
+        mysql.commit()  # commit the newly registered entry to the table
+        cursor.close()
+        return render_template('success.html')
+    # TODO: I never pass the airlines to the form
+    return render_template('register_staff.html', airlines=airlines)
+
+
 @app.route('/home')
 def home():
     username = session['username']

@@ -18,7 +18,7 @@
 			You will be able to edit the information
 			after you register. 
 
-			Note: you will not be able to change your email.
+			Note: you will not be able to change your USERNAME.
 		</p>
 		{% if error %}
 			<p class="error"><strong>Error:</strong> {{error}}</p>
@@ -26,8 +26,8 @@
 
 <form id="myForm" action="/registerStaff" method="POST">
 	<div class="form-group">
-		<label for="email">Username</label>
-		<input type="email" class="form-control" name="email" id="email" placeholder="aka your email" required/>
+		<label for="username">Username</label>
+		<input type="text" class="form-control" name="username" id="username" placeholder="your unique username" required/>
 	</div>
 	<div class="form-group">
 		<label for="password">Password</label>
@@ -54,11 +54,24 @@
 		<label for="name">Airline Name</label>
 		<input type="text" class="form-control" name="airline_name" id="airline_name" placeholder="airline you work for" required/>
 	</div>
-	<!-- TODO: tranform this into the selection of the possible permissions -->
-	<div class="form-group">
+	<select class="form-control" name="airline_name" id="airline_select" required>
+		<option value="">Select an airline</option>
+		{% for airline in airlines %}
+			<option value="{{ airline.airline_name }}">{{ airline.airline_name }}</option>
+		{% endfor %}
+	</select>
+
+	<!-- TODO: put this piece of code to the  -->
+	<!-- <div class="form-group">
 		<label for="name">Permission</label>
-		<input type="text" class="form-control" name="last_name" id="last_name" placeholder="permission" required/>
-	</div>
+		<input type="text" class="form-control" name="permission" id="permission" placeholder="permission" required/>
+		<label for="permission">Permission level</label>
+		<select id="permission" name="permission" class="form-select" required>
+			<option selected>I don't have the permission yet</option>
+			<option>Operator</option>
+			<option>Admin</option>
+		</select>
+	</div> -->
 	
 	
 	<script>
