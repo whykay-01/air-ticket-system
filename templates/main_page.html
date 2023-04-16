@@ -23,7 +23,11 @@
         <div class="tab-content mt-3" id="myTabContent">
             <div class="tab-pane fade show active" id="upcomingFlights" role="tabpanel"
                 aria-labelledby="upcomingFlights-tab">
-                <form id="flightSearchFormA">
+
+
+
+
+                <form id="flightSearchFormA" action="/flightSearchA" method="GET">
                     <!-- Form content for Search for Upcoming Flights -->
                     <div class="form-group">
                         <label for="searchFactorA">Search By:</label>
@@ -35,16 +39,15 @@
                     </div>
                     <div class="form-group">
                         <label for="sourceCityA">Source City/Airport Name:</label>
-                        <input type="text" class="form-control" id="sourceCityA" name="sourceCityA" required>
+                        <input type="text" class="form-control" id="sourceCityA" name="sourceCityA">
                     </div>
                     <div class="form-group">
                         <label for="destinationCityA">Destination City/Airport Name:</label>
-                        <input type="text" class="form-control" id="destinationCityA" name="destinationCityA"
-                            required>
+                        <input type="text" class="form-control" id="destinationCityA" name="destinationCityA">
                     </div>
                     <div class="form-group">
                         <label for="dateA">Date:</label>
-                        <input type="date" class="form-control" id="dateA" name="dateA" required>
+                        <input type="date" class="form-control" id="dateA" name="dateA">
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Search</button>
@@ -56,20 +59,36 @@
                         <thead>
                             <tr>
                                 <th>Flight Number</th>
-                                <th>Source</th>
-                                <th>Destination</th>
-                                <th>Date</th>
-                                <th>Status</th>
+                                <th>Airline</th>
+                                <th>Departure Airport</th>
+                                <th>Arrival Airport</th>
+                                <th>Departure Time</th>
+                                <th>Arrival Time</th>
+                                <th>Departure Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Search results will be dynamically populated here -->
+                            {% for line in table_content %}
+                            <tr>
+                                <!-- TODO: make the population of data dynamic -->
+                                <td>{{line[0]}}</td>
+                                <td>{{line[1]}}</td>
+                                <td>{{line[2]}}</td>
+                                <td>{{line[3]}}</td>
+                                <td>{{line[4]}}</td>
+                                <td>{{line[5]}}</td>
+                                <td>{{line[6]}}</td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="tab-pane fade" id="flightStatus" role="tabpanel" aria-labelledby="flightStatus-tab">
-                <form id="flightSearchFormB">
+
+
+
+                <form id="flightSearchFormB" action="/flightSearchB" method="GET">
                     <!-- Form content for Search for Flight Status -->
                     <div class="form-group">
                         <label for="searchFactorB">Search By:</label>
@@ -80,11 +99,11 @@
                     </div>
                     <div class="form-group">
                         <label for="flightNumber">Flight Number:</label>
-                        <input type="text" class="form-control" id="flightNumber" name="flightNumber" required>
+                        <input type="text" class="form-control" id="flightNumber" name="flightNumber">
                     </div>
                     <div class="form-group">
                         <label for="dateB">Date:</label>
-                        <input type="date" class="form-control" id="dateB" name="dateB" required>
+                        <input type="date" class="form-control" id="dateB" name="dateB">
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Search</button>
