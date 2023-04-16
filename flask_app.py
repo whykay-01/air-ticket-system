@@ -247,11 +247,11 @@ def fligthSearchA():
 
     # TODO: figure out how to make the population dynamic, and remove LIMIT 5 part
 
-    if method == "Source City/Airport Name:":
+    if method == "Source City/Airport":
         query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' LIMIT 5"
         parameter = request.form['sourceCityA']
 
-    elif method == "Destination City/Airport Name:":
+    elif method == "Destination City/Airport":
         query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}' LIMIT 5"
         parameter = request.form['destinationCityA']
 
@@ -262,6 +262,7 @@ def fligthSearchA():
     cursor.execute(query.format(parameter))
     data1 = cursor.fetchall()
     cursor.close()
+    # return jsonify(data1)
     return render_template('main_page.html', table_content=data1)
 
 
