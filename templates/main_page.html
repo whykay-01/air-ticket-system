@@ -26,6 +26,14 @@
                 <form id="flightSearchFormA">
                     <!-- Form content for Search for Upcoming Flights -->
                     <div class="form-group">
+                        <label for="searchFactorA">Search By:</label>
+                        <select class="form-control" id="searchFactorA" name="searchFactorA" required>
+                            <option value="source">Source City/Airport</option>
+                            <option value="destination">Destination City/Airport</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="sourceCityA">Source City/Airport Name:</label>
                         <input type="text" class="form-control" id="sourceCityA" name="sourceCityA" required>
                     </div>
@@ -37,14 +45,6 @@
                     <div class="form-group">
                         <label for="dateA">Date:</label>
                         <input type="date" class="form-control" id="dateA" name="dateA" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="searchFactorA">Search By:</label>
-                        <select class="form-control" id="searchFactorA" name="searchFactorA" required>
-                            <option value="source">Source City/Airport</option>
-                            <option value="destination">Destination City/Airport</option>
-                            <option value="date">Date</option>
-                        </select>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Search</button>
@@ -72,24 +72,23 @@
                 <form id="flightSearchFormB">
                     <!-- Form content for Search for Flight Status -->
                     <div class="form-group">
-                        <label for="flightNumberB">Flight Number:</label>
-                        <input type="text" class="form-control" id="flightNumberB" name="flightNumberB" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dateB">Date:</label>
-                        <input type="date" class="form-control" id="dateB" name="dateB" required>
-                    </div>
-                    <div class="form-group">
                         <label for="searchFactorB">Search By:</label>
                         <select class="form-control" id="searchFactorB" name="searchFactorB" required>
                             <option value="flightNumber">Flight Number</option>
                             <option value="date">Date</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="flightNumber">Flight Number:</label>
+                        <input type="text" class="form-control" id="flightNumber" name="flightNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateB">Date:</label>
+                        <input type="date" class="form-control" id="dateB" name="dateB" required>
+                    </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
-
                 </form>
                 <div class="mt-4">
                     <h5>Search Results:</h5>
@@ -109,10 +108,11 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min"></script>
+            </div>
+            </div>
+            
+            <!-- Add your JavaScript code here -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+</html>
