@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, url_for, redirect, session, jsonify
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -172,16 +172,28 @@ def registerCustomer():
         return render_template('success.html')
 
 
-@app.route('/registerStaff', methods=['GET', 'POST'])
+# @app.route('/registerStaff', methods=['GET', 'POST'])
+# def getAirlines():
+#     query_for_airlines = "SELECT * FROM airline"
+#     cursor = mysql.cursor()
+#     cursor.execute(query_for_airlines)
+#     airlines = cursor.fetchall()
+#     cursor.close()
+#     # return airlines
+#     return render_template('register_staff.html', airlines=airlines)
+
+# the endpoint works!
+@app.route('/getAirlines', methods=['GET'])
 def getAirlines():
     query_for_airlines = "SELECT * FROM airline"
     cursor = mysql.cursor()
     cursor.execute(query_for_airlines)
     airlines = cursor.fetchall()
     cursor.close()
-    return airlines
+    return jsonify(airlines)
 
 
+@app.route('/registerStaff', methods=['GET', 'POST'])
 def registerStaff():
     # grabs information from the forms
     username = request.form['username']
@@ -193,7 +205,6 @@ def registerStaff():
 
     # TODO:think how this should be implemented
     permission = "EMPTY"
-    airlines = getAirlines()
     # cursor used to send queries
     cursor = mysql.cursor()
 
@@ -214,8 +225,6 @@ def registerStaff():
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
         return render_template('success.html')
-    # TODO: I never pass the airlines to the form
-    return render_template('register_staff.html', airlines=airlines)
 
 
 @app.route('/home')

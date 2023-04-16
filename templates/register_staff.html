@@ -51,17 +51,16 @@
 	</div>
 	<!-- TODO: tranform this into the selection of the airlines which are already in the DB -->
 	<div class="form-group">
-		<label for="name">Airline Name</label>
-		<input type="text" class="form-control" name="airline_name" id="airline_name" placeholder="airline you work for" required/>
-	</div>
-	<select class="form-control" name="airline_name" id="airline_select" required>
-		<option value="">Select an airline</option>
-		{% for airline in airlines %}
-			<option value="{{ airline.airline_name }}">{{ airline.airline_name }}</option>
-		{% endfor %}
-	</select>
+		<label for="airline_select">Airline Name</label>
+		<select class="form-control" name="airline_name" id="airline_select" required>
+			<option value="">Select an airline...</option>
+			{% for airline in airlines %}
+				<option value="{{ airline.airline_name }}">{{ airline.airline_name }}</option>
+			{% endfor %}
+		</select>
+	</div>	
 
-	<!-- TODO: put this piece of code to the  -->
+	<!-- TODO: put this piece of code to the Admin's View  -->
 	<!-- <div class="form-group">
 		<label for="name">Permission</label>
 		<input type="text" class="form-control" name="permission" id="permission" placeholder="permission" required/>
@@ -75,6 +74,43 @@
 	
 	
 	<script>
+		// Function to pass the data from Flask's /getAirlines to the dropdown menu
+		
+		// Fetch data from back-end
+		fetch('/getAirlines')
+		.then(response => response.json())
+		.then(data => {
+			// Extract list of airlines from data
+			const airlines = data.airlines;
+
+			// Get dropdown menu element from DOM
+			const dropdownMenu = document.getElementById('airlinesDropdown');
+
+			// Clear existing options from dropdown menu
+			dropdownMenu.innerHTML = '';
+
+			// Create and append new options to dropdown menu
+			airlines.forEach(airline => {
+			const option = document.createElement('option');
+			option.value = airline.code;
+			option.textContent = airline.name;
+			dropdownMenu.appendChild(option);
+			});
+		})
+		.catch(error => {
+			console.error('Error fetching airlines data:', error);
+		});
+
+		// Event handler for dropdown menu change event
+		document.getElementById('airlinesDropdown').addEventListener('change', event => {
+			// Access selected value
+			const selectedValue = event.target.value;
+
+			// Perform desired action based on selected value
+			console.log('Selected value:', selectedValue);
+		});
+
+
 		// Function to check if passwords match
 		document.getElementById("myForm").addEventListener("submit", function(event) {
 			var password = document.getElementById("password").value;
