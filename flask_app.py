@@ -238,7 +238,31 @@ def home():
     cursor.close()
     return render_template('home.html', username=username, posts=data1)
 
-# airline staff page
+
+@app.route('/flightSearchA', methods=['GET', 'POST'])
+def fligthSearchA():
+
+    method = request.form['searchFactorA']
+    cursor = mysql.cursor()
+
+    # TODO: figure out how to make the population dynamic, and remove LIMIT 5 part
+
+    if method == "Source City/Airport Name:":
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' LIMIT 5"
+        parameter = request.form['sourceCityA']
+
+    elif method == "Destination City/Airport Name:":
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}' LIMIT 5"
+        parameter = request.form['destinationCityA']
+
+    else:
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}' LIMIT 5"
+        parameter = request.form['dateA']
+
+    cursor.execute(query.format(parameter))
+    data1 = cursor.fetchall()
+    cursor.close()
+    return render_template('main_page.html', table_content=data1)
 
 
 # @app.route('/airline_staff')
