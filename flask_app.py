@@ -241,7 +241,6 @@ def home():
 
 @app.route('/flightSearchA', methods=['POST'])
 def fligthSearchA():
-    print(request)
     method = request.form['searchFactorA']
     cursor = mysql.cursor()
 
@@ -262,7 +261,35 @@ def fligthSearchA():
     cursor.execute(query.format(parameter))
     data1 = cursor.fetchall()
     cursor.close()
-    # return jsonify(data1)
+
+    if len(data1) == 0:
+        return render_template('main_page.html', table_content=data1, error="No flights found for the given criteria. Try again!")
+
+    return render_template('main_page.html', table_content=data1)
+
+
+@app.route('/flightSearchB', methods=['POST'])
+def fligthSearchB():
+    method = request.form['searchFactorB']
+    cursor = mysql.cursor()
+
+    # TODO: figure out how to make the population dynamic, and remove LIMIT 5 part
+
+    if method == "Flight Number":
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' LIMIT 5"
+        parameter = request.form['flightNumber']
+
+    else:
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}' LIMIT 5"
+        parameter = request.form['dateB']
+
+    cursor.execute(query.format(parameter))
+    data1 = cursor.fetchall()
+    cursor.close()
+
+    if len(data1) == 0:
+        return render_template('main_page.html', table_content=data1, error="No flights found for the given criteria. Try again!")
+
     return render_template('main_page.html', table_content=data1)
 
 
