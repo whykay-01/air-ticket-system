@@ -182,7 +182,7 @@ def registerCustomer():
 #     # return airlines
 #     return render_template('register_staff.html', airlines=airlines)
 
-# the endpoint works!
+
 @app.route('/getAirlines', methods=['GET'])
 def getAirlines():
     query_for_airlines = "SELECT * FROM airline"
@@ -239,9 +239,9 @@ def home():
     return render_template('home.html', username=username, posts=data1)
 
 
-@app.route('/flightSearchA', methods=['GET', 'POST'])
+@app.route('/flightSearchA', methods=['POST'])
 def fligthSearchA():
-
+    print(request)
     method = request.form['searchFactorA']
     cursor = mysql.cursor()
 
