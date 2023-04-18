@@ -36,6 +36,7 @@ print("Connected to database:", data[0])
 
 # close the cursor and connection objects
 cursor.close()
+
 # TODO: is it generally okay if we do not close the connection to the database?
 # mysql.close()
 
@@ -46,14 +47,10 @@ def welcome():
         return redirect(url_for('home'))
     return render_template('index.html')
 
-# Define route for login
-
 
 @app.route('/login')
 def login():
     return render_template('login.html')
-
-# Define route for register
 
 
 @app.route('/register')
@@ -66,16 +63,20 @@ def register_customer():
     return render_template('register_customer.html')
 
 
-@app.route('/register_staff')
+@app.route('/register_staff', methods=['POST'])
 def register_staff():
-    return render_template('register_staff.html')
+    query_for_airlines = "SELECT * FROM airline"
+    cursor = mysql.cursor()
+    cursor.execute(query_for_airlines)
+    airlines = cursor.fetchall()
+    cursor.close()
+    airlines = jsonify(airlines)
+    return render_template('register_staff.html', airlines=airlines)
 
 
 @app.route('/register_agent')
 def register_agent():
     return render_template('register_agent.html')
-
-# Authenticates the login
 
 
 @app.route('/loginAuth', methods=['GET', 'POST'])
