@@ -151,6 +151,36 @@
             </div>
             
             <!-- Add your JavaScript code here -->
+            <script>
+                // get the searchFactorA select element
+                const searchFactorA = document.getElementById("searchFactorA");
+                
+                // add a change event listener to the select element
+                searchFactorA.addEventListener("change", function() {
+                    // get the selected option
+                    const selectedOption = this.options[this.selectedIndex].value;
+                    
+                    // hide all input fields
+                    document.getElementById("sourceCityA").style.display = "none";
+                    document.getElementById("labelSourceCity").style.display = "none";
+                    
+                    document.getElementById("destinationCityA").style.display = "none";
+                    document.getElementById("labelDestinationCity").style.display = "none";
+                    
+                    document.getElementById("dateA").style.display = "none";
+                    document.getElementById("labelDateA").style.display = "none";
+                    
+                    
+                    // show the input field corresponding to the selected option
+                    if (selectedOption === "Source City/Airport") {
+                        document.getElementById("sourceCityA").style.display = "block";
+                    } else if (selectedOption === "Destination City/Airport") {
+                        document.getElementById("destinationCityA").style.display = "block";
+                    } else if (selectedOption === "Date") {
+                        document.getElementById("dateA").style.display = "block";
+                    }
+                });
+            </script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
