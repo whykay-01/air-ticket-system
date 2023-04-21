@@ -1,6 +1,6 @@
 ## Overview
 
-This repository contains a reservation system that is currently in development. Once the functionality is fully implemented, the documentation and corresponding user guide (including installation procedures) will be updated.
+This repository contains a reservation system that is currently in development. Once the functionality is fully implemented, the documentation and corresponding user guide (including installation procedures) will be updated
 
 ## Prerequisites
 
