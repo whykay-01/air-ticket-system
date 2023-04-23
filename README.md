@@ -36,4 +36,4 @@ If you have any suggestions or ideas on how to improve the project, please conta
 
 ## License
 
-This project is licensed under the MIT license.
+This project is licensed under the MIT license. See MIT Licence for more details.
