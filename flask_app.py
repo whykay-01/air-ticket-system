@@ -248,15 +248,15 @@ def fligthSearchA():
     # TODO: figure out how to make the population dynamic, and remove LIMIT 5 part
 
     if method == "Source City/Airport":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' LIMIT 5"
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}'"
         parameter = request.form['sourceCityA']
 
     elif method == "Destination City/Airport":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}' LIMIT 5"
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}'"
         parameter = request.form['destinationCityA']
 
     else:
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}' LIMIT 5"
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}'"
         parameter = request.form['dateA']
 
     cursor.execute(query.format(parameter))
