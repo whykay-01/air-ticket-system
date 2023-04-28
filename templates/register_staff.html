@@ -19,7 +19,8 @@
 		<p>
 			You will be able to edit the information
 			after you register. 
-
+		</p>
+		<p>
 			Note: you will not be able to change your USERNAME.
 		</p>
 		{% if error %}
@@ -51,13 +52,14 @@
 		<label for="date_of_birth">Date of Birth</label>
 		<input type="date" class="form-control" name="date_of_birth" id="date_of_birth" placeholder="your date of birth" required/>
 	</div>
-	<!-- TODO: tranform this into the selection of the airlines which are already in the DB -->
+
 	<div class="form-group">
 		<label for="airline_select">Airline Name</label>
 		<select class="form-control" name="airline_name" id="airline_select" required>
+			<!-- TODO: make the airlines to appear propely in the output -->
 			<option value="">Select an airline...</option>
 			{% for airline in airlines %}
-				<option value="{{ airline.airline_name }}">{{ airline.airline_name }}</option>
+				<option value="{{ airline }}">{{ airline }}</option>
 			{% endfor %}
 		</select>
 	</div>	
@@ -76,43 +78,6 @@
 	
 	
 	<script>
-		// Function to pass the data from Flask's /getAirlines to the dropdown menu
-		
-		// Fetch data from back-end
-		fetch('/getAirlines')
-		.then(response => response.json())
-		.then(data => {
-			// Extract list of airlines from data
-			const airlines = data.airlines;
-
-			// Get dropdown menu element from DOM
-			const dropdownMenu = document.getElementById('airlinesDropdown');
-
-			// Clear existing options from dropdown menu
-			dropdownMenu.innerHTML = '';
-
-			// Create and append new options to dropdown menu
-			airlines.forEach(airline => {
-			const option = document.createElement('option');
-			option.value = airline.code;
-			option.textContent = airline.name;
-			dropdownMenu.appendChild(option);
-			});
-		})
-		.catch(error => {
-			console.error('Error fetching airlines data:', error);
-		});
-
-		// Event handler for dropdown menu change event
-		document.getElementById('airlinesDropdown').addEventListener('change', event => {
-			// Access selected value
-			const selectedValue = event.target.value;
-
-			// Perform desired action based on selected value
-			console.log('Selected value:', selectedValue);
-		});
-
-
 		// Function to check if passwords match
 		document.getElementById("myForm").addEventListener("submit", function(event) {
 			var password = document.getElementById("password").value;

@@ -68,10 +68,8 @@ def register_staff():
     query_for_airlines = "SELECT name FROM airline"
     cursor = mysql.cursor()
     cursor.execute(query_for_airlines)
-    airlines = cursor.fetchall()
+    airlines = [row[0] for row in cursor.fetchall()]  # extract only the string values
     cursor.close()
-    print(jsonify(airlines))
-    # airlines = jsonify(airlines)
     return render_template('register_staff.html', airlines=airlines)
 
 
@@ -195,7 +193,7 @@ def registerStaff():
     airline_name = request.form['airline_name']
 
     # TODO:think how this should be implemented
-    permission = "EMPTY"
+    # permission = "admin"
     # cursor used to send queries
     cursor = mysql.cursor()
 
@@ -210,9 +208,10 @@ def registerStaff():
         return render_template('register_staff.html', error=error)
     else:
         # encrypting the password
-        ins = "INSERT INTO airline VALUES('{}', MD5('{}'), '{}', '{}', '{}', '{}')"
+        ins = "INSERT INTO airline_staff (username, password, first_name, last_name, date_of_birth, airline_name, permission) VALUES ('{}', MD5('{}'), '{}', '{}', '{}', '{}', 'N/A')"
         cursor.execute(ins.format(username, password, first_name,
-                       last_name, date_of_birth, airline_name, permission))
+                       last_name, date_of_birth, airline_name))
+        
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
         return render_template('success.html')
