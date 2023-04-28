@@ -45,7 +45,7 @@
                         <input type="text" class="form-control" id="sourceCityA" name="sourceCityA">
                     </div>
                     <div class="form-group">
-                        <label for="destinationCityA" id="labelDestinationCity">Destination City/Airport Name:</label>
+                        <labgetAirlinesel for="destinationCityA" id="labelDestinationCity">Destination City/Airport Name:</label>
                         <input type="text" class="form-control" id="destinationCityA" name="destinationCityA">
                     </div>
                     <div class="form-group">
@@ -54,14 +54,14 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-primary" id="buttonA">Search</button> <!-- onclick="showTableA()"-->
                     </div>
                     {% if error %}
                         <p class="error"><strong>Error:</strong> {{error}}</p>
                     {% endif %}
                 </form>
 
-                <div class="mt-4">
+                <div class="mt-4" id="tableA">
                     <h5>Search Results:</h5>
                     <table class="table table-striped" id="searchResultsA">
                         <thead>
@@ -98,8 +98,8 @@
                     <div class="form-group">
                         <label for="searchFactorB">Search By:</label>
                         <select class="form-control" id="searchFactorB" name="searchFactorB" required>
-                            <option value="flightNumber">Flight Number</option>
-                            <option value="date">Date</option>
+                            <option selected>Flight Number</option>
+                            <option>Date</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -107,17 +107,17 @@
                         <input type="text" class="form-control" id="flightNumber" name="flightNumber">
                     </div>
                     <div class="form-group">
-                        <label for="dateB">Date:</label>
+                        <label for="dateB" id = "labelDateB">Date:</label>
                         <input type="date" class="form-control" id="dateB" name="dateB">
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-primary" id="buttonB">Search</button> <!-- onclick="showTableB()" -->
                     </div>
                     {% if error %}
                         <p class="error"><strong>Error:</strong> {{error}}</p>
                     {% endif %}
                 </form>
-                <div class="mt-4">
+                <div class="mt-4" id="tableB">
                     <h5>Search Results:</h5>
                     <table class="table table-striped" id="searchResultsB">
                         <thead>
@@ -150,37 +150,64 @@
             </div>
             </div>
             
-            <!-- Add your JavaScript code here -->
-            <!-- <script>
-                // get the searchFactorA select element
-                const searchFactorA = document.getElementById("searchFactorA");
-                
-                // add a change event listener to the select element
-                searchFactorA.addEventListener("change", function() {
-                    // get the selected option
-                    const selectedOption = this.options[this.selectedIndex].value;
-                    
-                    // hide all input fields
-                    document.getElementById("sourceCityA").style.display = "none";
-                    document.getElementById("labelSourceCity").style.display = "none";
-                    
-                    document.getElementById("destinationCityA").style.display = "none";
-                    document.getElementById("labelDestinationCity").style.display = "none";
-                    
-                    document.getElementById("dateA").style.display = "none";
-                    document.getElementById("labelDateA").style.display = "none";
-                    
-                    
-                    // show the input field corresponding to the selected option
+            <script>
+                let buttonA = document.getElementById("buttonA");
+                let buttonB = document.getElementById("buttonB");
+
+                buttonA.addEventListener("click", function() {
+                    let searchFactorA = document.getElementById("searchFactorA");
+                    let selectedOption = searchFactorA.options[searchFactorA.selectedIndex].value;
+                    let sourceCityA = document.getElementById("sourceCityA");
+                    let destinationCityA = document.getElementById("destinationCityA");
+                    let dateA = document.getElementById("dateA");
+                    let searchResultsA = document.getElementById("searchResultsA");
+                    let flightSearchFormA = document.getElementById("flightSearchFormA");
+
                     if (selectedOption === "Source City/Airport") {
-                        document.getElementById("sourceCityA").style.display = "block";
+                        if (sourceCityA.value === "") {
+                            alert("Please enter a source city/airport name.");
+                            return false;
+                        }
                     } else if (selectedOption === "Destination City/Airport") {
-                        document.getElementById("destinationCityA").style.display = "block";
+                        if (destinationCityA.value === "") {
+                            alert("Please enter a destination city/airport name.");
+                            return false;
+                        }
                     } else if (selectedOption === "Date") {
-                        document.getElementById("dateA").style.display = "block";
+                        if (dateA.value === "") {
+                            alert("Please enter a date.");
+                            return false;
+                        }
                     }
+                    searchResultsA.style.display = "block";
+                    flightSearchFormA.style.display = "none";
                 });
-            </script> -->
+
+                buttonB.addEventListener("click", function() {
+                    let searchFactorB = document.getElementById("searchFactorB");
+                    let selectedOption = searchFactorB.options[searchFactorB.selectedIndex].value;
+                    let flightNumber = document.getElementById("flightNumber");
+                    let dateB = document.getElementById("dateB");
+                    let searchResultsB = document.getElementById("searchResultsB");
+                    let flightSearchFormB = document.getElementById("flightSearchFormB");
+
+                    // maybe it should be Flight Number
+                    if (selectedOption === "flightNumber") {
+                        if (flightNumber.value === "") {
+                            alert("Please enter a flight number.");
+                            return false;
+                        }
+                    } else if (selectedOption === "dateB") {
+                        if (dateB.value === "") {
+                            alert("Please enter a date.");
+                            return false;
+                        }
+                    }
+                    searchResultsB.style.display = "block";
+                    flightSearchFormB.style.display = "none";
+                });
+            </script>
+
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

@@ -63,14 +63,15 @@ def register_customer():
     return render_template('register_customer.html')
 
 
-@app.route('/register_staff', methods=['POST'])
+@app.route('/register_staff', methods=['GET', 'POST'])
 def register_staff():
-    query_for_airlines = "SELECT * FROM airline"
+    query_for_airlines = "SELECT name FROM airline"
     cursor = mysql.cursor()
     cursor.execute(query_for_airlines)
     airlines = cursor.fetchall()
     cursor.close()
-    airlines = jsonify(airlines)
+    print(jsonify(airlines))
+    # airlines = jsonify(airlines)
     return render_template('register_staff.html', airlines=airlines)
 
 
@@ -173,17 +174,6 @@ def registerCustomer():
         return render_template('success.html')
 
 
-# @app.route('/registerStaff', methods=['GET', 'POST'])
-# def getAirlines():
-#     query_for_airlines = "SELECT * FROM airline"
-#     cursor = mysql.cursor()
-#     cursor.execute(query_for_airlines)
-#     airlines = cursor.fetchall()
-#     cursor.close()
-#     # return airlines
-#     return render_template('register_staff.html', airlines=airlines)
-
-
 @app.route('/getAirlines', methods=['GET'])
 def getAirlines():
     query_for_airlines = "SELECT * FROM airline"
@@ -274,19 +264,22 @@ def fligthSearchB():
     method = request.form['searchFactorB']
     cursor = mysql.cursor()
 
-    # TODO: figure out how to make the population dynamic, and remove LIMIT 5 part
-
     if method == "Flight Number":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' LIMIT 5"
         parameter = request.form['flightNumber']
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}'"
+        cursor.execute(query.format(parameter))
+        data1 = cursor.fetchall()
+        cursor.close()
 
     else:
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}' LIMIT 5"
-        parameter = request.form['dateB']
-
-    cursor.execute(query.format(parameter))
-    data1 = cursor.fetchall()
-    cursor.close()
+        dateB = request.form['dateB']
+        if not dateB:
+            return render_template('main_page.html', table_content=[], error="Please select a date to search by.")
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}'"
+        parameter = dateB
+        cursor.execute(query.format(parameter))
+        data1 = cursor.fetchall()
+        cursor.close()
 
     if len(data1) == 0:
         return render_template('main_page.html', table_content=data1, error="No flights found for the given criteria. Try again!")
