@@ -56,7 +56,6 @@
 	<div class="form-group">
 		<label for="airline_select">Airline Name</label>
 		<select class="form-control" name="airline_name" id="airline_select" required>
-			<!-- TODO: make the airlines to appear propely in the output -->
 			<option value="">Select an airline...</option>
 			{% for airline in airlines %}
 				<option value="{{ airline }}">{{ airline }}</option>
