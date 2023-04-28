@@ -172,16 +172,6 @@ def registerCustomer():
         return render_template('success.html')
 
 
-@app.route('/getAirlines', methods=['GET'])
-def getAirlines():
-    query_for_airlines = "SELECT * FROM airline"
-    cursor = mysql.cursor()
-    cursor.execute(query_for_airlines)
-    airlines = cursor.fetchall()
-    cursor.close()
-    return jsonify(airlines)
-
-
 @app.route('/registerStaff', methods=['GET', 'POST'])
 def registerStaff():
     # grabs information from the forms
