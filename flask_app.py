@@ -114,26 +114,38 @@ def registerAgent():
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
     # grabs information from the forms
-    username = request.form['username']
+    user_type = request.form['user_type']
+
+    if user_type == '-- SELECT USER TYPE --':
+        error = 'Please select a user type!'
+        return render_template('login.html', error=error)
+
+    email = request.form['email']
     password = request.form['password']
 
-    # cursor used to send queries
+    
+    if user_type == 'Customer':
+        query = "SELECT * FROM customer WHERE email = '{}' and password = MD5('{}')"
+        
+    elif user_type == 'Booking Agent':
+        query = "SELECT * FROM booking_agent WHERE email = '{}' and password = MD5('{}')"
+        
+    else:
+        query = "SELECT * FROM airline_staff WHERE username = '{}' and password = MD5('{}')"
+    
     cursor = mysql.cursor()
-    # executes query
-    query = "SELECT * FROM test_register WHERE username = '{}' and password = MD5('{}')"
-    cursor.execute(query.format(username, password))
-    # stores the results of the query in a variable
-    data = cursor.fetchone()  # use fetchall() if you are expecting more than 1 data row
+    cursor.execute(query.format(email, password))
+    data = cursor.fetchone()
     cursor.close()
     error = None
+
     if (data):
-        # creates a session for the the user
-        # session is a built in
-        session['username'] = username
+        session['email'] = email
+        session['user_type'] = user_type
         return redirect(url_for('home'))
+    
     else:
-        # returns an error message to the html page
-        error = 'Invalid login or username'
+        error = 'Invalid login or email'
         return render_template('login.html', error=error)
 
 
@@ -240,15 +252,27 @@ def registerStaff():
         return render_template('success.html')
 
 
+
+
 @app.route('/home')
 def home():
-    username = session['username']
-    cursor = mysql.cursor()
-    query = "SELECT * FROM test_register WHERE username = '{}'"
-    cursor.execute(query.format(username))
-    data1 = cursor.fetchall()
-    cursor.close()
-    return render_template('home.html', username=username, posts=data1)
+    email = session['email']
+    user_type = session['user_type']
+    
+    if user_type == 'Customer':
+        cursor = mysql.cursor()
+        query = "SELECT flight_num, airline_name, departure_airport_name, departure_time, arrival_airport_name, arrival_time, dep_status FROM ticket NATURAL JOIN flight WHERE customer_email = \'{}\' AND dep_status = 'Upcoming';"
+        cursor.execute(query.format(email))
+        data = cursor.fetchall()
+        cursor.close()
+        return render_template('home.html', email=email, user_type=user_type, upcoming_flights=data)
+        
+    elif user_type == 'Airline Staff':
+        return render_template('home.html', email=email, user_type=user_type)
+    
+    else:
+        return render_template('home.html', email=email, user_type=user_type)
+
 
 
 @app.route('/flightSearchA', methods=['POST'])
