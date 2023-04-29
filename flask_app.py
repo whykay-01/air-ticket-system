@@ -1,3 +1,4 @@
+from curses import flash
 from flask import Flask, render_template, request, url_for, redirect, session, jsonify
 import mysql.connector
 import os
@@ -243,7 +244,6 @@ def registerStaff():
 def home():
     username = session['username']
     cursor = mysql.cursor()
-    # similar logic for the display of the flight info
     query = "SELECT * FROM test_register WHERE username = '{}'"
     cursor.execute(query.format(username))
     data1 = cursor.fetchall()
@@ -254,9 +254,12 @@ def home():
 @app.route('/flightSearchA', methods=['POST'])
 def fligthSearchA():
     method = request.form['searchFactorA']
-    cursor = mysql.cursor()
 
-    # TODO: figure out how to make the population dynamic, and remove LIMIT 5 part
+    if method == "-- SELECT THE CRITERIA --":
+        error = "No search criteria selected!"
+        return render_template('main_page.html', error=error)
+
+    cursor = mysql.cursor()
 
     if method == "Source City/Airport":
         query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}'"
@@ -283,6 +286,11 @@ def fligthSearchA():
 @app.route('/flightSearchB', methods=['POST'])
 def fligthSearchB():
     method = request.form['searchFactorB']
+    
+    if method == "-- SELECT THE CRITERIA --":
+        error = "No search criteria selected!"
+        return render_template('main_page.html', error=error)
+
     cursor = mysql.cursor()
 
     if method == "Flight Number":
