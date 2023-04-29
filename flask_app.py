@@ -78,6 +78,38 @@ def register_agent():
     return render_template('register_agent.html')
 
 
+@app.route('/registerAgent', methods=['GET', 'POST'])
+def registerAgent():
+    # grabs information from the forms
+    email = request.form['email']
+    password = request.form['password']
+    booking_agent_id = request.form['booking_agent_id']
+
+    # cursor used to send queries
+    cursor = mysql.cursor()
+    # executes query
+    query = "SELECT * FROM booking_agent WHERE email = '{}'"
+    cursor.execute(query.format(email))
+    # stores the results in a variable
+    data = cursor.fetchone()
+    # use fetchall() if you are expecting more than 1 data row
+    error = None
+
+    if (data) is not None:
+        # If the previous query returns data, then user exists
+        error = "User exists! Please log in!"
+        return render_template('register_agent.html', error=error)
+    
+    else:
+        # encrypting the password
+        ins = "INSERT INTO booking_agent VALUES('{}', MD5('{}'), '{}')"
+        cursor.execute(ins.format(email, password, booking_agent_id))
+        mysql.commit()  # commit the newly registered entry to the table
+        cursor.close()
+        return render_template('success.html')
+
+
+
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
     # grabs information from the forms
