@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <style>
+		.error {
+		  border: 5px solid red; /* Red border color for error */
+          margin-top: 15px;
+		}
+	</style>
 </head>
 
 <body>
@@ -35,7 +41,8 @@
                     <div class="form-group">
                         <label for="searchFactorA">Search By:</label>
                         <select id="searchFactorA" name="searchFactorA" class="form-select" required>
-                            <option selected>Source City/Airport</option>
+                            <option selected>-- SELECT THE CRITERIA --</option>
+                            <option>Source City/Airport</option>
                             <option>Destination City/Airport</option>
                             <option>Date</option>
                         </select>
@@ -98,7 +105,8 @@
                     <div class="form-group">
                         <label for="searchFactorB">Search By:</label>
                         <select class="form-control" id="searchFactorB" name="searchFactorB" required>
-                            <option selected>Flight Number</option>
+                            <option selected>-- SELECT THE CRITERIA --</option>
+                            <option>Flight Number</option>
                             <option>Date</option>
                         </select>
                     </div>
