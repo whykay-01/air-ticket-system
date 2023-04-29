@@ -361,9 +361,16 @@ def fligthSearchB():
 
 @app.route('/logout')
 def logout():
-    session.pop('username')
-    # I am not sure if that's the right place to close the mysql connection
-    mysql.close()
+
+    if session == "airline_staff":
+        session.pop('airline_staff')
+
+    elif session == "customer":
+        session.pop('customer')
+
+    else:
+        session.pop('booking_agent')
+
     return redirect('/')
 
 
