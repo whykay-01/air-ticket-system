@@ -104,62 +104,7 @@
       </form>
       {% if error %}
         <p class="error"><strong>Error:</strong> {{error}}</p>
-      {% endif %}
-      <!-- {% with message = get_flashed_messages() %}
-            {% if message %}
-                <div class="alert alert-danger">{{ message[0] }}</div>
-            {% endif %}
-      {% endwith %} -->
-      <!-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          const searchResults = document.getElementById('searchResults');
-          searchResults.style.display = 'none';
-      
-          const searchForm = document.querySelector('form');
-          searchForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Perform search
-            const formData = new FormData(searchForm);
-            const xhr = new XMLHttpRequest();
-            xhr.open(searchForm.method, searchForm.action);
-            xhr.onload = function() {
-              if (xhr.status === 200) {
-                const tableContent = JSON.parse(xhr.response);
-                if (tableContent.length > 0) {
-                  // Display search results table
-                  searchResults.style.display = 'block';
-                  const tbody = searchResults.querySelector('tbody');
-                  tbody.innerHTML = '';
-                  tableContent.forEach(function(line) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                      <td>${line[0]}</td>
-                      <td>${line[1]}</td>
-                      <td>${line[2]}</td>
-                      <td>${line[3]}</td>
-                      <td>${line[4]}</td>
-                      <td>${line[5]}</td>
-                      <td>${line[6]}</td>
-                    `;
-                    tbody.appendChild(tr);
-                  });
-                } else {
-                  // Show empty response alert
-                  alert('No records found.');
-                }
-              } else {
-                // Show error alert
-                alert('Error: ' + xhr.statusText);
-              }
-            };
-            xhr.onerror = function() {
-              alert('Error: ' + xhr.statusText);
-            };
-            xhr.send(formData);
-          });
-        });
-      </script>       -->
+      {% endif %}      
 </body>
 </html>
 
