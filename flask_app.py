@@ -387,50 +387,55 @@ def customer_search():
 
     query = "SELECT DISTINCT flight_num FROM flight"
     cursor.execute(query)
-    flights = cursor.fetchall()
+    all_flights = cursor.fetchall()
     
     cursor.close()
 
     # requesting searching parameters
-    flights = request.form['flights']
+    selected_flight = request.form['flights']
     departure_airport = request.form['departure_airport']
     arrival_airport = request.form['arrival_airport']
     flight_date = request.form['flight_date']
 
+
     cursor = mysql.cursor()
 
-    flight_num_f = bool(flights == "All")
-    departure_airport_f = bool(departure_airport == "All")
-    arrival_airport_f = bool(arrival_airport == "All")
+    flight_num_f = bool(selected_flight == "all")
+    departure_airport_f = bool(departure_airport == "all")
+    arrival_airport_f = bool(arrival_airport == "all")
     flight_date_f = bool(flight_date == "")
 
-    if flight_num_f and departure_airport_f and arrival_airport_f and flight_date_f:
-        return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="At least one should be specified!")
 
+    attributes = []
+    if not departure_airport_f:
+        attributes.append('departure_airport_name = "{}"'.format(departure_airport))
+    if not arrival_airport_f:
+        attributes.append('arrival_airport_name = "{}"'.format(arrival_airport))
+    if not flight_date_f:
+        attributes.append('DATE(departure_time) = "{}"'.format(flight_date))
+    if not flight_num_f:
+        attributes.append('flight_num = "{}"'.format(selected_flight))
+
+
+    if len(attributes) > 0:
+        for i in range(len(attributes)):
+            if i == 0:
+                query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE " + attributes[i] + " AND dep_status = 'Upcoming'"
+            else:
+                query = query + " AND " + attributes[i]
+        query = query + " ORDER BY departure_time ASC;"
     else:
-        attributes = []
-        if not departure_airport_f:
-            attributes.append('departure_airport_name = "{}"'.format(departure_airport))
-        if not arrival_airport_f:
-            attributes.append('arrival_airport_name = "{}"'.format(arrival_airport))
-        if not flight_date_f:
-            attributes.append('DATE(departure_time) = "{}"'.format(flight_date))
-        if not flight_num_f:
-            attributes.append('flight_num = "{}"'.format(flights))
+        return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="At least one should be specified!")
+    
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
 
-        if len(attributes) > 0:
-            query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE " + " AND ".join(attributes) + " AND dep_status = 'Upcoming'"
-        else:
-            query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE dep_status = 'Upcoming'"
-        
-        cursor.execute(query)
-        data = cursor.fetchall()
-        cursor.close()
 
-        if len(data) == 0:
-            return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="No flights found for the given criteria. Try again!")
+    if len(data) == 0:
+        return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="No flights found for the given criteria. Try again!")
 
-        return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports, table_content=data)
+    return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, table_content=data)
 
 
 # @app.route('/booking_agent')
