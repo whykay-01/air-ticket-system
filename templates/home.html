@@ -10,7 +10,7 @@
 
 	{% if user_type == "Customer" %}
     <div class="container">
-        <h2 class="my-5">Welcome to the main page, {{email}}!</h2>
+        <h2 class="my-5">Welcome to the customer's page, {{email}}!</h2>
 
 		{% with message = get_flashed_messages() %} <!-- success purchase notification-->
 				{% if message %}
