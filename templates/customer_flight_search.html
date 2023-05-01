@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Customer Flight Search</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2>Customer Flight Search</h2>
+      <form action="/customer_search" method="POST">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            
+            <tr>
+              <th>Flight Number</th>
+              <th>Departure Airport</th>
+              <th>Arrival Airport</th>
+              <th>Flight Date</th>
+            </tr>
+            
+            <tbody>
+              <tr>
+                <td>
+                  <select class="form-control" name="flights">
+                    <option value="all">All</option>
+                    {% if flights %}
+                      {% for flight in flights %}
+                        <option value="{{flight[0]}}">{{flight[0]}}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" name="departure_airport">
+                    <option value="all">All</option>
+                    {% if departure_airport %}
+                      {% for airport in departure_airport %}
+                        <option value="{{airport[0]}}">{{airport[0]}}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control" name="arrival_airport">
+                    <option value="all">All</option>
+                    {% if arrival_airport %}
+                      {% for airport in arrival_airport %}
+                        <option value="{{airport[0]}}">{{airport[0]}}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>
+                </td>
+                <td>
+                  <input type="date" class="form-control" min="2022-01-01" name="flight_date"/> 
+                  <!-- max="2020-12-31"  -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-4" id="searchResults">
+          <h5>Search Results:</h5>
+          <table class="table table-striped">
+              <thead>
+                  <tr>
+                      <th>Flight Number</th>
+                      <th>Airline</th>
+                      <th>Departure Airport</th>
+                      <th>Arrival Airport</th>
+                      <th>Departure Time</th>
+                      <th>Arrival Time</th>
+                      <th>Departure Status</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for line in table_content %}
+                  <tr>
+                      <td>{{line[0]}}</td>
+                      <td>{{line[1]}}</td>
+                      <td>{{line[2]}}</td>
+                      <td>{{line[3]}}</td>
+                      <td>{{line[4]}}</td>
+                      <td>{{line[5]}}</td>
+                      <td>{{line[6]}}</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+        <div class="form-group">
+          <p>For the successful search you need to specify at least one of the fields.</p>
+          <p>You can purchase at most 1 ticket for each flight. No repeated purchases allowed.</p>
+        </div>
+        <div class="form-group">
+          <input type="submit" class="btn btn-primary" value="Search">
+        </div>
+      </form>
+        {% with message = get_flashed_messages() %}
+              {% if message %}
+                  <div class="alert alert-danger">{{ message[0] }}</div>
+              {% endif %}
+        {% endwith %}
+      </form>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const searchResults = document.getElementById('searchResults');
+          searchResults.style.display = 'none';
+      
+          const searchForm = document.querySelector('form');
+          searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Perform search
+            const formData = new FormData(searchForm);
+            const xhr = new XMLHttpRequest();
+            xhr.open(searchForm.method, searchForm.action);
+            xhr.onload = function() {
+              if (xhr.status === 200) {
+                const tableContent = JSON.parse(xhr.response);
+                if (tableContent.length > 0) {
+                  // Display search results table
+                  searchResults.style.display = 'block';
+                  const tbody = searchResults.querySelector('tbody');
+                  tbody.innerHTML = '';
+                  tableContent.forEach(function(line) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                      <td>${line[0]}</td>
+                      <td>${line[1]}</td>
+                      <td>${line[2]}</td>
+                      <td>${line[3]}</td>
+                      <td>${line[4]}</td>
+                      <td>${line[5]}</td>
+                      <td>${line[6]}</td>
+                    `;
+                    tbody.appendChild(tr);
+                  });
+                } else {
+                  // Show empty response alert
+                  alert('No records found.');
+                }
+              } else {
+                // Show error alert
+                alert('Error: ' + xhr.statusText);
+              }
+            };
+            xhr.onerror = function() {
+              alert('Error: ' + xhr.statusText);
+            };
+            xhr.send(formData);
+          });
+        });
+      </script>      
+</body>
+</html>
+
