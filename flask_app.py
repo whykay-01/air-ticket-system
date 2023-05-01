@@ -251,8 +251,6 @@ def registerStaff():
         return render_template('success.html')
 
 
-
-
 @app.route('/home')
 def home():
     email = session['email']
@@ -271,8 +269,6 @@ def home():
     
     else:
         return render_template('home.html', email=email, user_type=user_type)
-
-
 
 @app.route('/flightSearchA', methods=['POST'])
 def fligthSearchA():
