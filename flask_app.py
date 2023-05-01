@@ -1,10 +1,9 @@
-from curses import flash
-from flask import Flask, render_template, request, url_for, redirect, session, jsonify
+from flask import Flask, render_template, request, url_for, redirect, session
 import mysql.connector
 import os
 from dotenv import load_dotenv
 
-# Initialize the app from Flask
+
 app = Flask(__name__)
 
 my_password = os.getenv('MYSQL_ROOT_PASSWORD')
@@ -354,17 +353,23 @@ def fligthSearchB():
 # customer page
 
 
-# @app.route('/customer_page')
-# def home():
-#     username = session['username']
-#     cursor = mysql.cursor()
-#     # similar logic for the display of the flight info
-#     query = "SELECT * FROM test_register WHERE username = '{}'"
-#     cursor.execute(query.format(username))
-#     data1 = cursor.fetchall()
-#     cursor.close()
-#     return render_template('home.html', username=username, posts=data1)
-# booking agent page
+@app.route('/customer_flight_search')
+def customer_flight_search():
+    cursor = mysql.cursor()
+    #extract all existing arrival_airport
+    query = "SELECT DISTINCT arrival_airport_name FROM flight"
+    cursor.execute(query)
+    arrival_airports = cursor.fetchall()
+    #extract all existing departure_airport
+    query = "SELECT DISTINCT departure_airport_name FROM flight"
+    cursor.execute(query)
+    departure_airports = cursor.fetchall()
+    
+    cursor.close()
+    return render_template('customer_flight_search.html', departure_airport=departure_airports, arrival_airport=arrival_airports)
+
+# @app.route('/customer_search', methods=['POST'])
+# def customer_search():
 
 
 # @app.route('/booking_agent')
