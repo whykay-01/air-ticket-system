@@ -2,6 +2,7 @@
 <head>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-0aZfe8OcMkMqj3hAeD1vnh8WyC+haK49JiFTQizYuZJWhOmTWlgWvoPzRwN+QplNjms8P7oF5Xrg3qf5ZpSvJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 	<nav>
@@ -55,7 +56,7 @@
 
 	{% if user_type == "Booking Agent" %}
 		<div class="container">
-			<h2 class="my-5">Booking agent view page. Good day, <span class="text-primary">{{username}}</span>!</h2>
+			<h2 class="my-5">Booking agent view page. Good day, <span class="text-primary">{{email}}</span>!</h2>
 			<div class="my-5">
 				<a href="/home/agent_view_flight" class="btn btn-primary">View my flight</a>
 				<a href="/home/agent_flight_search" class="btn btn-secondary">Purchase a ticket</a>
@@ -66,38 +67,38 @@
 	{% endif %}
 
 	{% if user_type == "Airline Staff" %}
-		<div class="container">
-			<h2 class="my-5">Airline Staff View Page</h2>
-			<div class="row">
-				<div class="col-md-4">
-					<h3>Flights</h3>
-					<ul class="list-unstyled">
-						<li><a href="/home/staff_view_flight">View my flight</a></li>
-						<li><a href="/home/staff_create_flight">Create a new flight</a></li>
-						<li><a href="/home/staff_change_status">Change flight status</a></li>
-					</ul>
-				</div>
-				<div class="col-md-4">
-					<h3>Airplanes and Airports</h3>
-					<ul class="list-unstyled">
-						<li><a href="/home/staff_add_airplane">Add an airplane</a></li>
-						<li><a href="/home/staff_add_airport">Add an airport</a></li>
-					</ul>
-				</div>
-				<div class="col-md-4">
-					<h3>Reports and Analytics</h3>
-					<ul class="list-unstyled">
-						<li><a href="/home/staff_view_agent">View booking agents</a></li>
-						<li><a href="/home/staff_view_freq_customer">View frequent customers</a></li>
-						<li><a href="/home/staff_view_report">View reports</a></li>
-						<li><a href="/home/staff_revenue_comparison">Comparison of revenue earned</a></li>
-						<li><a href="/home/staff_top_destination">View top destinations</a></li>
-					</ul>
+	<div class="container">
+		<h2 class="my-5">Airline Staff View Page: welcome, {{email}}!</h2>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>Flights</h3>
+				<div class="list-group">
+					<a href="/home/staff_view_flight" class="list-group-item list-group-item-action">View my flight</a>
+					<a href="/home/staff_create_flight" class="list-group-item list-group-item-action">Create a new flight</a>
+					<a href="/home/staff_change_status" class="list-group-item list-group-item-action">Change flight status</a>
 				</div>
 			</div>
-			<br>
-			<a href="/logout" class="btn btn-danger">Logout</a>
+			<div class="col-md-4">
+				<h3>Airplanes and Airports</h3>
+				<div class="list-group">
+					<a href="/home/staff_add_airplane" class="list-group-item list-group-item-action">Add an airplane</a>
+					<a href="/home/staff_add_airport" class="list-group-item list-group-item-action">Add an airport</a>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<h3>Reports and Analytics</h3>
+				<div class="list-group">
+					<a href="/home/staff_view_agent" class="list-group-item list-group-item-action">View booking agents</a>
+					<a href="/home/staff_view_freq_customer" class="list-group-item list-group-item-action">View frequent customers</a>
+					<a href="/home/staff_view_report" class="list-group-item list-group-item-action">View reports</a>
+					<a href="/home/staff_revenue_comparison" class="list-group-item list-group-item-action">Comparison of revenue earned</a>
+					<a href="/home/staff_top_destination" class="list-group-item list-group-item-action">View top destinations</a>
+				</div>
+			</div>
 		</div>
+		<br>
+		<a href="/logout" class="btn btn-danger">Logout</a>
+	</div>		  
 	{% endif %}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
