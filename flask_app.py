@@ -130,12 +130,12 @@ def loginAuth():
     if user_type == 'Customer':
         query = "SELECT * FROM customer WHERE email = '{}' and password = MD5('{}')"
         
-    elif user_type == 'Booking Agent':
-        query = "SELECT * FROM booking_agent WHERE email = '{}' and password = MD5('{}')"
-        
-    else:
+    elif user_type == 'Airline Staff':
         query = "SELECT * FROM airline_staff WHERE username = '{}' and password = MD5('{}')"
     
+    else:
+        query = "SELECT * FROM booking_agent WHERE email = '{}' and password = MD5('{}')"
+        
     cursor = mysql.cursor()
     cursor.execute(query.format(email, password))
     data = cursor.fetchone()
