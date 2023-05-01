@@ -425,7 +425,7 @@ def customer_search():
                 query = query + " AND " + attributes[i]
         query = query + " ORDER BY departure_time ASC;"
     else:
-        return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="At least one should be specified!")
+        return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="At least one search parameter should be specified!")
     
     cursor.execute(query)
     data = cursor.fetchall()
