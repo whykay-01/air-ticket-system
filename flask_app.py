@@ -57,6 +57,10 @@ def login():
 def register():
     return render_template('register.html')
 
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+
 
 @app.route('/register_customer')
 def register_customer():
@@ -335,20 +339,6 @@ def fligthSearchB():
     return render_template('main_page.html', table_content=data1)
 
 
-# @app.route('/airline_staff')
-# def home():
-#     username = session['username']
-#     cursor = mysql.cursor()
-#     # similar logic for the display of the flight info
-#     query = "SELECT * FROM test_register WHERE username = '{}'"
-#     cursor.execute(query.format(username))
-#     data1 = cursor.fetchall()
-#     cursor.close()
-#     return render_template('home.html', username=username, posts=data1)
-
-# customer page
-
-
 @app.route('/customer_flight_search')
 def customer_flight_search():
     cursor = mysql.cursor()
@@ -412,7 +402,7 @@ def customer_search():
     if not flight_num_f:
         attributes.append('flight_num = "{}"'.format(selected_flight))
 
-
+    # concatenate all the attributes and produce a query
     if len(attributes) > 0:
         for i in range(len(attributes)):
             if i == 0:
@@ -424,14 +414,14 @@ def customer_search():
         return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="At least one search parameter should be specified!")
     
     cursor.execute(query)
-    data = cursor.fetchall()
+    available_flights = cursor.fetchall()
     cursor.close()
 
 
-    if len(data) == 0:
+    if len(available_flights) == 0:
         return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="No flights found for the given criteria. Try again!")
 
-    return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, table_content=data)
+    return render_template('customer_flight_search.html', flights=all_flights, departure_airport=departure_airports, arrival_airport=arrival_airports, table_content=available_flights)
 
 
 # @app.route('/booking_agent')
