@@ -241,7 +241,7 @@ def registerStaff():
         error = "The username is already occupied! Please choose another one."
         return render_template('register_staff.html', error=error)
     else:
-        # encrypting the password
+        # by default the permission is N/A
         ins = "INSERT INTO airline_staff (username, password, first_name, last_name, date_of_birth, airline_name, permission) VALUES ('{}', MD5('{}'), '{}', '{}', '{}', '{}', 'N/A')"
         cursor.execute(ins.format(username, password, first_name,
                        last_name, date_of_birth, airline_name))
