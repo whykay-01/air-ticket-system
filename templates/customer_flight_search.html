@@ -3,10 +3,20 @@
   <head>
     <title>Customer Flight Search</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+      .error {
+        color:red; /* Red border color for error */
+            margin-top: 15px;
+      }
+    </style>
   </head>
   <body>
     <div class="container mt-5">
       <h2>Customer Flight Search</h2>
+      <div class="form-group">
+        <p>For the successful search you need to specify at least one of the fields.</p>
+        <p>You can purchase at most 1 ticket for each flight. No repeated purchases allowed.</p>
+      </div>
       <form action="/customer_search" method="POST">
         <div class="table-responsive">
           <table class="table table-bordered">
@@ -86,22 +96,21 @@
                   {% endfor %}
               </tbody>
           </table>
-      </div>
-        <div class="form-group">
-          <p>For the successful search you need to specify at least one of the fields.</p>
-          <p>You can purchase at most 1 ticket for each flight. No repeated purchases allowed.</p>
         </div>
+        
         <div class="form-group">
           <input type="submit" class="btn btn-primary" value="Search">
         </div>
       </form>
-        {% with message = get_flashed_messages() %}
-              {% if message %}
-                  <div class="alert alert-danger">{{ message[0] }}</div>
-              {% endif %}
-        {% endwith %}
-      </form>
-      <script>
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p>
+      {% endif %}
+      <!-- {% with message = get_flashed_messages() %}
+            {% if message %}
+                <div class="alert alert-danger">{{ message[0] }}</div>
+            {% endif %}
+      {% endwith %} -->
+      <!-- <script>
         document.addEventListener('DOMContentLoaded', function() {
           const searchResults = document.getElementById('searchResults');
           searchResults.style.display = 'none';
@@ -150,7 +159,7 @@
             xhr.send(formData);
           });
         });
-      </script>      
+      </script>       -->
 </body>
 </html>
 
