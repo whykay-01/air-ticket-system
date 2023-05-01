@@ -356,26 +356,39 @@ def fligthSearchB():
 @app.route('/customer_flight_search')
 def customer_flight_search():
     cursor = mysql.cursor()
+    
     query = "SELECT DISTINCT arrival_airport_name FROM flight"
     cursor.execute(query)
     arrival_airports = cursor.fetchall()
+    
     query = "SELECT DISTINCT departure_airport_name FROM flight"
     cursor.execute(query)
     departure_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT flight_num FROM flight"
+    cursor.execute(query)
+    flights = cursor.fetchall()
     
     cursor.close()
-    return render_template('customer_flight_search.html', departure_airport=departure_airports, arrival_airport=arrival_airports)
+    return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports)
 
 @app.route('/customer_search', methods=['POST'])
 def customer_search():
 
     cursor = mysql.cursor()
+    
     query = "SELECT DISTINCT arrival_airport_name FROM flight"
     cursor.execute(query)
     arrival_airports = cursor.fetchall()
+    
     query = "SELECT DISTINCT departure_airport_name FROM flight"
     cursor.execute(query)
     departure_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT flight_num FROM flight"
+    cursor.execute(query)
+    flights = cursor.fetchall()
+    
     cursor.close()
 
     # requesting searching parameters
@@ -386,78 +399,38 @@ def customer_search():
 
     cursor = mysql.cursor()
 
-    if flights == "All" and departure_airport == "All" and arrival_airport == "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight"
+    flight_num_f = bool(flights == "All")
+    departure_airport_f = bool(departure_airport == "All")
+    arrival_airport_f = bool(arrival_airport == "All")
+    flight_date_f = bool(flight_date == "")
+
+    if flight_num_f and departure_airport_f and arrival_airport_f and flight_date_f:
+        return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="At least one should be specified!")
+
+    else:
+        attributes = []
+        if not departure_airport_f:
+            attributes.append('departure_airport_name = "{}"'.format(departure_airport))
+        if not arrival_airport_f:
+            attributes.append('arrival_airport_name = "{}"'.format(arrival_airport))
+        if not flight_date_f:
+            attributes.append('DATE(departure_time) = "{}"'.format(flight_date))
+        if not flight_num_f:
+            attributes.append('flight_num = "{}"'.format(flights))
+
+        if len(attributes) > 0:
+            query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE " + " AND ".join(attributes) + " AND dep_status = 'Upcoming'"
+        else:
+            query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE dep_status = 'Upcoming'"
+        
         cursor.execute(query)
+        data = cursor.fetchall()
+        cursor.close()
 
-    elif flights == "All" and departure_airport == "All" and arrival_airport == "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}'"
-        cursor.execute(query.format(flight_date))
+        if len(data) == 0:
+            return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports, error="No flights found for the given criteria. Try again!")
 
-    elif flights == "All" and departure_airport == "All" and arrival_airport != "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}'"
-        cursor.execute(query.format(arrival_airport))
-
-    elif flights == "All" and departure_airport == "All" and arrival_airport != "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(arrival_airport, flight_date))
-
-    elif flights == "All" and departure_airport != "All" and arrival_airport == "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}'"
-        cursor.execute(query.format(departure_airport))
-
-    elif flights == "All" and departure_airport != "All" and arrival_airport == "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(departure_airport, flight_date))
-
-    elif flights == "All" and departure_airport != "All" and arrival_airport != "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' AND arrival_airport_name = '{}'"
-        cursor.execute(query.format(departure_airport, arrival_airport))
-
-    elif flights == "All" and departure_airport != "All" and arrival_airport != "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' AND arrival_airport_name = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(departure_airport, arrival_airport, flight_date))
-
-    elif flights != "All" and departure_airport == "All" and arrival_airport == "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}'"
-        cursor.execute(query.format(flights))
-
-    elif flights != "All" and departure_airport == "All" and arrival_airport == "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(flights, flight_date))
-
-    elif flights != "All" and departure_airport == "All" and arrival_airport != "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND arrival_airport_name = '{}'"
-        cursor.execute(query.format(flights, arrival_airport))
-
-    elif flights != "All" and departure_airport == "All" and arrival_airport != "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND arrival_airport_name = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(flights, arrival_airport, flight_date))
-
-    elif flights != "All" and departure_airport != "All" and arrival_airport == "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND departure_airport_name = '{}'"
-        cursor.execute(query.format(flights, departure_airport))
-
-    elif flights != "All" and departure_airport != "All" and arrival_airport == "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND departure_airport_name = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(flights, departure_airport, flight_date))
-
-    elif flights != "All" and departure_airport != "All" and arrival_airport != "All" and flight_date == "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND departure_airport_name = '{}' AND arrival_airport_name = '{}'"
-        cursor.execute(query.format(flights, departure_airport, arrival_airport))
-
-    elif flights != "All" and departure_airport != "All" and arrival_airport != "All" and flight_date != "":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE flight_num = '{}' AND departure_airport_name = '{}' AND arrival_airport_name = '{}' AND DATE(departure_time) = '{}'"
-        cursor.execute(query.format(flights, departure_airport, arrival_airport, flight_date))
-
-    data = cursor.fetchall()
-    cursor.close()
-
-    if len(data) == 0:
-        return render_template('customer_flight_search.html', departure_airport=departure_airports, arrival_airport=arrival_airports, error="No flights found for the given criteria. Try again!")
-    
-    return render_template('customer_flight_search.html', departure_airport=departure_airports, arrival_airport=arrival_airports, table_content=data)
-
+        return render_template('customer_flight_search.html', flights=flights, departure_airport=departure_airports, arrival_airport=arrival_airports, table_content=data)
 
 
 # @app.route('/booking_agent')
