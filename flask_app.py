@@ -393,17 +393,9 @@ def fligthSearchB():
 
 @app.route('/logout')
 def logout():
-
-    if session == "airline_staff":
-        session.pop('airline_staff')
-
-    elif session == "customer":
-        session.pop('customer')
-
-    else:
-        session.pop('booking_agent')
-
-    return redirect('/')
+    session.pop('email')
+    session.pop('user_type')
+    return render_template('/goodbye.html')
 
 
 app.secret_key = 'some key that you will never guess'
