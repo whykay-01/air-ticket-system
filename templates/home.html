@@ -91,9 +91,21 @@
 		<h2 class="my-5">Airline Staff View Page: welcome, {{email}}!</h2>
 		<div class="row">
 			<div class="col-md-4">
+				<div class="card shadow-sm mb-5">
+				  <div class="card-body text-left">
+					<h4 class="card-title mb-0">{{first_name}} {{last_name}}</h4>
+					<h4 class="card-title mb-0">{{airline_name}}</h4>
+					<h4 class="card-title mb-0">{{permission}}</h4>
+					<p> </p>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-4">
 				<h3>Flights</h3>
 				<div class="list-group">
-					<a href="/home/staff_view_flight" class="list-group-item list-group-item-action">View my flight</a>
 					<a href="/home/staff_create_flight" class="list-group-item list-group-item-action">Create a new flight</a>
 					<a href="/home/staff_change_status" class="list-group-item list-group-item-action">Change flight status</a>
 				</div>
@@ -116,28 +128,64 @@
 				</div>
 			</div>
 		</div>
-		<h3>Your upcoming flights:</h3>
-			<table class="table table-bordered">
-				<thead>
+		<br>
+		<h3>{{airline_name}}'s upcoming flights:</h3>
+		
+		<div class="container">
+			<form class="form-inline" action="/staff_flight_search" method="POST">
+			  <div class="form-group mr-2">
+				<label for="start-date" class="mr-2">Start Date:</label>
+				<input type="date" class="form-control" name="start-date">
+			  </div>
+			  <br>
+			  <div class="form-group mr-2">
+				<label for="end-date" class="mr-2">End Date:</label>
+				<input type="date" class="form-control" name="end-date">
+			  </div>
+			  <br>
+			  <div class="form-group mr-2">
+				<label for="departure_airport" class="mr-2">Departure_airport:</label>
+				<input type="text" class="form-control" name="departure_airport">
+			  </div>
+			  <br>
+			  <div class="form-group mr-2">
+				<label for="arrival_airport" class="mr-2">Arrival_airport:</label>
+				<input type="text" class="form-control" name="arrival_airport">
+			  </div>
+			  <br>
+			  {% if error %}
+        		<p class="error"><strong>Warning:</strong> {{error}}</p>
+      		  {% endif %} 
+			  <button type="submit" class="btn btn-primary ml-auto">Search</button>
+			</form>
+		  </div>		  
+		<br>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Airline</th>
+					<th>Flight Number</th>
+					<th>Departure Airport</th>
+					<th>Departure Time</th>
+					<th>Arrival Airport</th>
+					<th>Arrival Time</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for line in upcoming_flights %}
 					<tr>
-						<th>Airline</th><th>Flight Number</th><th>Departure Airport</th>
-						<th>Departure Time</th><th>Arrival Airport</th><th>Arrival Time</th><th>Status</th>
+						<td>{{line[0]}}</td>
+						<td>{{line[1]}}</td>
+						<td>{{line[2]}}</td>
+						<td>{{line[3]}}</td>
+						<td>{{line[4]}}</td>
+						<td>{{line[5]}}</td>
+						<td>{{line[6]}}</td>
 					</tr>
-				</thead>
-				<tbody>
-					{% for line in upcoming_flights %}
-						<tr>
-							<td>{{line[0]}}</td>
-							<td>{{line[1]}}</td>
-							<td>{{line[2]}}</td>
-							<td>{{line[3]}}</td>
-							<td>{{line[4]}}</td>
-							<td>{{line[5]}}</td>
-							<td>{{line[6]}}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+				{% endfor %}
+			</tbody>
+		</table>
 		<br>
 		<a href="/logout" class="btn btn-danger">Logout</a>
 	</div>		  
