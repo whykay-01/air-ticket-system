@@ -279,7 +279,7 @@ def home():
 
     if user_type == "Customer":
         cursor = mysql.cursor()
-        query = "SELECT flight_num, airline_name, departure_airport_name, departure_time, arrival_airport_name, arrival_time, dep_status FROM ticket NATURAL JOIN flight WHERE customer_email = '{}' AND dep_status = 'Upcoming';"
+        query = "SELECT F.flight_num, F.airline_name, F.departure_airport_name, F.departure_time, F.arrival_airport_name, F.arrival_time, F.dep_status FROM ticket as T JOIN flight as F ON T.flight_id = F.flight_num WHERE customer_email = '{}' AND dep_status = 'Upcoming';"
         cursor.execute(query.format(email))
         data = cursor.fetchall()
         cursor.close()
