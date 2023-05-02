@@ -98,22 +98,19 @@
                       <td>{{line[7]}}</td>
                       {% if line[7] != 0 %}
                       <td>
-                        <form action="/customer_purchase" method="POST">
-                          <input type="hidden" name="flight_number" value="{{line[0]}}">
+                        <form id="flight_info" action="/confirmation_page" method="POST">
+                          <input type="hidden" name="flight_num" value="{{line[0]}}">
                           <input type="hidden" name="airline" value="{{line[1]}}">
                           <input type="hidden" name="departure_airport" value="{{line[2]}}">
                           <input type="hidden" name="arrival_airport" value="{{line[3]}}">
                           <input type="hidden" name="departure_time" value="{{line[4]}}">
                           <input type="hidden" name="arrival_time" value="{{line[5]}}">
-                          <input type="hidden" name="departure_status" value="{{line[6]}}">
-                          <input type="hidden" name="available_seats" value="{{line[7]}}">
-                          <input type="hidden" name="flight_date" value="{{line[8]}}">
-                          <input type="submit" class="btn btn-primary" value="Purchase">
+                          <button class="btn btn-success flex-bottom-right" value="Purchase" onclick="submitForm()">Purchase</button>
                         </form>
                       </td>
                       {% else %}
                       <td>
-                          <input type="submit" class="btn btn-secondary" value="Purchase" disabled>
+                          <input class="btn btn-secondary" value="Purchase" disabled>
                       </td>
                       {% endif %}
                   </tr>
@@ -129,7 +126,18 @@
       </form>
       {% if error %}
         <p class="error"><strong>Error:</strong> {{error}}</p>
-      {% endif %}      
+      {% endif %}   
+      <script>
+        function submitForm() {
+          document.querySelector('input[name="flight_num"]').value = flight_num;
+          document.querySelector('input[name="airline"]').value = airline;
+          document.querySelector('input[name="departure_airport"]').value = departure_airport;
+          document.querySelector('input[name="arrival_airport"]').value = arrival_airport;
+          document.querySelector('input[name="departure_time"]').value = departure_time;
+          document.querySelector('input[name="arrival_time"]').value = arrival_time;
+          document.querySelector('#flight_info').submit();
+        }
+      </script>
 </body>
 </html>
 
