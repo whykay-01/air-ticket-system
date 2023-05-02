@@ -471,6 +471,49 @@ def customer_search():
             error="No flights found for the given criteria. Try again!",
         )
 
+    cursor = mysql.cursor()
+    available_seats = []
+
+    for flight in available_flights:
+        flight_num = flight[0]
+        airline = flight[1]
+
+        airplane_id_query = "SELECT airplane_id FROM flight WHERE airline_name = '{}' AND flight_num = '{}'".format(
+            airline, flight_num
+        )
+        cursor.execute(airplane_id_query)
+        # find the airplane id for that flight
+        airplane_id = cursor.fetchone()[0]
+
+        total_query = (
+            "SELECT seats FROM airplane WHERE airline_name = '{}' AND id = '{}'".format(
+                airline, airplane_id
+            )
+        )
+        cursor.execute(total_query)
+        # find how many seats in total for that flight
+        total = cursor.fetchone()[0]
+
+        sold_query = "SELECT COUNT(*) FROM ticket WHERE airline_name = '{}' AND  flight_id = '{}'".format(
+            airline, flight_num
+        )
+        cursor.execute(sold_query)
+        sold = int(
+            cursor.fetchone()[0]
+        )  # find how many tickets have been sold for that flight
+        available = int(total) - sold
+        available_seats.append(available)  # record the available seats for this flight
+
+    for i in range(
+        len(available_flights)
+    ):  # append the available seats to the available flights
+        original = list(available_flights[i])
+        original.append(available_seats[i])
+        new = tuple(original)
+        available_flights[i] = new
+
+    cursor.close()
+
     return render_template(
         "customer_flight_search.html",
         flights=all_flights,
