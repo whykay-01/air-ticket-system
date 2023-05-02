@@ -60,7 +60,30 @@
 				<a href="/home/agent_view_commission" class="btn btn-secondary">View my commission</a>
 				<a href="/home/agent_top_customer" class="btn btn-secondary">View top customers</a>
 			</div>
+			<h3>Your upcoming flights:</h3>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Airline</th><th>Flight Number</th><th>Departure Airport</th>
+						<th>Departure Time</th><th>Arrival Airport</th><th>Arrival Time</th><th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for line in upcoming_flights %}
+						<tr>
+							<td>{{line[0]}}</td>
+							<td>{{line[1]}}</td>
+							<td>{{line[2]}}</td>
+							<td>{{line[3]}}</td>
+							<td>{{line[4]}}</td>
+							<td>{{line[5]}}</td>
+							<td>{{line[6]}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
+		
 	{% endif %}
 
 	{% if user_type == "Airline Staff" %}
@@ -93,6 +116,28 @@
 				</div>
 			</div>
 		</div>
+		<h3>Your upcoming flights:</h3>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>Airline</th><th>Flight Number</th><th>Departure Airport</th>
+						<th>Departure Time</th><th>Arrival Airport</th><th>Arrival Time</th><th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for line in upcoming_flights %}
+						<tr>
+							<td>{{line[0]}}</td>
+							<td>{{line[1]}}</td>
+							<td>{{line[2]}}</td>
+							<td>{{line[3]}}</td>
+							<td>{{line[4]}}</td>
+							<td>{{line[5]}}</td>
+							<td>{{line[6]}}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		<br>
 		<a href="/logout" class="btn btn-danger">Logout</a>
 	</div>		  
