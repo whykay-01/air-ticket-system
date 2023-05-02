@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flight Order Confirmation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container my-5">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title mb-4">Please Confirm Your Order</h1>
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>Your email:</td>
+                <td>{{ email }}</td>
+              </tr>
+              <tr>
+                <td>Flight Number:</td>
+                <td>{{ flight_num }}</td>
+              </tr>
+              <tr>
+                <td>Airline:</td>
+                <td>{{ airline_name }}</td>
+              </tr>
+              <tr>
+                <td>Departure Time:</td>
+                <td>{{ departure_time }}</td>
+              </tr>
+              <tr>
+                <td>Arrival Time:</td>
+                <td>{{ arrival_time }}</td>
+              </tr>
+              <tr>
+                <td>Departure Airport:</td>
+                <td>{{ departure_airport }}</td>
+              </tr>
+              <tr>
+                <td>Arrival Airport:</td>
+                <td>{{ arrival_airport }}</td>
+              </tr>
+              <tr>
+                <td>Price:</td>
+                <td>{{ price }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <form action="/customer_purchase" method="POST">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="flight_num" value="{{ flight_num }}">
+            <input type="hidden" name="airline_name" value="{{ airline_name }}">
+            <input type="hidden" name="departure_time" value="{{ departure_time }}">
+            <input type="hidden" name="arrival_time" value="{{ arrival_time }}">
+            <input type="hidden" name="departure_airport" value="{{ departure_airport }}">
+            <input type="hidden" name="arrival_airport" value="{{ arrival_airport }}">
+            <input type="hidden" name="price" value="{{ price }}">
+            <button type="submit" class="btn btn-success flex-bottom-right" value = "Confirm and Purchase">Confirm and Purchase</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
