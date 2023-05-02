@@ -523,6 +523,65 @@ def customer_search():
     )
 
 
+@app.route("/confirmation_page", methods=["GET", "POST"])
+def confirmation_page():
+    email = session["email"]
+    flight_num = request.form["flight_num"]
+    airline_name = request.form["airline_name"]
+    departure_time = request.form["departure_time"]
+
+    arrival_time = request.form["arrival_time"]
+    departure_airport = request.form["departure_airport"]
+    arrival_airport = request.form["arrival_airport"]
+
+    price_query = "SELECT price FROM flight WHERE flight_num = '{}' AND airline_name = '{}' AND departure_time = '{}';".format(
+        flight_num, airline_name, departure_time
+    )
+    cursor = mysql.cursor()
+    cursor.execute(price_query)
+    price = cursor.fetchone()[0]
+    cursor.close()
+
+    return render_template(
+        "purchase_confirmation_page.html",
+        email=email,
+        flight_num=flight_num,
+        airline_name=airline_name,
+        departure_time=departure_time,
+        arrival_time=arrival_time,
+        departure_airport=departure_airport,
+        arrival_airport=arrival_airport,
+        price=price
+    )
+
+
+# this action appears only when the button in the confirmation page is clicked
+# @app.route("/customer_purchase", methods=["POST"])
+# def customer_purchase():
+#     cursor = mysql.cursor()
+#     email = session["email"]
+#     flight_num = request.form["flight_num"]
+#     airline_name = request.form["airline_name"]
+#     departure_time = request.form["departure_time"]
+#     arrival_time = request.form["arrival_time"]
+#     departure_airport = request.form["departure_airport"]
+#     arrival_airport = request.form["arrival_airport"]
+#     price = request.form["price"]
+#     cursor.close()
+
+#     return render_template(
+#         "customer_purchase.html",
+#         username=username,
+#         flight_num=flight_num,
+#         airline_name=airline_name,
+#         departure_time=departure_time,
+#         arrival_time=arrival_time,
+#         departure_airport=departure_airport,
+#         arrival_airport=arrival_airport,
+#         price=price,
+#     )
+
+
 # @app.route('/booking_agent')
 # def home():
 #     username = session['username']
