@@ -288,10 +288,82 @@ def home():
         )
 
     elif user_type == "Airline Staff":
-        return render_template("home.html", email=email, user_type=user_type)
+        query = "SELECT first_name, last_name, airline_name, permission FROM airline_staff WHERE username = '{}';"
+        cursor = mysql.cursor()
+        cursor.execute(query.format(email))
+
+        output = cursor.fetchone()
+        first_name = output[0]
+        last_name = output[1]
+        airline_name = output[2]
+        permission = output[3]
+
+        query = "SELECT airline_name, flight_num, departure_airport_name, departure_time, arrival_airport_name, arrival_time, dep_status FROM flight WHERE airline_name = '{}' AND departure_time BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY);"
+        cursor.execute(query.format(airline_name))
+        table_data = cursor.fetchall()
+        cursor.close()
+       
+
+        return render_template("home.html", email=email, user_type=user_type, first_name=first_name, last_name=last_name, airline_name=airline_name, permission=permission, upcoming_flights=table_data)
 
     else:
-        return render_template("home.html", email=email, user_type=user_type)
+        return render_template("home.html", user_type=user_type, email=email)
+
+@app.route("/staff_flight_search", methods=["POST"])
+def staffFlightSearch():
+    email = session["email"]
+    user_type = session["user_type"]
+
+    query = "SELECT first_name, last_name, airline_name, permission FROM airline_staff WHERE username = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(email))
+
+    output = cursor.fetchone()
+    first_name = output[0]
+    last_name = output[1]
+    airline_name = output[2]
+    permission = output[3]
+
+    start_date = request.form["start-date"]
+    end_date = request.form["end-date"]
+    departure_airport = request.form["departure_airport"]
+    arrival_airport = request.form["arrival_airport"]
+
+    start_date_f = bool(start_date == "")
+    end_date_f = bool(end_date == "")
+    departure_airport_f = bool(departure_airport == "")
+    arrival_airport_f = bool(arrival_airport == "")
+
+    attributes = []
+    if not departure_airport_f:
+        attributes.append('departure_airport_name = "{}"'.format(departure_airport))
+    if not arrival_airport_f:
+        attributes.append('arrival_airport_name = "{}"'.format(arrival_airport))
+    if not start_date_f:
+        attributes.append('departure_time BETWEEN DATE("{}") and DATE("{}")'.format(start_date, end_date))
+
+
+    # concatenate all the attributes and produce a query
+    if len(attributes) > 0:
+        for i in range(len(attributes)):
+            if i == 0:
+                query = (
+                    "SELECT airline_name, flight_num, departure_airport_name, departure_time, arrival_airport_name, arrival_time, dep_status FROM flight WHERE "
+                    + attributes[i]
+                )
+            else:
+                query = query + " AND " + attributes[i]
+        query = query + ";"
+        cursor.execute(query)
+        table_data = cursor.fetchall()
+        return render_template("home.html", email=email, user_type=user_type, first_name=first_name, last_name=last_name, airline_name=airline_name, permission=permission, upcoming_flights=table_data)
+    
+    if len(attributes) == 0 or len(table_data) == 0:
+        query = "SELECT airline_name, flight_num, departure_airport_name, departure_time, arrival_airport_name, arrival_time, dep_status FROM flight WHERE airline_name = '{}' AND departure_time BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY);".format(airline_name)
+        error = "Results based on your search critera are empty! Showing all upcoming flights for the next 30 days."
+        cursor.execute(query)
+        table_data = cursor.fetchall()
+        return render_template("home.html", email=email, user_type=user_type, first_name=first_name, last_name=last_name, airline_name=airline_name, permission=permission, upcoming_flights=table_data, error=error)
 
 
 @app.route("/flightSearchA", methods=["POST"])
