@@ -99,3 +99,32 @@ create table
         foreign key (airline_name) references airline (name),
         foreign key (permission) references permission (type)
     );
+
+CREATE TABLE
+    purchases (
+        ticket_id int NOT NULL,
+        customer_email varchar(255) NOT NULL,
+        booking_agent_id int DEFAULT NULL,
+        purchase_date date NOT NULL,
+        PRIMARY KEY (ticket_id, customer_email),
+        FOREIGN KEY (ticket_id) REFERENCES ticket (id),
+        FOREIGN KEY (customer_email) REFERENCES customer (email)
+    );
+
+CREATE TABLE
+    booking_agent_work_for (
+        email varchar(255) NOT NULL,
+        airline_name varchar(255) NOT NULL,
+        PRIMARY KEY (email, airline_name),
+        FOREIGN KEY (email) REFERENCES booking_agent (email),
+        FOREIGN KEY (airline_name) REFERENCES airline (name)
+    );
+
+CREATE TABLE
+    permission_by_user (
+        username varchar(50) NOT NULL,
+        permission_type varchar(50) NOT NULL,
+        PRIMARY KEY (username, permission_type),
+        FOREIGN KEY (username) REFERENCES airline_staff (username),
+        FOREIGN KEY (permission_type) REFERENCES permission (type)
+    );
