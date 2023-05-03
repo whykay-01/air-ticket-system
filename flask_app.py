@@ -660,6 +660,7 @@ def customer_purchase():
         ticket_id = cursor.fetchone()[0]
         query = "INSERT INTO purchases (ticket_id, customer_email, purchase_date) VALUES ('{}', '{}', CURDATE());".format(ticket_id, email)
         cursor.execute(query)
+        
         # we commit once all of the insert operations are succesful
         mysql.commit()
         cursor.close()
@@ -668,18 +669,6 @@ def customer_purchase():
         flash("You have successfully purchased the flight!")
         return redirect(url_for("home"))
 
-
-
-# @app.route('/post', methods=['GET', 'POST'])
-# def post():
-#     username = session['username']
-#     cursor = conn.cursor()
-#     blog = request.form['blog']
-#     query = "INSERT INTO blog (blog_post, username) VALUES('{}', '{}')"
-#     cursor.execute(query.format(blog, username))
-#     conn.commit()
-#     cursor.close()
-#     return redirect(url_for('home'))
 
 
 @app.route("/logout")
