@@ -366,6 +366,59 @@ def staffFlightSearch():
         table_data = cursor.fetchall()
         return render_template("home.html", email=email, user_type=user_type, first_name=first_name, last_name=last_name, airline_name=airline_name, permission=permission, upcoming_flights=table_data, error=error)
 
+@app.route("/staff_add_airplane")
+def staffAddAirplane():
+    return render_template("staff_add_airplane.html")
+
+@app.route("/addAirplane", methods=["POST"])
+def addAirplane():
+    seats = request.form["seats"]
+    airplane_id = request.form["airplane_id"]
+    
+    staff_email = session["email"]
+    user_type = session["user_type"]
+
+    # check if the airplane_id already exists
+    query = "SELECT * FROM airplane WHERE id = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airplane_id))
+    data = cursor.fetchall()
+    cursor.close()
+
+    # get the permission of the staff
+    query = "SELECT permission FROM airline_staff WHERE username = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    permission = cursor.fetchone()[0]
+    cursor.close()
+
+    # check if airplane_id already exists and display the error message
+    if data:
+        error = "Airplane ID already exists!"
+        flash(error, "error")
+        return redirect(url_for("home"))
+    
+    # check if the staff is authorized to add airplane (permission)
+    if permission == "N/A" or permission == "operator" or user_type == "Customer" or user_type == "Booking Agent":
+        error = "You are not authorized to add airplane!"
+        flash(error, "error")
+        return redirect(url_for("home"))
+    
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    query = "INSERT INTO airplane (id, seats, airline_name) VALUES ('{}', '{}', '{}');"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airplane_id, seats, airline_name))
+    mysql.commit()
+    cursor.close()
+
+    flash("Airplane added successfully!", "success")
+    return redirect(url_for("home"))
+
 
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
@@ -666,7 +719,7 @@ def customer_purchase():
         cursor.close()
 
         # display the confirmation message, and redirect to the home page
-        flash("You have successfully purchased the flight!")
+        flash("You have successfully purchased the flight!", "success")
         return redirect(url_for("home"))
 
 

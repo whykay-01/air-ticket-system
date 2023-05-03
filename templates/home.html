@@ -89,13 +89,27 @@
 	{% if user_type == "Airline Staff" %}
 	<div class="container">
 		<h2 class="my-5">Airline Staff View Page: welcome, {{email}}!</h2>
+		{% with message = get_flashed_messages(category_filter=["success"]) %}
+				{% if message %}
+				<div class="alert alert-success">
+  					{{message[0]}}
+				</div>
+				{% endif %}
+		{% endwith %}
+		{% with message = get_flashed_messages(category_filter=["error"]) %}
+			{% if message %}
+				<div class="alert alert-danger">
+					{{message[0]}}
+				</div>
+			{% endif %}
+		{% endwith %}
 		<div class="row">
 			<div class="col-md-4">
 				<div class="card shadow-sm mb-5">
 				  <div class="card-body text-left">
-					<h4 class="card-title mb-0">{{first_name}} {{last_name}}</h4>
-					<h4 class="card-title mb-0">{{airline_name}}</h4>
-					<h4 class="card-title mb-0">{{permission}}</h4>
+					<h5 class="card-title mb-0">Name: {{first_name}} {{last_name}}</h5>
+					<h5 class="card-title mb-0">Airline you work for: {{airline_name}}</h5>
+					<h5 class="card-title mb-0">Your permission level: {{permission}}</h5>
 					<p> </p>
 				  </div>
 				</div>
@@ -113,7 +127,7 @@
 			<div class="col-md-4">
 				<h3>Airplanes and Airports</h3>
 				<div class="list-group">
-					<a href="/home/staff_add_airplane" class="list-group-item list-group-item-action">Add an airplane</a>
+					<a href="/staff_add_airplane" class="list-group-item list-group-item-action">Add an airplane</a>
 					<a href="/home/staff_add_airport" class="list-group-item list-group-item-action">Add an airport</a>
 				</div>
 			</div>
@@ -188,7 +202,8 @@
 		</table>
 		<br>
 		<a href="/logout" class="btn btn-danger">Logout</a>
-	</div>		  
+	</div>		
+	<br>  
 	{% endif %}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
