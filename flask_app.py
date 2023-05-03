@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, flash, render_template, request, url_for, redirect, session
 import mysql.connector
 import os
 from dotenv import load_dotenv
@@ -470,6 +470,9 @@ def customer_flight_search():
 
 @app.route("/customer_search", methods=["POST"])
 def customer_search():
+    # if request.form["action"] == "confirmation_page":
+    #     print("ACTIVATED")
+
     cursor = mysql.cursor()
 
     query = "SELECT DISTINCT arrival_airport_name FROM flight"
@@ -599,7 +602,7 @@ def customer_search():
 def confirmation_page():
     email = session["email"]
     flight_num = request.form["flight_num"]
-    airline_name = request.form["airline_name"]
+    airline_name = request.form["airline"]
     departure_time = request.form["departure_time"]
 
     arrival_time = request.form["arrival_time"]
@@ -653,17 +656,6 @@ def confirmation_page():
 #         price=price,
 #     )
 
-
-# @app.route('/booking_agent')
-# def home():
-#     username = session['username']
-#     cursor = mysql.cursor()
-#     # similar logic for the display of the flight info
-#     query = "SELECT * FROM test_register WHERE username = '{}'"
-#     cursor.execute(query.format(username))
-#     data1 = cursor.fetchall()
-#     cursor.close()
-#     return render_template('home.html', username=username, posts=data1)
 
 
 # @app.route('/post', methods=['GET', 'POST'])
