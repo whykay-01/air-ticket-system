@@ -430,6 +430,64 @@ def addAirplane():
     flash("Airplane added successfully!", "success")
     return redirect(url_for("home"))
 
+@app.route("/staff_add_airport")
+def staffAddAirport():
+    query = "SELECT permission FROM airline_staff WHERE username = '{}';"
+    staff_email = session["email"]
+
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    permission = cursor.fetchone()[0]
+    cursor.close()
+
+    if permission != "admin":
+        return render_template("invalid_auth.html")
+    else:
+        return render_template("staff_add_airport.html")
+
+@app.route("/addAirport", methods=["POST"])
+def addAirport():
+    airport_code = request.form["airport_code"]
+    city_name = request.form["city_name"]
+    
+    staff_email = session["email"]
+    user_type = session["user_type"]
+
+    # check if the airport already exists
+    query = "SELECT * FROM airport WHERE name = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airport_code))
+    data = cursor.fetchall()
+    cursor.close()
+
+    # get the permission of the staff
+    query = "SELECT permission FROM airline_staff WHERE username = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    permission = cursor.fetchone()[0]
+    cursor.close()
+
+    # check if airplane_id already exists and display the error message
+    if data:
+        error = "Airport already exists!"
+        flash(error, "error")
+        return redirect(url_for("home"))
+    
+    # check if the staff is authorized to add airplane (permission)
+    if permission == "N/A" or permission == "operator" or user_type != "Airline Staff":
+        error = "You are not authorized to add airport!"
+        flash(error, "error")
+        return redirect(url_for("home"))
+
+    query = "INSERT INTO airport (name, city) VALUES ('{}', '{}');"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airport_code, city_name))
+    mysql.commit()
+    cursor.close()
+
+    flash("Airport added successfully!", "success")
+    return redirect(url_for("home"))
+
 
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
