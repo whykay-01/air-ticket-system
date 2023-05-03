@@ -368,7 +368,18 @@ def staffFlightSearch():
 
 @app.route("/staff_add_airplane")
 def staffAddAirplane():
-    return render_template("staff_add_airplane.html")
+    query = "SELECT permission FROM airline_staff WHERE username = '{}';"
+    staff_email = session["email"]
+
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    permission = cursor.fetchone()[0]
+    cursor.close()
+
+    if permission != "admin":
+        return render_template("invalid_auth.html")
+    else:
+        return render_template("staff_add_airplane.html")
 
 @app.route("/addAirplane", methods=["POST"])
 def addAirplane():
