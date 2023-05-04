@@ -1,0 +1,63 @@
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+	<style>
+		.error {
+		  color:red; /* Red border color for error */
+          margin-top: 15px;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="p-5 form-signin w-50 m-auto">
+		<h1>Change the flight status</h1>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+
+<form id="myForm" action="/changeFlightStatus" method="POST">
+    <div class="form-group">
+		<label for="flight_num">Flight Number</label>
+		<select class="form-control" name="flight_num" id="flight_num" required>
+			<option selected>Select a flight...</option>
+			{% for flight in flights %}
+				<option value="{{ flight }}">{{ flight }}</option>
+			{% endfor %}
+		</select>
+	</div>
+    <div class="form-group">
+        <label for="departure_status">Set Flight Status</label>
+        <select class="form-control" name="departure_status" required>
+            <option selected>Select flight status...</option>
+            <option>Upcoming</option>
+            <option>In-progress</option>
+            <option>Delayed</option>
+            <option>Cancelled</option>
+            <option>Completed</option>
+        </select>
+    </div>
+	<button type="submit" class="btn btn-primary flex-bottom-right" value = "Update">Update Flight Status</button>
+    <a href="/home" class="btn btn-secondary">Go to Home Page</a>
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<style>
+	.btn-primary {
+		margin-top: 20px;
+	}
+    .btn-secondary {
+		margin-top: 20px;
+	}
+	.form-group{
+		margin-top: 10px;
+	}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+</body>
+</html>

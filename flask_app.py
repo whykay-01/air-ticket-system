@@ -568,6 +568,57 @@ def createFlight():
         return redirect(url_for("home"))
 
 
+@app.route("/staff_change_flight_status")
+def staffChangeFlightStatus():
+    query = "SELECT permission, airline_name FROM airline_staff WHERE username = '{}';"
+    staff_email = session["email"]
+
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    output = cursor.fetchone()
+    permission = output[0]
+    print(permission)
+    airline_name = output[1]
+    cursor.close()
+
+    cursor = mysql.cursor()
+    query = "SELECT flight_num FROM flight WHERE airline_name = '{}';"
+    cursor.execute(query.format(airline_name))
+    flights = [row[0] for row in cursor.fetchall()]
+    cursor.close()
+
+    if permission == "admin" or permission == "operator":
+        return render_template("staff_change_flight_status.html", flights=flights)
+    else:
+        return render_template("invalid_auth.html")
+    
+@app.route("/changeFlightStatus", methods=["POST"])
+def changeFlightStatus():
+    flight_num = request.form["flight_num"]
+    flight_status = request.form["departure_status"]
+
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}';"
+    staff_email = session["email"]
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+    
+    # check if any of the fields is empty
+    if flight_num=="" or flight_status == "Select departure status...":
+        error = "Please fill out all the fields!"
+        flash(error, "error")
+        return redirect(url_for("staffChangeFlightStatus"))
+    
+    update_query = "UPDATE flight SET dep_status = '{}' WHERE flight_num = '{}' AND airline_name = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(update_query.format(flight_status, flight_num, airline_name))
+    mysql.commit()
+    cursor.close()
+
+    flash("Flight status updated successfully!", "success")
+    return redirect(url_for("home"))
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]
