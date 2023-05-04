@@ -724,9 +724,6 @@ def customer_flight_search(error = None):
 
 @app.route("/customer_search", methods=["POST"])
 def customer_search():
-    # if request.form["action"] == "confirmation_page":
-    #     print("ACTIVATED")
-
     cursor = mysql.cursor()
 
     query = "SELECT DISTINCT arrival_airport_name FROM flight"
