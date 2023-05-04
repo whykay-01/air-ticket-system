@@ -488,6 +488,85 @@ def addAirport():
     flash("Airport added successfully!", "success")
     return redirect(url_for("home"))
 
+@app.route("/staff_create_flight")
+def staffCreateFlight():
+    query = "SELECT permission FROM airline_staff WHERE username = '{}';"
+    staff_email = session["email"]
+
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email))
+    permission = cursor.fetchone()[0]
+    cursor.close()
+
+    if permission != "admin":
+        return render_template("invalid_auth.html")
+    else:
+        airline_name_query = "SELECT airline_name FROM airline_staff WHERE username = '{}';"
+        
+        airplane_ids_query = "SELECT id FROM airplane WHERE airline_name = '{}';"
+        airports_query = "SELECT name FROM airport;"
+        
+        cursor = mysql.cursor()
+        cursor.execute(airline_name_query.format(staff_email))
+        airline_name = cursor.fetchone()[0]
+        cursor.close()
+
+        cursor = mysql.cursor()
+        cursor.execute(airplane_ids_query.format(airline_name))
+        airplane_ids = [row[0] for row in cursor.fetchall()]
+        cursor.close()
+
+        cursor = mysql.cursor()
+        cursor.execute(airports_query)
+        airports = [row[0] for row in cursor.fetchall()]
+        cursor.close()
+
+        return render_template("staff_create_flight.html", airplane_ids=airplane_ids, airports=airports)
+    
+@app.route("/createFlight", methods=["POST"])
+def createFlight():
+        airline_name_query = "SELECT airline_name FROM airline_staff WHERE username = '{}';"
+        cursor = mysql.cursor()
+        cursor.execute(airline_name_query.format(session["email"]))
+        airline_name = cursor.fetchone()[0]
+        cursor.close()
+
+        flight_num = request.form["flight_num"]
+        departure_airport = request.form["departure_airport"]
+        departure_time = request.form["departure_time"]
+        arrival_airport = request.form["arrival_airport"]
+        arrival_time = request.form["arrival_time"]
+        price = request.form["price"]
+        airplane_id = request.form["airplane_id"]
+        departure_status = request.form["departure_status"]
+
+        # check if the flight already exists
+        query = "SELECT * FROM flight WHERE flight_num = '{}';"
+        cursor = mysql.cursor()
+        cursor.execute(query.format(flight_num))
+        data = cursor.fetchall()
+        cursor.close()
+
+        if data:
+            error = "Flight with the given flight number already exists!"
+            flash(error, "error")
+            return redirect(url_for("home"))
+        
+        # check if any of the fields is empty
+        if flight_num=="" or departure_airport == "Select an airport..." or departure_time=="" or arrival_airport == "Select an airport..." or arrival_time=="" or price=="" or airplane_id == "Select an airplane ID..." or departure_status == "Select departure status...":
+            error = "Please fill out all the fields!"
+            flash(error, "error")
+            return redirect(url_for("staffCreateFlight"))
+        
+        insert_query = "INSERT INTO flight (flight_num, departure_time, arrival_time, price, airplane_id, airline_name, departure_airport_name, arrival_airport_name, dep_status) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"
+        cursor = mysql.cursor()
+        cursor.execute(insert_query.format(flight_num, departure_time, arrival_time, price, airplane_id, airline_name, departure_airport, arrival_airport, departure_status))
+        mysql.commit()
+        cursor.close()
+
+        flash("Flight added successfully!", "success")
+        return redirect(url_for("home"))
+
 
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
