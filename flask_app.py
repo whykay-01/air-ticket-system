@@ -1,4 +1,3 @@
-from datetime import datetime
 from flask import Flask, flash, render_template, request, url_for, redirect, session
 import mysql.connector
 import os
