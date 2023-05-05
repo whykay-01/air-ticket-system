@@ -1047,13 +1047,13 @@ def customer_spending():
             ax.text(i, v / 2, "${:.2f}".format(v), ha="center", fontsize=12)
 
     # Generate a unique filename using UUID version 1
-    filename = str(uuid.uuid1()) + ".png"
+    filename = "total_customer_spending.png"
 
     # Save the chart as a PNG image in the uploads folder
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     fig.savefig(file_path)
 
-    return render_template("customer_spending.html", filepath=file_path)
+    return render_template("customer_spending.html", filepath="/static/" + filename)
 
 
 @app.route("/logout")
