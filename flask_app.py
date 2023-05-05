@@ -1,7 +1,23 @@
-from flask import Flask, flash, render_template, request, url_for, redirect, session
+from flask import (
+    Flask,
+    flash,
+    render_template,
+    request,
+    url_for,
+    redirect,
+    session,
+    Response,
+)
 import mysql.connector
 import os
 from dotenv import load_dotenv
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import io
+import uuid
 
 
 app = Flask(__name__)
@@ -14,6 +30,9 @@ app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = my_password
 app.config["MYSQL_DB"] = my_database
+
+app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static")
+print("Destination folder: ", app.config["UPLOAD_FOLDER"])
 
 # create MySQL connection object
 mysql = mysql.connector.connect(
@@ -998,16 +1017,43 @@ def customer_purchase():
         return redirect(url_for("home"))
 
 
-# @app.route("/customer_spending")
-# def customer_spending():
-#     email = session["email"]
-#     cursor = mysql.cursor()
-#     query = "SELECT SUM(F.price), YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight as F ON F.flight_num = T.flight_id WHERE customer_email = '{}';"
-#     cursor.execute(query)
-#     total_spending = cursor.fetchone()[0]
-#     cursor.close()
+@app.route("/customer_spending")
+def customer_spending():
+    email = session["email"]
+    cursor = mysql.cursor()
+    query = "SELECT SUM(F.price) as money_spent_per_month, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight as F ON F.flight_num = T.flight_id WHERE P.customer_email = '{}' AND P.purchase_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date);"
 
-#     return render_template("customer_spending.html", total_spending=total_spending)
+    cursor.execute(query.format(email))
+    results = cursor.fetchall()
+    cursor.close()
+
+    total_amounts = []
+    labels = []
+    for result in results:
+        total_amounts.append(result[0])
+        labels.append(f"{result[1]}-{result[2]:02}")
+
+    # Create a vertical bar chart
+    with plt.ion():
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.bar(labels, total_amounts)
+        ax.set_xlabel("Month and Year")
+        ax.set_ylabel("Total Amount")
+        ax.set_title("Total Amount Spent per Month")
+        ax.set_xticklabels(labels, rotation=45)
+
+        # Display the exact value of each bar
+        for i, v in enumerate(total_amounts):
+            ax.text(i, v / 2, "${:.2f}".format(v), ha="center", fontsize=12)
+
+    # Generate a unique filename using UUID version 1
+    filename = str(uuid.uuid1()) + ".png"
+
+    # Save the chart as a PNG image in the uploads folder
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    fig.savefig(file_path)
+
+    return render_template("customer_spending.html", filepath=file_path)
 
 
 @app.route("/logout")
