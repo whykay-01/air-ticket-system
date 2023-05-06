@@ -132,7 +132,9 @@ CREATE TABLE
 CREATE TABLE
     commission_per_agent (
         booking_agent_email varchar(255) NOT NULL,
-        commission decimal(10, 2) NULL,
+        ticket_id int NOT NULL,
+        commission decimal(10, 2) DEFAULT 0,
         PRIMARY KEY (booking_agent_email),
-        FOREIGN KEY (booking_agent_email) REFERENCES booking_agent (email)
+        FOREIGN KEY (booking_agent_email) REFERENCES booking_agent (email),
+        FOREIGN KEY (ticket_id) REFERENCES ticket (id)
     );
