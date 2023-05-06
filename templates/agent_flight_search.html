@@ -103,7 +103,7 @@
                       <td>{{line[7]}}</td>
                       {% if line[7] > 0 %}
                       <td>
-                        <form id="flight_info" action="/confirmation_page" method="POST">
+                        <form id="flight_info" action="/agent_confirmation_page" method="POST">
                           <input type="hidden" name="flight_num" value="{{line[0]}}">
                           <input type="hidden" name="airline" value="{{line[1]}}">
                           <input type="hidden" name="departure_airport" value="{{line[2]}}">

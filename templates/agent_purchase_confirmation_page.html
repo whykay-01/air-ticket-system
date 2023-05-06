@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flight Order Confirmation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container my-5">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title mb-4">Please Confirm Your Order</h1>
+          <p class="card-text">Please enter your customer's email details below.</p>
+          <form action="/agent_purchase" method="POST">
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>Flight Information:</label>
+              <div class="form-row">
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ flight_num }}" name="flight_num">
+                  <small class="form-text text-muted">Flight Number</small>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ airline_name }}" name="airline_name">
+                  <small class="form-text text-muted">Airline Name</small>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ departure_time }}" name="departure_time">
+                  <small class="form-text text-muted">Departure Time</small>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ arrival_time }}" name="arrival_time">
+                  <small class="form-text text-muted">Arrival Time</small>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Flight Details:</label>
+              <div class="form-row">
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ departure_airport }}" name="departure_airport">
+                  <small class="form-text text-muted">Departure Airport</small>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ arrival_airport }}" name="arrival_airport">
+                  <small class="form-text text-muted">Arrival Airport</small>
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" value="{{ price }}" name="price">
+                  <small class="form-text text-muted">Price</small>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success">Confirm and Purchase</button>
+              <a href="/agent_flight_search" class="btn btn-secondary">Back to Search</a>
+            </div>
+          </form>          
+        </div>
+      </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

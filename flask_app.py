@@ -1002,8 +1002,7 @@ def agent_search():
                 query = (
                     "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE "
                     + attributes[i]
-                    # TODO: think whether we need "Delayed Status here"
-                    + " AND dep_status = 'Upcoming' OR dep_status = 'Delayed'"
+                    + " AND dep_status = 'Upcoming'"
                 )
             else:
                 query = query + " AND " + attributes[i]
@@ -1079,6 +1078,112 @@ def agent_search():
         arrival_airport=arrival_airports,
         table_content=available_flights,
     )
+
+
+@app.route("/agent_confirmation_page", methods=["GET", "POST"])
+def agent_confirmation_page():
+    flight_num = request.form["flight_num"]
+    airline_name = request.form["airline"]
+    departure_time = request.form["departure_time"]
+
+    arrival_time = request.form["arrival_time"]
+    departure_airport = request.form["departure_airport"]
+    arrival_airport = request.form["arrival_airport"]
+
+    price_query = "SELECT price FROM flight WHERE flight_num = '{}' AND airline_name = '{}' AND departure_time = '{}';".format(
+        flight_num, airline_name, departure_time
+    )
+    cursor = mysql.cursor()
+    cursor.execute(price_query)
+    price = cursor.fetchone()[0]
+    cursor.close()
+
+    return render_template(
+        "agent_purchase_confirmation_page.html",
+        flight_num=flight_num,
+        airline_name=airline_name,
+        departure_time=departure_time,
+        arrival_time=arrival_time,
+        departure_airport=departure_airport,
+        arrival_airport=arrival_airport,
+        price=price,
+    )
+
+
+@app.route("/agent_purchase", methods=["POST"])
+def agent_purchase():
+    """
+    for the simplicity purposes we'll have 10% fixed commission rate for all the agents
+    """
+    email = request.form["email"]
+
+    # check if the customer exists
+    query = "SELECT COUNT(*) FROM customer WHERE email = '{}';".format(email)
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    count = cursor.fetchone()[0]
+    cursor.close()
+
+    # in case the customer doesn't exist
+    if count == 0:
+        return agent_flight_search(
+            error="The customer with the given email doesn't exist, try another one!"
+        )
+
+    booking_agent = session["email"]
+    flight_num = request.form["flight_num"]
+    airline_name = request.form["airline_name"]
+
+    query = "SELECT COUNT(*) FROM ticket WHERE customer_email = '{}' AND flight_id = '{}' AND airline_name = '{}';".format(
+        email, flight_num, airline_name
+    )
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    count = cursor.fetchone()[0]
+    cursor.close()
+
+    # in case the user has already purchased that flight
+    if count != 0:
+        return agent_flight_search(
+            error="This flight for the given customer already exists, try another one!"
+        )
+
+    else:
+        # update ticket, purchases, ticket_by_booking_agents, commission_per_agent
+        cursor = mysql.cursor()
+        query = "INSERT INTO ticket (customer_email, airline_name, flight_id) VALUES ('{}', '{}', '{}');".format(
+            email, airline_name, flight_num
+        )
+        cursor.execute(query)
+
+        query = "SELECT id FROM ticket WHERE customer_email = '{}' AND airline_name = '{}' AND flight_id = '{}';".format(
+            email, airline_name, flight_num
+        )
+        cursor.execute(query)
+        ticket_id = cursor.fetchone()[0]
+
+        query = "INSERT INTO purchases (ticket_id, customer_email, booking_agent_id, purchase_date) VALUES ('{}', '{}', '{}', CURDATE());".format(
+            ticket_id, email, booking_agent
+        )
+        cursor.execute(query)
+
+        commission = 0.1 * float(request.form["price"])
+        insert_query = "INSERT INTO commission_per_agent (booking_agent_email, ticket_id, commission) VALUES ('{}', '{}', '{}');".format(
+            booking_agent, ticket_id, commission
+        )
+        cursor.execute(insert_query)
+
+        insert_query = "INSERT INTO tickets_by_booking_agent (booking_agent_email, ticket_id) VALUES ('{}', '{}');".format(
+            booking_agent, ticket_id
+        )
+        cursor.execute(insert_query)
+        # we commit once all of the insert operations are succesful
+        mysql.commit()
+        cursor.close()
+
+        # display the confirmation message, and redirect to the home page
+        flash("You have successfully purchased the flight!", "success")
+        return redirect(url_for("home"))
 
 
 @app.route("/confirmation_page", methods=["GET", "POST"])
