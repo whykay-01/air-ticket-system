@@ -10,12 +10,12 @@
       <h3 class="text-center my-3">View My Commission</h3>
       <p>Details about your commission for the past 30 days:</p>
       <ul class="list-group mb-4">
-        <li class="list-group-item">Total amount of commission received: {{commission_total}}</li>
-        <li class="list-group-item">Average commission per ticket booked: {{commission_average}}</li>
-        <li class="list-group-item">Total number of tickets sold: {{tickets_sold}}</li>
+        <li class="list-group-item">Total amount of commission received: <strong>${{commission_total}}</strong></li>
+        <li class="list-group-item">Average commission per ticket booked: <strong>${{commission_average}}</strong></li>
+        <li class="list-group-item">Total number of tickets sold: <strong>{{tickets_sold}} tickets</strong></li>
       </ul>
       <p class="mb-4">If you want to view commission details for a specific date range, please select the start and end dates above and click on the View button.</p>
-      <form class="form-inline" action="/agent_criteria_search" method="POST">
+      <form class="form-inline" action="/agent_view_customized_commission" method="POST">
         <div class="form-group mr-2">
           <label for="start-date" class="mr-2">Start Date:</label>
           <input type="date" class="form-control" name="start-date">
@@ -29,10 +29,11 @@
         <button type="submit" class="btn btn-primary">View</button>
       </form>
       <br>
-      <h4 class="text-center mb-3">Commission Details</h4>
-      <ul class="list-group">
-        <li class="list-group-item">Total amount of commission received for the given period: [INSERT AMOUNT HERE]</li>
-        <li class="list-group-item">Total number of tickets sold for the given period: [INSERT NUMBER HERE]</li>
+      <h4 class="text-center mb-3">Commission Details Between {{start}} and {{end}}</h4>
+      <ul class="list-group mb-4">
+        <li class="list-group-item">Total amount of commission received: <strong>${{commission_total_1}}</strong></li>
+        <li class="list-group-item">Average commission per ticket booked: <strong>${{commission_average_1}}</strong></li>
+        <li class="list-group-item">Total number of tickets sold: <strong>{{tickets_sold_1}} tickets</strong></li>
       </ul>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>

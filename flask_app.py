@@ -1301,7 +1301,121 @@ def agent_criteria_search():
 
 @app.route("/agent_view_commission")
 def agent_view_commission():
-    return render_template("agent_view_commission.html")
+    query = "SELECT SUM(cpa.commission) FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    commission_total = cursor.fetchone()[0]
+    cursor.close()
+
+    if not commission_total:
+        commission_total = 0
+
+    query = "SELECT SUM(cpa.commission)/COUNT(DISTINCT p.ticket_id) as avg_commission_per_ticket FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    avg_commission_per_ticket = cursor.fetchone()[0]
+    cursor.close()
+
+    if not avg_commission_per_ticket:
+        avg_commission_per_ticket = 0
+
+    avg_commission_per_ticket = round(avg_commission_per_ticket, 2)
+
+    query = "SELECT COUNT(DISTINCT p.ticket_id) FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    num_tickets_sold = cursor.fetchone()[0]
+    cursor.close()
+
+    if not num_tickets_sold:
+        num_tickets_sold = 0
+
+    return render_template(
+        "agent_view_commission.html",
+        commission_total=commission_total,
+        commission_average=avg_commission_per_ticket,
+        tickets_sold=num_tickets_sold,
+    )
+
+
+@app.route("/agent_view_customized_commission", methods=["POST"])
+def agent_view_customized_commission():
+    start_date = request.form["start-date"]
+    end_date = request.form["end-date"]
+
+    if start_date == "" or end_date == "":
+        flash("Please specify two dates for the range search!", "error")
+        return redirect(url_for("agent_view_commission"))
+
+    query = "SELECT SUM(cpa.commission) FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= '{}' AND p.purchase_date <= '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"], start_date, end_date))
+    commission_total_1 = cursor.fetchone()[0]
+    cursor.close()
+
+    if not commission_total_1:
+        commission_total_1 = 0
+
+    query = "SELECT SUM(cpa.commission)/COUNT(DISTINCT p.ticket_id) as avg_commission_per_ticket FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= '{}' AND p.purchase_date <= '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"], start_date, end_date))
+    avg_commission_per_ticket_1 = cursor.fetchone()[0]
+    cursor.close()
+
+    if not avg_commission_per_ticket_1:
+        avg_commission_per_ticket_1 = 0
+
+    avg_commission_per_ticket_1 = round(avg_commission_per_ticket_1, 2)
+
+    query = "SELECT COUNT(DISTINCT p.ticket_id) FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= '{}' AND p.purchase_date <= '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"], start_date, end_date))
+    num_tickets_sold_1 = cursor.fetchone()[0]
+    cursor.close()
+
+    if not num_tickets_sold_1:
+        num_tickets_sold_1 = 0
+
+    query = "SELECT SUM(cpa.commission) FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    commission_total = cursor.fetchone()[0]
+    cursor.close()
+
+    if not commission_total:
+        commission_total = 0
+
+    query = "SELECT SUM(cpa.commission)/COUNT(DISTINCT p.ticket_id) as avg_commission_per_ticket FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    avg_commission_per_ticket = cursor.fetchone()[0]
+    cursor.close()
+
+    if not avg_commission_per_ticket:
+        avg_commission_per_ticket = 0
+
+    avg_commission_per_ticket = round(avg_commission_per_ticket, 2)
+
+    query = "SELECT COUNT(DISTINCT p.ticket_id) FROM purchases p JOIN ticket t on t.id = p.ticket_id JOIN commission_per_agent cpa on (t.id = cpa.ticket_id AND cpa.booking_agent_email = p.booking_agent_id) WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    num_tickets_sold = cursor.fetchone()[0]
+    cursor.close()
+
+    if not num_tickets_sold:
+        num_tickets_sold = 0
+
+    return render_template(
+        "agent_view_commission.html",
+        commission_total=commission_total,
+        commission_average=avg_commission_per_ticket,
+        tickets_sold=num_tickets_sold,
+        commission_total_1=commission_total_1,
+        commission_average_1=avg_commission_per_ticket_1,
+        tickets_sold_1=num_tickets_sold_1,
+        start=start_date,
+        end=end_date,
+    )
 
 
 @app.route("/confirmation_page", methods=["GET", "POST"])
