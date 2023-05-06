@@ -1017,13 +1017,30 @@ def customer_purchase():
         return redirect(url_for("home"))
 
 
-@app.route("/customer_spending")
-def customer_spending():
+@app.route("/customer_customized_spending", methods=["POST"])
+def customer_customized_spending():
     email = session["email"]
-    cursor = mysql.cursor()
-    query = "SELECT SUM(F.price) as money_spent_per_month, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight as F ON F.flight_num = T.flight_id WHERE P.customer_email = '{}' AND P.purchase_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date);"
+    start_date = request.form["start-date"]
+    end_date = request.form["end-date"]
 
-    cursor.execute(query.format(email))
+    if start_date == "" or end_date == "":
+        error = "Specify the range! Results below are default results."
+        flash(error, "error")
+        return customer_spending()
+
+    if start_date == "" and end_date != "":
+        error = "Specify a start date! Results below are default results."
+        flash(error, "error")
+        return customer_spending()
+
+    if start_date != "" and end_date == "":
+        error = "Specify an end date! Results below are default results."
+        flash(error, "error")
+        return customer_spending()
+
+    cursor = mysql.cursor()
+    query = "SELECT SUM(F.price) as money_spent_per_month, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight as F ON F.flight_num = T.flight_id WHERE P.customer_email = '{}' AND P.purchase_date BETWEEN '{}' AND '{}' GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date);"
+    cursor.execute(query.format(email, start_date, end_date))
     results = cursor.fetchall()
     cursor.close()
 
@@ -1046,10 +1063,45 @@ def customer_spending():
         for i, v in enumerate(total_amounts):
             ax.text(i, v / 2, "${:.2f}".format(v), ha="center", fontsize=12)
 
-    # Generate a unique filename using UUID version 1
     filename = "total_customer_spending.png"
 
-    # Save the chart as a PNG image in the uploads folder
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    fig.savefig(file_path)
+    flash("Your customized spending chart has been generated!", "success")
+    return render_template("customer_spending.html", filepath="/static/" + filename)
+
+
+@app.route("/customer_spending")
+def customer_spending():
+    email = session["email"]
+    cursor = mysql.cursor()
+    default_query = "SELECT SUM(F.price) as money_spent_per_month, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight as F ON F.flight_num = T.flight_id WHERE P.customer_email = '{}' AND P.purchase_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date);"
+
+    cursor.execute(default_query.format(email))
+    results = cursor.fetchall()
+    cursor.close()
+
+    total_amounts = []
+    labels = []
+    for result in results:
+        total_amounts.append(result[0])
+        labels.append(f"{result[1]}-{result[2]:02}")
+
+    # Create a vertical bar chart
+    with plt.ion():
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.bar(labels, total_amounts)
+        ax.set_xlabel("Month and Year")
+        ax.set_ylabel("Total Amount")
+        ax.set_title("Total Amount Spent per Month")
+        ax.set_xticklabels(labels, rotation=45)
+
+        # Display the exact value of each bar
+        for i, v in enumerate(total_amounts):
+            ax.text(i, v / 2, "${:.2f}".format(v), ha="center", fontsize=12)
+
+    filename = "total_customer_spending.png"
+
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     fig.savefig(file_path)
 

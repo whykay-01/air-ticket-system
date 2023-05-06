@@ -18,7 +18,21 @@
 <body>
     <div class="container my-5">
         <h3>Specify the date range:</h3>
-        <form class="form-inline" action="/staff_flight_search" method="POST">
+        {% with message = get_flashed_messages(category_filter=["success"]) %}
+				{% if message %}
+				<div class="alert alert-success">
+  					{{message[0]}}
+				</div>
+				{% endif %}
+		{% endwith %}
+		{% with message = get_flashed_messages(category_filter=["error"]) %}
+			{% if message %}
+				<div class="alert alert-danger">
+					{{message[0]}}
+				</div>
+			{% endif %}
+		{% endwith %}
+        <form class="form-inline" action="/customer_customized_spending" method="POST">
             <br>
             <div class="form-group mr-2">
                 <label for="start-date" class="mr-2">Start Date:</label>
