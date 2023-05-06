@@ -128,3 +128,11 @@ CREATE TABLE
         FOREIGN KEY (username) REFERENCES airline_staff (username),
         FOREIGN KEY (permission_type) REFERENCES permission (type)
     );
+
+CREATE TABLE
+    commission_per_agent (
+        booking_agent_email varchar(255) NOT NULL,
+        commission decimal(10, 2) NULL,
+        PRIMARY KEY (booking_agent_email),
+        FOREIGN KEY (booking_agent_email) REFERENCES booking_agent (email)
+    );
