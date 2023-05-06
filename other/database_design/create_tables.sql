@@ -104,7 +104,7 @@ CREATE TABLE
     purchases (
         ticket_id int NOT NULL,
         customer_email varchar(255) NOT NULL,
-        booking_agent_id int DEFAULT NULL,
+        booking_agent_id varchar(255) DEFAULT NULL,
         purchase_date date NOT NULL,
         PRIMARY KEY (ticket_id, customer_email),
         FOREIGN KEY (ticket_id) REFERENCES ticket (id),
@@ -134,7 +134,7 @@ CREATE TABLE
         booking_agent_email varchar(255) NOT NULL,
         ticket_id int NOT NULL,
         commission decimal(10, 2) DEFAULT 0,
-        PRIMARY KEY (booking_agent_email),
+        PRIMARY KEY (booking_agent_email, ticket_id),
         FOREIGN KEY (booking_agent_email) REFERENCES booking_agent (email),
         FOREIGN KEY (ticket_id) REFERENCES ticket (id)
     );
