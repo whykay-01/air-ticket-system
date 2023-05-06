@@ -305,7 +305,34 @@ def home():
         )
 
     else:
-        return render_template("home.html", user_type=user_type, email=email)
+        query = "SELECT airline_name FROM booking_agent_work_for WHERE email = '{}';"
+        cursor = mysql.cursor()
+        cursor.execute(query.format(email))
+        output = cursor.fetchone()
+        airline_name = output[0]
+
+        query = "SELECT F.airline_name, F.flight_num, F.departure_airport_name, F.departure_time, F.arrival_airport_name, F.arrival_time, F.dep_status, T.customer_email FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}' AND F.dep_status = 'Upcoming';"
+        cursor.execute(query.format(airline_name, email))
+        table_data = cursor.fetchall()
+
+        query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
+        cursor.execute(query.format(airline_name, email))
+        departure_airports = cursor.fetchall()
+
+        query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
+        cursor.execute(query.format(airline_name, email))
+        arrival_airports = cursor.fetchall()
+
+        cursor.close()
+        return render_template(
+            "home.html",
+            user_type=user_type,
+            email=email,
+            upcoming_flights=table_data,
+            airline_name=airline_name,
+            departure_airports=departure_airports,
+            arrival_airports=arrival_airports,
+        )
 
 
 @app.route("/staff_flight_search", methods=["POST"])
@@ -1184,6 +1211,98 @@ def agent_purchase():
         # display the confirmation message, and redirect to the home page
         flash("You have successfully purchased the flight!", "success")
         return redirect(url_for("home"))
+
+
+@app.route("/agent_criteria_search", methods=["GET", "POST"])
+def agent_criteria_search():
+    email = session["email"]
+    user_type = session["user_type"]
+
+    airline_name_query = (
+        "SELECT airline_name FROM booking_agent_work_for WHERE email = '{}'".format(
+            email
+        )
+    )
+    cursor = mysql.cursor()
+    cursor.execute(airline_name_query)
+    airline_name = cursor.fetchone()[0]
+
+    query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
+    cursor.execute(query.format(airline_name, email))
+    departure_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
+    cursor.execute(query.format(airline_name, email))
+    arrival_airports = cursor.fetchall()
+
+    departure_airport = request.form["departure_airport"]
+    arrival_airport = request.form["arrival_airport"]
+    start_time = request.form["start-date"]
+    end_time = request.form["end-date"]
+    customer_email = request.form["customer_email"]
+
+    cursor.close()
+    cursor = mysql.cursor()
+
+    departure_airport_f = bool(departure_airport == "all")
+    arrival_airport_f = bool(arrival_airport == "all")
+    start_date_f = bool(start_time == "")
+    end_date_f = bool(end_time == "")
+
+    # if start_date_f or end_date_f:
+    #     flash("Please specify two dates for the range search!", "error")
+    #     return redirect(url_for("home"))
+
+    attributes = []
+    if not departure_airport_f:
+        attributes.append('departure_airport_name = "{}"'.format(departure_airport))
+    if not arrival_airport_f:
+        attributes.append('arrival_airport_name = "{}"'.format(arrival_airport))
+    if not (start_date_f or end_date_f):
+        attributes.append(
+            "DATE(departure_time) BETWEEN '{}' AND '{}'".format(start_time, end_time)
+        )
+
+    attributes.append('F.airline_name = "{}"'.format(airline_name))
+    attributes.append('P.booking_agent_id = "{}"'.format(email))
+    attributes.append('T.customer_email = "{}"'.format(customer_email))
+
+    # concatenate all the attributes and produce a query
+
+    for i in range(len(attributes)):
+        if i == 0:
+            query = (
+                "SELECT F.airline_name, F.flight_num, F.departure_airport_name, F.departure_time, F.arrival_airport_name, F.arrival_time, F.dep_status, T.customer_email FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE "
+                + attributes[i]
+                + " AND F.dep_status = 'Upcoming'"
+            )
+        else:
+            query = query + " AND " + attributes[i]
+
+    cursor.execute(query.format(airline_name, email))
+    table_data = cursor.fetchall()
+    cursor.close()
+
+    if len(table_data) == 0:
+        flash("No flights found for the given criteria. Try again!", "error")
+        return redirect(url_for("home"))
+
+    cursor = mysql.cursor()
+
+    return render_template(
+        "home.html",
+        user_type=user_type,
+        email=email,
+        upcoming_flights=table_data,
+        airline_name=airline_name,
+        departure_airports=departure_airports,
+        arrival_airports=arrival_airports,
+    )
+
+
+@app.route("/agent_view_commission")
+def agent_view_commission():
+    return render_template("agent_view_commission.html")
 
 
 @app.route("/confirmation_page", methods=["GET", "POST"])
