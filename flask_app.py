@@ -174,35 +174,6 @@ def loginAuth():
         return render_template("login.html", error=error)
 
 
-# Authenticates the register
-@app.route("/registerAuth", methods=["GET", "POST"])
-def registerAuth():
-    # grabs information from the forms
-    username = request.form["username"]
-    password = request.form["password"]
-
-    # cursor used to send queries
-    cursor = mysql.cursor()
-    # executes query
-    query = "SELECT * FROM test_register WHERE username = '{}'"
-    cursor.execute(query.format(username))
-    # stores the results in a variable
-    data = cursor.fetchone()
-    # use fetchall() if you are expecting more than 1 data row
-    error = None
-    if data:
-        # If the previous query returns data, then user exists
-        error = "This user already exists"
-        return render_template("register.html", error=error)
-    else:
-        # encrypting the password
-        ins = "INSERT INTO test_register VALUES('{}', MD5('{}'))"
-        cursor.execute(ins.format(username, password))
-        mysql.commit()  # commit the newly registered entry to the table
-        cursor.close()
-        return render_template("index.html")
-
-
 @app.route("/registerCustomer", methods=["GET", "POST"])
 def registerCustomer():
     # grabs information from the forms
@@ -931,6 +902,178 @@ def customer_search():
 
     return render_template(
         "customer_flight_search.html",
+        flights=all_flights,
+        departure_airport=departure_airports,
+        arrival_airport=arrival_airports,
+        table_content=available_flights,
+    )
+
+
+@app.route("/agent_flight_search")
+def agent_flight_search(error=None):
+    cursor = mysql.cursor()
+
+    query = "SELECT DISTINCT arrival_airport_name FROM flight"
+    cursor.execute(query)
+    arrival_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT departure_airport_name FROM flight"
+    cursor.execute(query)
+    departure_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT flight_num FROM flight"
+    cursor.execute(query)
+    flights = cursor.fetchall()
+
+    cursor.close()
+    return render_template(
+        "agent_flight_search.html",
+        flights=flights,
+        departure_airport=departure_airports,
+        arrival_airport=arrival_airports,
+        error=error,
+    )
+
+
+@app.route("/agent_search", methods=["POST"])
+def agent_search():
+    agent_email = session["email"]
+    airline_name_query = (
+        "SELECT airline_name FROM booking_agent_work_for WHERE email = '{}'".format(
+            agent_email
+        )
+    )
+    cursor = mysql.cursor()
+    cursor.execute(airline_name_query)
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    cursor = mysql.cursor()
+
+    query = "SELECT DISTINCT arrival_airport_name FROM flight WHERE airline_name = '{}'".format(
+        airline_name
+    )
+    cursor.execute(query)
+    arrival_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT departure_airport_name FROM flight WHERE airline_name = '{}'".format(
+        airline_name
+    )
+    cursor.execute(query)
+    departure_airports = cursor.fetchall()
+
+    query = "SELECT DISTINCT flight_num FROM flight WHERE airline_name = '{}'".format(
+        airline_name
+    )
+    cursor.execute(query)
+    all_flights = cursor.fetchall()
+
+    cursor.close()
+
+    # requesting searching parameters
+    selected_flight = request.form["flights"]
+    departure_airport = request.form["departure_airport"]
+    arrival_airport = request.form["arrival_airport"]
+    flight_date = request.form["flight_date"]
+
+    cursor = mysql.cursor()
+
+    flight_num_f = bool(selected_flight == "all")
+    departure_airport_f = bool(departure_airport == "all")
+    arrival_airport_f = bool(arrival_airport == "all")
+    flight_date_f = bool(flight_date == "")
+
+    attributes = []
+    if not departure_airport_f:
+        attributes.append('departure_airport_name = "{}"'.format(departure_airport))
+    if not arrival_airport_f:
+        attributes.append('arrival_airport_name = "{}"'.format(arrival_airport))
+    if not flight_date_f:
+        attributes.append('DATE(departure_time) = "{}"'.format(flight_date))
+    if not flight_num_f:
+        attributes.append('flight_num = "{}"'.format(selected_flight))
+
+    attributes.append('airline_name = "{}"'.format(airline_name))
+
+    # concatenate all the attributes and produce a query
+    if len(attributes) > 0:
+        for i in range(len(attributes)):
+            if i == 0:
+                query = (
+                    "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE "
+                    + attributes[i]
+                    # TODO: think whether we need "Delayed Status here"
+                    + " AND dep_status = 'Upcoming' OR dep_status = 'Delayed'"
+                )
+            else:
+                query = query + " AND " + attributes[i]
+        query = query + " ORDER BY departure_time ASC;"
+    else:
+        return render_template(
+            "agent_flight_search.html",
+            flights=all_flights,
+            departure_airport=departure_airports,
+            arrival_airport=arrival_airports,
+            error="At least one search parameter should be specified!",
+        )
+
+    cursor.execute(query)
+    available_flights = cursor.fetchall()
+    cursor.close()
+
+    if len(available_flights) == 0:
+        return render_template(
+            "agent_flight_search.html",
+            flights=all_flights,
+            departure_airport=departure_airports,
+            arrival_airport=arrival_airports,
+            error="No flights found for the given criteria. Try again!",
+        )
+
+    cursor = mysql.cursor()
+    available_seats = []
+
+    for flight in available_flights:
+        flight_num = flight[0]
+        airline = flight[1]
+
+        airplane_id_query = "SELECT airplane_id FROM flight WHERE airline_name = '{}' AND flight_num = '{}'".format(
+            airline, flight_num
+        )
+        cursor.execute(airplane_id_query)
+        airplane_id = cursor.fetchone()[0]
+
+        total_query = (
+            "SELECT seats FROM airplane WHERE airline_name = '{}' AND id = '{}'".format(
+                airline, airplane_id
+            )
+        )
+        cursor.execute(total_query)
+        # find how many seats in total for that flight
+        total = cursor.fetchone()[0]
+
+        sold_query = "SELECT COUNT(*) FROM ticket WHERE airline_name = '{}' AND  flight_id = '{}'".format(
+            airline, flight_num
+        )
+        cursor.execute(sold_query)
+        sold = int(
+            cursor.fetchone()[0]
+        )  # find how many tickets have been sold for that flight
+        available = int(total) - sold
+        available_seats.append(available)  # record the available seats for this flight
+
+    for i in range(
+        len(available_flights)
+    ):  # append the available seats to the available flights
+        original = list(available_flights[i])
+        original.append(available_seats[i])
+        new = tuple(original)
+        available_flights[i] = new
+
+    cursor.close()
+
+    return render_template(
+        "agent_flight_search.html",
         flights=all_flights,
         departure_airport=departure_airports,
         arrival_airport=arrival_airports,
