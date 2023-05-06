@@ -1248,6 +1248,7 @@ def agent_criteria_search():
     arrival_airport_f = bool(arrival_airport == "all")
     start_date_f = bool(start_time == "")
     end_date_f = bool(end_time == "")
+    customer_email_f = bool(customer_email == "")
 
     # if start_date_f or end_date_f:
     #     flash("Please specify two dates for the range search!", "error")
@@ -1262,13 +1263,13 @@ def agent_criteria_search():
         attributes.append(
             "DATE(departure_time) BETWEEN '{}' AND '{}'".format(start_time, end_time)
         )
+    if not (customer_email_f):
+        attributes.append('T.customer_email = "{}"'.format(customer_email))
 
     attributes.append('F.airline_name = "{}"'.format(airline_name))
     attributes.append('P.booking_agent_id = "{}"'.format(email))
-    attributes.append('T.customer_email = "{}"'.format(customer_email))
 
     # concatenate all the attributes and produce a query
-
     for i in range(len(attributes)):
         if i == 0:
             query = (
@@ -1286,8 +1287,6 @@ def agent_criteria_search():
     if len(table_data) == 0:
         flash("No flights found for the given criteria. Try again!", "error")
         return redirect(url_for("home"))
-
-    cursor = mysql.cursor()
 
     return render_template(
         "home.html",
