@@ -21,19 +21,19 @@
               <label>Flight Information:</label>
               <div class="form-row">
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ flight_num }}" name="flight_num">
+                  <input type="text" class="form-control" value="{{ flight_num }}" name="flight_num" readonly>
                   <small class="form-text text-muted">Flight Number</small>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ airline_name }}" name="airline_name">
+                  <input type="text" class="form-control" value="{{ airline_name }}" name="airline_name" readonly>
                   <small class="form-text text-muted">Airline Name</small>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ departure_time }}" name="departure_time">
+                  <input type="text" class="form-control" value="{{ departure_time }}" name="departure_time" readonly>
                   <small class="form-text text-muted">Departure Time</small>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ arrival_time }}" name="arrival_time">
+                  <input type="text" class="form-control" value="{{ arrival_time }}" name="arrival_time" readonly>
                   <small class="form-text text-muted">Arrival Time</small>
                 </div>
               </div>
@@ -42,19 +42,19 @@
               <label>Flight Details:</label>
               <div class="form-row">
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ departure_airport }}" name="departure_airport">
+                  <input type="text" class="form-control" value="{{ departure_airport }}" name="departure_airport" readonly>
                   <small class="form-text text-muted">Departure Airport</small>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ arrival_airport }}" name="arrival_airport">
+                  <input type="text" class="form-control" value="{{ arrival_airport }}" name="arrival_airport" readonly>
                   <small class="form-text text-muted">Arrival Airport</small>
                 </div>
                 <div class="col">
-                  <input type="text" class="form-control" value="{{ price }}" name="price">
+                  <input type="text" class="form-control" value="{{ price }}" name="price" readonly>
                   <small class="form-text text-muted">Price</small>
                 </div>
               </div>
-            </div>
+            </div>            
             <div class="form-group">
               <button type="submit" class="btn btn-success">Confirm and Purchase</button>
               <a href="/agent_flight_search" class="btn btn-secondary">Back to Search</a>
