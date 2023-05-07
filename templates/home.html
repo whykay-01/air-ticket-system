@@ -207,19 +207,19 @@
 			<div class="col-md-4">
 				<h4>Reports and Analytics</h4>
 				<div class="list-group">
-					<a href="/home/staff_view_agent" class="list-group-item list-group-item-action">View booking agents</a>
-					<a href="/home/staff_view_freq_customer" class="list-group-item list-group-item-action">View frequent customers</a>
-					<a href="/home/staff_view_report" class="list-group-item list-group-item-action">View reports</a>
-					<a href="/home/staff_revenue_comparison" class="list-group-item list-group-item-action">Comparison of revenue earned</a>
-					<a href="/home/staff_top_destination" class="list-group-item list-group-item-action">View top destinations</a>
+					<a href="/staff_view_agents" class="list-group-item list-group-item-action">View booking agents</a>
+					<a href="/staff_view_customers" class="list-group-item list-group-item-action">View frequent customers</a>
+					<a href="/staff_view_reports" class="list-group-item list-group-item-action">View reports</a>
+					<a href="/staff_revenue_report" class="list-group-item list-group-item-action">Comparison of revenue earned</a>
+					<a href="/staff_top_destinations" class="list-group-item list-group-item-action">View top destinations</a>
 				</div>
 			</div>
 			{% if permission == "admin" %}
 			<div class="col-md-4">
 				<h4>System Management</h4>
 				<div class="list-group">
-					<a href="/" class="list-group-item list-group-item-action">Grant New Permissions</a>
-					<a href="/" class="list-group-item list-group-item-action">Add New Booking Agents</a>
+					<a href="/staff_grant_permissions" class="list-group-item list-group-item-action">Grant New Permissions</a>
+					<a href="/staff_add_agents" class="list-group-item list-group-item-action">Add New Booking Agents</a>
 				</div>
 			</div>
 			{% endif %}
