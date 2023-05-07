@@ -161,7 +161,7 @@
 
 	{% if user_type == "Airline Staff" %}
 	<div class="container">
-		<h2 class="my-5">Airline Staff View Page: welcome, {{email}}!</h2>
+		<h3 class="my-5">Airline Staff View Page: welcome, {{email}}!</h3>
 		{% with message = get_flashed_messages(category_filter=["success"]) %}
 				{% if message %}
 				<div class="alert alert-success">
@@ -191,21 +191,21 @@
 		<br>
 		<div class="row">
 			<div class="col-md-4">
-				<h3>Flights</h3>
+				<h4>Flights</h4>
 				<div class="list-group">
 					<a href="/staff_create_flight" class="list-group-item list-group-item-action">Create a new flight</a>
 					<a href="/staff_change_flight_status" class="list-group-item list-group-item-action">Change flight status</a>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<h3>Airplanes and Airports</h3>
+				<h4>Airplanes and Airports</h4>
 				<div class="list-group">
 					<a href="/staff_add_airplane" class="list-group-item list-group-item-action">Add an airplane</a>
 					<a href="/staff_add_airport" class="list-group-item list-group-item-action">Add an airport</a>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<h3>Reports and Analytics</h3>
+				<h4>Reports and Analytics</h4>
 				<div class="list-group">
 					<a href="/home/staff_view_agent" class="list-group-item list-group-item-action">View booking agents</a>
 					<a href="/home/staff_view_freq_customer" class="list-group-item list-group-item-action">View frequent customers</a>
@@ -214,9 +214,18 @@
 					<a href="/home/staff_top_destination" class="list-group-item list-group-item-action">View top destinations</a>
 				</div>
 			</div>
+			{% if permission == "admin" %}
+			<div class="col-md-4">
+				<h4>System Management</h4>
+				<div class="list-group">
+					<a href="/" class="list-group-item list-group-item-action">Grant New Permissions</a>
+					<a href="/" class="list-group-item list-group-item-action">Add New Booking Agents</a>
+				</div>
+			</div>
+			{% endif %}
 		</div>
 		<br>
-		<h3>{{airline_name}}'s flights:</h3>
+		<h4>{{airline_name}}'s flights:</h4>
 		
 		<div class="container">
 			<form class="form-inline" action="/staff_flight_search" method="POST">
