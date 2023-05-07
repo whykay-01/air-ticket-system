@@ -1136,10 +1136,31 @@ def requestCustomerFlights():
     name = cursor.fetchone()[0]
     cursor.close()
 
+    # find the most frequent customer
+    query = "SELECT c.name, COUNT(p.ticket_id) as trips, SUM(f.price), c.email FROM purchases p JOIN customer c ON p.customer_email = c.email JOIN ticket t ON t.id = p.ticket_id JOIN flight f ON (f.flight_num = t.flight_id AND f.airline_name = t.airline_name) WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) GROUP BY (c.email) ORDER BY trips DESC LIMIT 1;"
+    cursor = mysql.cursor()
+    cursor.execute(query)
+    most_frequent_customer = cursor.fetchone()
+    cursor.close()
+
+    if not most_frequent_customer:
+        error = "Not enough data"
+        flash(error, "error")
+        return redirect(url_for("staff_view_customers"))
+
+    cust_name = most_frequent_customer[0]
+    num_trips = most_frequent_customer[1]
+    total_spent = most_frequent_customer[2]
+    cust_email = most_frequent_customer[3]
+
     return render_template(
         "staff_view_customers.html",
         table_content=data,
         name=name,
+        customer_name=name,
+        trips=num_trips,
+        customer_exp=total_spent,
+        cust_email=cust_email,
     )
 
 
