@@ -1,0 +1,97 @@
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+	<style>
+		.error {
+		  color:red; /* Red border color for error */
+          margin-top: 15px;
+		}
+	</style>
+</head>
+<body>
+	<div class="p-4 form-signin w-50 m-auto">
+		<h1>Grant New Permissions to the Airline Staff</h1>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+        {% with message = get_flashed_messages(category_filter=["success"]) %}
+				{% if message %}
+				<div class="alert alert-success">
+  					{{message[0]}}
+				</div>
+				{% endif %}
+		{% endwith %}
+		{% with message = get_flashed_messages(category_filter=["error"]) %}
+			{% if message %}
+				<div class="alert alert-danger">
+					{{message[0]}}
+				</div>
+			{% endif %}
+		{% endwith %}
+        <form id="myForm" action="/grantNewPermission" method="POST">
+            <p><strong>Note:</strong> you cannot downgrade the permission for yourself</p>
+            <div class="form-group">
+                <label for="staff_email">Email of the Airline Staff</label>
+                <input type="text" class="form-control" name="staff_email" id="staff_email" placeholder="staff's email address" required/>
+            </div>
+            <div class="form-group">
+                <label for="permission_level">New Permission</label>
+                <select class="form-control" name="permission_level" id="permission_level" required>
+                    <option selected>Select permission level...</option>
+                    <option>admin</option>
+                    <option>operator</option>
+                    <option>N/A</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary flex-bottom-right" value = "Add">Grant Permission</button>
+            <a href="/home" class="btn btn-secondary">Go to Home Page</a>
+            {% if error %}
+                <p class="error"><strong>Error:</strong> {{error}}</p>
+            {% endif %}
+        </form>
+        
+    </div>
+    <div class="container">
+        <h4>All the Staff Members of {{airline_name}}</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date of Birth</th>
+                    <th>Permission Class</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line in table_content %}
+                    <tr>
+                        <td>{{line[0]}}</td>
+                        <td>{{line[1]}}</td>
+                        <td>{{line[2]}}</td>
+                        <td>{{line[3]}}</td>
+                        <td>{{line[4]}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <style>
+        .btn-primary {
+            margin-top: 20px;
+        }
+        .btn-secondary {
+            margin-top: 20px;
+        }
+        .form-group{
+            margin-top: 10px;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+</body>
+</html>

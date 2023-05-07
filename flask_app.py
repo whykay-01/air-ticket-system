@@ -707,6 +707,84 @@ def changeFlightStatus():
     return redirect(url_for("home"))
 
 
+@app.route("/staff_grant_permissions")
+def staffGrantPermissions():
+    cursor = mysql.cursor()
+    query = "SELECT permission, airline_name FROM airline_staff WHERE username = '{}';"
+    cursor.execute(query.format(session["email"]))
+    output = cursor.fetchone()
+    permission = output[0]
+    airline_name = output[1]
+    cursor.close()
+
+    if permission == "admin":
+        query = "SELECT username, first_name, last_name, date_of_birth, permission FROM airline_staff WHERE username <> '{}' AND airline_name = '{}' ORDER BY username;"
+        staff_email = session["email"]
+
+        cursor = mysql.cursor()
+        cursor.execute(query.format(staff_email, airline_name))
+        staff = cursor.fetchall()
+        cursor.close()
+        return render_template(
+            "staff_grant_permissions.html",
+            table_content=staff,
+            airline_name=airline_name,
+        )
+    else:
+        return render_template("invalid_auth.html")
+
+
+@app.route("/grantNewPermission", methods=["POST"])
+def grantNewPermission():
+    staff_email = request.form["staff_email"]
+    new_permission = request.form["permission_level"]
+
+    airline_name_query = "SELECT airline_name FROM airline_staff WHERE username = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(airline_name_query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    if new_permission == "Select permission level...":
+        flash("Please select a permission level!", "error")
+        return redirect(url_for("staffGrantPermissions"))
+
+    if staff_email == session["email"]:
+        flash("You cannot change your own permissions!", "error")
+        return redirect(url_for("staffGrantPermissions"))
+
+    query = "SELECT permission FROM airline_staff WHERE username = '{}' AND airline_name = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"], airline_name))
+    permission = cursor.fetchone()[0]
+    cursor.close()
+
+    # check if the staff_email exists
+    query = "SELECT username FROM airline_staff WHERE username = '{}' AND airline_name = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(staff_email, airline_name))
+    if not cursor.fetchone():
+        flash(
+            "The staff email does not exist or this staff does not work for this airline!",
+            "error",
+        )
+        return redirect(url_for("staffGrantPermissions"))
+    cursor.close()
+
+    if permission == "admin":
+        update_query = (
+            "UPDATE airline_staff SET permission = '{}' WHERE username = '{}';"
+        )
+        cursor = mysql.cursor()
+        cursor.execute(update_query.format(new_permission, staff_email))
+        mysql.commit()
+        cursor.close()
+        flash("Permission updated successfully!", "success")
+        return redirect(url_for("staffGrantPermissions"))
+    else:
+        return render_template("invalid_auth.html")
+
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]
@@ -1469,8 +1547,6 @@ def agent_top_customer():
 
     file_path_a = os.path.join(app.config["UPLOAD_FOLDER"], filename_a)
     fig.savefig(file_path_a)
-
-    # _________________________________________________________
 
     total_tickets_per_customer = []
     labels = []
