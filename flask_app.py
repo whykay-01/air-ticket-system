@@ -900,6 +900,133 @@ def addBookingAgent():
         return render_template("invalid_auth.html")
 
 
+@app.route("/staff_view_agents")
+def staffViewAgents():
+    cursor = mysql.cursor()
+    query = "SELECT permission, airline_name FROM airline_staff WHERE username = '{}';"
+    cursor.execute(query.format(session["email"]))
+    output = cursor.fetchone()
+    permission = output[0]
+    airline_name = output[1]
+    cursor.close()
+
+    # get all the booking agents who are working for the airline right now
+    query = "SELECT b.email, b.booking_agent_id FROM booking_agent b JOIN booking_agent_work_for bawf ON bawf.email = b.email WHERE bawf.airline_name = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    booking_agents = cursor.fetchall()
+    cursor.close()
+
+    # find top 5 booking agents based on number of tickets sales for the past month
+    query = "SELECT b.email, COUNT(p.ticket_id) AS num_tickets FROM booking_agent b JOIN purchases p ON b.email = p.booking_agent_id JOIN booking_agent_work_for bawf ON b.email = bawf.email WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND bawf.airline_name = '{}' GROUP BY b.email ORDER BY num_tickets DESC LIMIT 5;"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    ticket_sales_past_month = cursor.fetchall()
+    cursor.close()
+
+    # def draw_barchart(sql_data, title, xlabel, ylabel, filename, color, name):
+    # draw bar chart for top 5 booking agents based on number of tickets sales for the past month
+    filepath_1 = "/static/" + draw_barchart(
+        ticket_sales_past_month,
+        "Top 5 Booking Agents Based on Number of Tickets Sales for the Past Month",
+        "Booking Agent",
+        "Number of Tickets",
+        "bar_chart_1.png",
+        "blue",
+        "Number of Tickets",
+    )
+
+    # find top 5 booking agents based on number of tickets sales for the past year
+    query = "SELECT b.email, COUNT(p.ticket_id) AS num_tickets FROM booking_agent b JOIN purchases p ON b.email = p.booking_agent_id JOIN booking_agent_work_for bawf ON b.email = bawf.email WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND bawf.airline_name = '{}' GROUP BY b.email ORDER BY num_tickets DESC LIMIT 5;"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    ticket_sales_past_year = cursor.fetchall()
+    cursor.close()
+
+    filepath_2 = "/static/" + draw_barchart(
+        ticket_sales_past_year,
+        "Top 5 Booking Agents Based on Number of Tickets Sales for the Past Year",
+        "Booking Agent",
+        "Number of Tickets",
+        "bar_chart_2.png",
+        "green",
+        "Number of Tickets 2",
+    )
+
+    # find top 5 booking agents based on their total commission for the past year
+    query = "SELECT cpa.booking_agent_email, SUM(cpa.commission) AS total_commission FROM commission_per_agent cpa JOIN booking_agent_work_for bawf ON cpa.booking_agent_email = bawf.email JOIN purchases p on cpa.ticket_id = p.ticket_id WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND bawf.airline_name = '{}' GROUP BY cpa.booking_agent_email ORDER BY total_commission DESC LIMIT 5;"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    total_commission_past_year = cursor.fetchall()
+    cursor.close()
+
+    filepath_3 = "/static/" + draw_barchart(
+        total_commission_past_year,
+        "Top 5 Booking Agents Based on Total Commission for the Past Year",
+        "Booking Agent",
+        "Total Commission",
+        "bar_chart_3.png",
+        "red",
+        "Total Commission",
+    )
+
+    # find top 5 booking agents based on their total commission for the past month
+    query = "SELECT cpa.booking_agent_email, SUM(cpa.commission) AS total_commission FROM commission_per_agent cpa JOIN booking_agent_work_for bawf ON cpa.booking_agent_email = bawf.email JOIN purchases p on cpa.ticket_id = p.ticket_id WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND bawf.airline_name = '{}' GROUP BY cpa.booking_agent_email ORDER BY total_commission DESC LIMIT 5;"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    total_commission_past_month = cursor.fetchall()
+    cursor.close()
+
+    filepath_4 = "/static/" + draw_barchart(
+        total_commission_past_month,
+        "Top 5 Booking Agents Based on Total Commission for the Past Month",
+        "Booking Agent",
+        "Total Commission",
+        "bar_chart_4.png",
+        "orange",
+        "Total Commission 2",
+    )
+
+    return render_template(
+        "staff_view_agents.html",
+        table_content=booking_agents,
+        airline_name=airline_name,
+        filepath_1=filepath_1,
+        filepath_2=filepath_2,
+        filepath_3=filepath_3,
+        filepath_4=filepath_4,
+    )
+
+
+def draw_barchart(sql_data, title, xlabel, ylabel, filename, color, name):
+    total_amount = []
+    labels = []
+    for row in sql_data:
+        labels.append(row[0])
+        total_amount.append(row[1])
+
+    # Create a vertical bar chart
+    with plt.ion():
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.bar(labels, total_amount, color=color)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        ax.set_xticklabels(labels)
+
+        # Display the exact value of each bar
+        for i, v in enumerate(total_amount):
+            ax.text(i, v / 2, "{:.0f}".format(v), ha="center", fontsize=12)
+
+    filename = name + ".png"
+
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    fig.savefig(file_path)
+    plt.close(fig)
+
+    return filename
+
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]

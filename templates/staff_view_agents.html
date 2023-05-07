@@ -1,11 +1,24 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 	<style>
 		.error {
-		  color:red; /* Red border color for error */
-          margin-top: 15px;
+			color:red; /* Red border color for error */
+			margin-top: 15px;
+		}
+
+		.btn-primary {
+			margin-top: 20px;
+		}
+
+		.btn-secondary {
+			margin-top: 20px;
+		}
+
+		.form-group{
+			margin-top: 10px;
 		}
 	</style>
 </head>
@@ -14,12 +27,12 @@
 		{% if error %}
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 		{% endif %}
-        {% with message = get_flashed_messages(category_filter=["success"]) %}
-				{% if message %}
+		{% with message = get_flashed_messages(category_filter=["success"]) %}
+			{% if message %}
 				<div class="alert alert-success">
-  					{{message[0]}}
+					{{message[0]}}
 				</div>
-				{% endif %}
+			{% endif %}
 		{% endwith %}
 		{% with message = get_flashed_messages(category_filter=["error"]) %}
 			{% if message %}
@@ -28,9 +41,11 @@
 				</div>
 			{% endif %}
 		{% endwith %}
-        <br>
-        <h3>Current Agents Working for {{airline_name}}</h3>
-        <table class="table table-bordered">
+
+		<br>
+		<h3>Current Agents Working for {{airline_name}}</h3>
+
+		<table class="table table-bordered">
 			<thead>
 				<tr>
 					<th>Email</th>
@@ -46,45 +61,37 @@
 				{% endfor %}
 			</tbody>
 		</table>
-        <h3>Detailed Stats:</h3>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <img src="{{ filepath_1 }}" alt="Bar chart" class="img-fluid">
-                    <p>Top 5 booking agents based on number of tickets sales for the past month</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <img src="{{ filepath_2 }}" alt="Bar chart" class="img-fluid">
-                    <p>Top 5 booking agents based on number of tickets sales for the past year</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <img src="{{ filepath_3 }}" alt="Bar chart" class="img-fluid">
-                    <p>Top 5 booking agents based on their total commission for the past year</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <style>
-        .btn-primary {
-            margin-top: 20px;
-        }
-        .btn-secondary {
-            margin-top: 20px;
-        }
-        .form-group{
-            margin-top: 10px;
-        }
-    </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>
+		<h3>Detailed Stats:</h3>
+
+        <div class="card">
+            <div class="card-body">
+                <img src="{{ filepath_1 }}" alt="Bar chart" class="img-fluid">
+                <p class="card-text">These are the top 5 booking agents who sold the most tickets in the last month.</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <img src="{{ filepath_2 }}" alt="Bar chart" class="img-fluid">
+                <p class="card-text">These are the top 5 booking agents who sold the most tickets in the last year.</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <img src="{{ filepath_3 }}" alt="Bar chart" class="img-fluid">
+                <p class="card-text">These are the top 5 booking agents who earned the most commission in the last year.</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <img src="{{ filepath_4 }}" alt="Bar chart" class="img-fluid">
+                <p class="card-text">These are the top 5 booking agents who earned the most commission in the last month.</p>
+            </div>
+        </div>
+        <a href="/home" class="btn btn-secondary">Go Back</a>
+    </div>
 </body>
 </html>
+        
