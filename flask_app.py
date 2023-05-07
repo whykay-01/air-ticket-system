@@ -465,6 +465,7 @@ def addAirplane():
         permission == "N/A"
         or permission == "operator"
         or user_type == "Customer"
+        # FIXME: how is the booking agent assigned to the airline?
         or user_type == "Booking Agent"
     ):
         error = "You are not authorized to add airplane!"
