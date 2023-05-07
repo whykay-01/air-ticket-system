@@ -75,86 +75,92 @@
 						</div>
 					</div>
 				</div>
-				<div class="my-5">
-					<a href="/agent_flight_search" class="btn btn-primary">Purchase a flight</a>
-					<a href="/agent_view_commission" class="btn btn-success">View the commission</a>
-					<a href="/agent_top_customer" class="btn btn-secondary">View top customers</a>
-					<form action="/logout" style="display: inline-block;">
-						<button type="submit" class="btn btn-danger">Logout</button>
-					</form>
-				</div>
-				<h5>Specify the searching criteria for the flights you are affiliated with:</h5>
-				<br>
-				<form class="form-inline" action="/agent_criteria_search" method="POST">
-				  <div class="form-group mr-2">
-					<label for="start-date" class="mr-2">Start Date:</label>
-					<input type="date" class="form-control" name="start-date">
-				  </div>
-				  <br>
-				  <div class="form-group mr-2">
-					<label for="end-date" class="mr-2">End Date:</label>
-					<input type="date" class="form-control" name="end-date">
-				  </div>
-				  <br>
-				  <div class="form-group mr-2">
-					<label for="departure_airport" class="mr-2">Departure_airport:</label>
-					<select class="form-control" name="departure_airport">
-						<option value="all">All</option>
-						{% if departure_airports %}
-						  {% for airport in departure_airports %}
-							<option value="{{airport[0]}}">{{airport[0]}}</option>
-						  {% endfor %}
-						{% endif %}
-					  </select>
-				  </div>
-				  <br>
-				  <div class="form-group mr-2">
-					<label for="arrival_airport" class="mr-2">Arrival_airport:</label>
-					<select class="form-control" name="arrival_airport">
-						<option value="all">All</option>
-						{% if arrival_airports %}
-						  {% for airport in arrival_airports %}
-							<option value="{{airport[0]}}">{{airport[0]}}</option>
-						  {% endfor %}
-						{% endif %}
-					  </select>
-				  </div>
-				  <br>
-				  <div class="form-group mr-2">
-					<label for="customer_email" class="mr-2">Customer's Email:</label>
-					<input type="text" class="form-control" name="customer_email">
-				  </div>
-				  <br>
-				  {% if error %}
-					<p class="error"><strong>Warning:</strong> {{error}}</p>
-					{% endif %} 
-				  <button type="submit" class="btn btn-primary ml-auto">Search</button>
+				{% if airline_name != "You are not approved by any airline yet. Thanks for your patience!"%}
+					<div class="my-5">
+						<a href="/agent_flight_search" class="btn btn-primary">Purchase a flight</a>
+						<a href="/agent_view_commission" class="btn btn-success">View the commission</a>
+						<a href="/agent_top_customer" class="btn btn-secondary">View top customers</a>
+				{% endif %}
+				<form action="/logout" style="display: inline-block;">
+					<button type="submit" class="btn btn-danger">Logout</button>
 				</form>
-			  </div>		  
-			<br>
-			<h3>Your upcoming flights:</h3>
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Airline</th><th>Flight Number</th><th>Departure Airport</th>
-						<th>Departure Time</th><th>Arrival Airport</th><th>Arrival Time</th><th>Status</th><th>Customer Email</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for line in upcoming_flights %}
+				{% if airline_name != "You are not approved by any airline yet. Thanks for your patience!"%}
+					</div>
+					<h5>Specify the searching criteria for the flights you are affiliated with:</h5>
+					<br>
+					<form class="form-inline" action="/agent_criteria_search" method="POST">
+					<div class="form-group mr-2">
+						<label for="start-date" class="mr-2">Start Date:</label>
+						<input type="date" class="form-control" name="start-date">
+					</div>
+					<br>
+					<div class="form-group mr-2">
+						<label for="end-date" class="mr-2">End Date:</label>
+						<input type="date" class="form-control" name="end-date">
+					</div>
+					<br>
+					<div class="form-group mr-2">
+						<label for="departure_airport" class="mr-2">Departure_airport:</label>
+						<select class="form-control" name="departure_airport">
+							<option value="all">All</option>
+							{% if departure_airports %}
+							{% for airport in departure_airports %}
+								<option value="{{airport[0]}}">{{airport[0]}}</option>
+							{% endfor %}
+							{% endif %}
+						</select>
+					</div>
+					<br>
+					<div class="form-group mr-2">
+						<label for="arrival_airport" class="mr-2">Arrival_airport:</label>
+						<select class="form-control" name="arrival_airport">
+							<option value="all">All</option>
+							{% if arrival_airports %}
+							{% for airport in arrival_airports %}
+								<option value="{{airport[0]}}">{{airport[0]}}</option>
+							{% endfor %}
+							{% endif %}
+						</select>
+					</div>
+					<br>
+					<div class="form-group mr-2">
+						<label for="customer_email" class="mr-2">Customer's Email:</label>
+						<input type="text" class="form-control" name="customer_email">
+					</div>
+					<br>
+					{% if error %}
+						<p class="error"><strong>Warning:</strong> {{error}}</p>
+						{% endif %} 
+					<button type="submit" class="btn btn-primary ml-auto">Search</button>
+					</form>
+				{% endif %}
+				</div>		  
+			{% if airline_name != "You are not approved by any airline yet. Thanks for your patience!" %}
+				<br>
+				<h3>Your upcoming flights:</h3>
+				<table class="table table-bordered">
+					<thead>
 						<tr>
-							<td>{{line[0]}}</td>
-							<td>{{line[1]}}</td>
-							<td>{{line[2]}}</td>
-							<td>{{line[3]}}</td>
-							<td>{{line[4]}}</td>
-							<td>{{line[5]}}</td>
-							<td>{{line[6]}}</td>
-							<td>{{line[7]}}</td>
+							<th>Airline</th><th>Flight Number</th><th>Departure Airport</th>
+							<th>Departure Time</th><th>Arrival Airport</th><th>Arrival Time</th><th>Status</th><th>Customer Email</th>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{% for line in upcoming_flights %}
+							<tr>
+								<td>{{line[0]}}</td>
+								<td>{{line[1]}}</td>
+								<td>{{line[2]}}</td>
+								<td>{{line[3]}}</td>
+								<td>{{line[4]}}</td>
+								<td>{{line[5]}}</td>
+								<td>{{line[6]}}</td>
+								<td>{{line[7]}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% endif %}
 		</div>
 		
 	{% endif %}

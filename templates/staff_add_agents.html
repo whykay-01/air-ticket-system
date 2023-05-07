@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div class="p-5 form-signin w-50 m-auto">
-		<h1>Add New Agents to the Airline</h1>
+		<h3>Add New Agents to the Airline</h3>
 		{% if error %}
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 		{% endif %}
@@ -43,7 +43,8 @@
             <button type="submit" class="btn btn-primary flex-bottom-right" value = "Add">Add an Agent</button>
             <a href="/home" class="btn btn-secondary">Go to Home Page</a>
         </form>
-        <h1>Current Agents</h1>
+        <br>
+        <h3>Current Agents Working for {{airline_name}}</h3>
         <table class="table table-bordered">
 			<thead>
 				<tr>

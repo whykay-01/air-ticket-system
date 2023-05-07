@@ -309,34 +309,40 @@ def home():
         cursor = mysql.cursor()
         cursor.execute(query.format(email))
         output = cursor.fetchone()
-        # FIXME: think abot this!
         if output:
             airline_name = output[0]
+            query = "SELECT F.airline_name, F.flight_num, F.departure_airport_name, F.departure_time, F.arrival_airport_name, F.arrival_time, F.dep_status, T.customer_email FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}' AND F.dep_status = 'Upcoming';"
+            cursor.execute(query.format(airline_name, email))
+            table_data = cursor.fetchall()
+
+            query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
+            cursor.execute(query.format(airline_name, email))
+            departure_airports = cursor.fetchall()
+
+            query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
+            cursor.execute(query.format(airline_name, email))
+            arrival_airports = cursor.fetchall()
+            cursor.close()
+            return render_template(
+                "home.html",
+                user_type=user_type,
+                email=email,
+                upcoming_flights=table_data,
+                airline_name=airline_name,
+                departure_airports=departure_airports,
+                arrival_airports=arrival_airports,
+            )
+
         else:
-            airline_name = "N/A"
-
-        query = "SELECT F.airline_name, F.flight_num, F.departure_airport_name, F.departure_time, F.arrival_airport_name, F.arrival_time, F.dep_status, T.customer_email FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}' AND F.dep_status = 'Upcoming';"
-        cursor.execute(query.format(airline_name, email))
-        table_data = cursor.fetchall()
-
-        query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
-        cursor.execute(query.format(airline_name, email))
-        departure_airports = cursor.fetchall()
-
-        query = "SELECT DISTINCT F.departure_airport_name FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}'"
-        cursor.execute(query.format(airline_name, email))
-        arrival_airports = cursor.fetchall()
-
-        cursor.close()
-        return render_template(
-            "home.html",
-            user_type=user_type,
-            email=email,
-            upcoming_flights=table_data,
-            airline_name=airline_name,
-            departure_airports=departure_airports,
-            arrival_airports=arrival_airports,
-        )
+            airline_name = (
+                "You are not approved by any airline yet. Thanks for your patience!"
+            )
+            return render_template(
+                "home.html",
+                user_type=user_type,
+                email=email,
+                airline_name=airline_name,
+            )
 
 
 @app.route("/staff_flight_search", methods=["POST"])
@@ -785,6 +791,93 @@ def grantNewPermission():
         cursor.close()
         flash("Permission updated successfully!", "success")
         return redirect(url_for("staffGrantPermissions"))
+    else:
+        return render_template("invalid_auth.html")
+
+
+@app.route("/staff_add_agents")
+def staffAddAgents():
+    cursor = mysql.cursor()
+    query = "SELECT permission, airline_name FROM airline_staff WHERE username = '{}';"
+    cursor.execute(query.format(session["email"]))
+    output = cursor.fetchone()
+    permission = output[0]
+    airline_name = output[1]
+    cursor.close()
+
+    if permission == "admin":
+        fetch_booking_agents = "SELECT b.email, b.booking_agent_id FROM booking_agent b JOIN booking_agent_work_for bawf ON bawf.email = b.email WHERE bawf.airline_name = '{}';"
+        cursor = mysql.cursor()
+        cursor.execute(fetch_booking_agents.format(airline_name))
+        booking_agents = cursor.fetchall()
+        cursor.close()
+
+        return render_template(
+            "staff_add_agents.html",
+            table_content=booking_agents,
+            airline_name=airline_name,
+        )
+    else:
+        return render_template("invalid_auth.html")
+
+
+@app.route("/addBookingAgent", methods=["POST"])
+def addBookingAgent():
+    booking_agent_email = request.form["booking_agent_email"]
+    booking_agent_id = request.form["booking_agent_id"]
+
+    # requesting the airline name and permission level of the staff who is adding the users
+    cursor = mysql.cursor()
+    query = "SELECT permission, airline_name FROM airline_staff WHERE username = '{}';"
+    cursor.execute(query.format(session["email"]))
+    output = cursor.fetchone()
+    permission = output[0]
+    airline_name = output[1]
+    cursor.close()
+
+    # check if the booking agent exists or not
+    query = "SELECT email FROM booking_agent WHERE email = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(booking_agent_email))
+    if not cursor.fetchone():
+        flash("The booking agent does not exist!", "error")
+        return redirect(url_for("staffAddAgents"))
+
+    # check if the booking agent is already added
+    query = "SELECT email FROM booking_agent_work_for WHERE email = '{}' AND airline_name = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(booking_agent_email, airline_name))
+    if cursor.fetchone():
+        flash("The booking agent is already added!", "error")
+        return redirect(url_for("staffAddAgents"))
+
+    # check if the field booking agent id contains numbers only
+    if not booking_agent_id.isdigit():
+        flash("The booking agent id should contain numbers only!", "error")
+        return redirect(url_for("staffAddAgents"))
+
+    # check if the booking agent id is already used
+    query = "SELECT * FROM booking_agent as b JOIN booking_agent_work_for as bawf ON b.email = bawf.email WHERE bawf.airline_name = '{}' AND b.booking_agent_id = '{}';"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name, booking_agent_id))
+    if cursor.fetchone():
+        flash("The booking agent id is already used!", "error")
+        return redirect(url_for("staffAddAgents"))
+
+    if permission == "admin":
+        cursor = mysql.cursor()
+
+        query = "INSERT INTO booking_agent_work_for VALUES ('{}', '{}');"
+        cursor.execute(query.format(booking_agent_email, airline_name))
+
+        query = "UPDATE booking_agent SET booking_agent_id = '{}' WHERE email = '{}';"
+        cursor.execute(query.format(booking_agent_id, booking_agent_email))
+
+        mysql.commit()
+        cursor.close()
+
+        flash("Booking agent added successfully!", "success")
+        return redirect(url_for("staffAddAgents"))
     else:
         return render_template("invalid_auth.html")
 
