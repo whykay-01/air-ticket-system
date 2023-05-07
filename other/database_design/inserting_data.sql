@@ -102,6 +102,177 @@ values
         "1985-01-01"
     );
 
+INSERT INTO
+    customer (
+        email,
+        name,
+        password,
+        building_number,
+        street,
+        city,
+        state,
+        phone_number,
+        passport_number,
+        passport_expiration,
+        passport_country,
+        date_of_birth
+    )
+VALUES
+    (
+        'john@example.com',
+        'John Smith',
+        MD5 ('password123'),
+        '123',
+        'Main St',
+        'New York',
+        'NY',
+        '555-1234',
+        'A1234567',
+        '2025-06-30',
+        'USA',
+        '1980-01-01'
+    ),
+    (
+        'jane@example.com',
+        'Jane Doe',
+        MD5 ('password456'),
+        '456',
+        'Maple Ave',
+        'Los Angeles',
+        'CA',
+        '555-5678',
+        'B7654321',
+        '2026-07-31',
+        'USA',
+        '1990-02-02'
+    ),
+    (
+        'bob@example.com',
+        'Bob Johnson',
+        MD5 ('password789'),
+        '789',
+        'Oak St',
+        'Chicago',
+        'IL',
+        '555-9876',
+        'C2468101',
+        '2027-08-31',
+        'USA',
+        '2000-03-03'
+    ),
+    (
+        'sara@example.com',
+        'Sara Lee',
+        MD5 ('passwordabc'),
+        '246',
+        'Cedar Blvd',
+        'San Francisco',
+        'CA',
+        '555-2468',
+        'D1357924',
+        '2028-09-30',
+        'USA',
+        '1995-04-04'
+    ),
+    (
+        'mark@example.com',
+        'Mark Johnson',
+        MD5 ('passworddef'),
+        '369',
+        'Pine St',
+        'Seattle',
+        'WA',
+        '555-3691',
+        'E4681357',
+        '2029-10-31',
+        'USA',
+        '1985-05-05'
+    ),
+    (
+        'amy@example.com',
+        'Amy Lee',
+        MD5 ('passwordxyz'),
+        '789',
+        'Birch St',
+        'Boston',
+        'MA',
+        '555-7890',
+        'F2468135',
+        '2025-11-30',
+        'USA',
+        '1982-06-06'
+    ),
+    (
+        'david@example.com',
+        'David Brown',
+        MD5 ('password123'),
+        '123',
+        'Elm St',
+        'Atlanta',
+        'GA',
+        '555-2468',
+        'G4681359',
+        '2026-12-31',
+        'USA',
+        '1992-07-07'
+    ),
+    (
+        'jennifer@example.com',
+        'Jennifer Davis',
+        MD5 ('password456'),
+        '456',
+        'Oak St',
+        'Houston',
+        'TX',
+        '555-3691',
+        'H1357902',
+        '2027-01-31',
+        'USA',
+        '1983-08-08'
+    ),
+    (
+        'michael@example.com',
+        'Michael Johnson',
+        MD5 ('password789'),
+        '789',
+        'Cedar St',
+        'San Diego',
+        'CA',
+        '555-7890',
+        'I2468135',
+        '2028-02-28',
+        'USA',
+        '1999-09-09'
+    ),
+    (
+        'emily@example.com',
+        'Emily Green',
+        MD5 ('passwordabc'),
+        '246',
+        'Maple St',
+        'Miami',
+        'FL',
+        '555-1234',
+        'J4681357',
+        '2029-03-31',
+        'USA',
+        '1994-10-10'
+    ),
+    (
+        'robert@example.com',
+        'Robert Wilson',
+        MD5 ('passworddef'),
+        '369',
+        'Birch St',
+        'Denver',
+        'CO',
+        '555-5678',
+        'K1357924',
+        '2025-04-30',
+        'USA',
+        '1984-11-11'
+    );
+
 -- Insert one booking agent with appropriate name and other attributes.
 insert into
     booking_agent (email, password, booking_agent_id)
