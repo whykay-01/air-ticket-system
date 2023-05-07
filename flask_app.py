@@ -1073,6 +1073,53 @@ def staff_view_top_destinations():
     )
 
 
+@app.route("/staff_view_customers")
+def staff_view_customers():
+    return render_template("staff_view_customers.html")
+
+
+@app.route("/requestCustomerFlights", methods=["POST"])
+def requestCustomerFlights():
+    # get the airline name of the staff
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    # get the email of the customer
+    email = request.form["customer_email"]
+    cursor = mysql.cursor()
+
+    # check if the customer exists
+    query = "SELECT * FROM customer WHERE email = '{}'"
+    cursor.execute(query.format(email))
+    data = cursor.fetchall()
+    if not data:
+        error = "Customer does not exist!"
+        flash(error, "error")
+        return redirect(url_for("staff_view_customers"))
+
+    # get the flights of the customer
+    query = "SELECT f.flight_num, f.airline_name, f.departure_airport_name, f.arrival_airport_name, f.departure_time, f.arrival_time, f.dep_status, p.customer_email FROM purchases p JOIN ticket t ON t.id = p.ticket_id JOIN flight f ON (t.flight_id = f.flight_num AND t.airline_name = f.airline_name) WHERE p.customer_email = '{}' AND f.airline_name = '{}'"
+    cursor.execute(query.format(email, airline_name))
+    data = cursor.fetchall()
+    cursor.close()
+
+    # get the name of the customer
+    query = "SELECT name FROM customer WHERE email = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(email))
+    name = cursor.fetchone()[0]
+    cursor.close()
+
+    return render_template(
+        "staff_view_customers.html",
+        table_content=data,
+        name=name,
+    )
+
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]
