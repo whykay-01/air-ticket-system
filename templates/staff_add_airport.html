@@ -17,22 +17,43 @@
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 		{% endif %}
 
-<form id="myForm" action="/addAirport" method="POST">
-	<div class="form-group">
-		<label for="airport_code">Airport Code</label>
-		<input type="text" class="form-control" name="airport_code" id="airport_code" placeholder="IATA airport code (must be unique)" required/>
-	</div>
-	<div class="form-group">
-		<label for="city_name">Name of the city</label>
-		<input type="text" class="form-control" name="city_name" id="city_name" placeholder="city name" required/>
-	</div>
+		<form id="myForm" action="/addAirport" method="POST">
+			<div class="form-group">
+				<label for="airport_code">Airport Code</label>
+				<input type="text" class="form-control" name="airport_code" id="airport_code" placeholder="IATA airport code (must be unique)" required/>
+			</div>
+			<div class="form-group">
+				<label for="city_name">Name of the city</label>
+				<input type="text" class="form-control" name="city_name" id="city_name" placeholder="city name" required/>
+			</div>
 
-	<button type="submit" class="btn btn-primary flex-bottom-right" value = "Add">Add an Airport</button>
-    <a href="/home" class="btn btn-secondary">Go to Home Page</a>
-	{% if error %}
-		<p class="error"><strong>Error:</strong> {{error}}</p>
-	{% endif %}
-</form>
+			<button type="submit" class="btn btn-primary flex-bottom-right" value = "Add">Add an Airport</button>
+			<a href="/home" class="btn btn-secondary">Go to Home Page</a>
+			{% if error %}
+				<p class="error"><strong>Error:</strong> {{error}}</p>
+			{% endif %}
+		</form>
+		<br>
+        <h3>List of Airports</h3>
+        <table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Airport Code</th>
+					<th>City</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for line in table_content %}
+					<tr>
+						<td>{{line[0]}}</td>
+						<td>{{line[1]}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+	</div>
+		
 
 <style>
 	.btn-primary {
