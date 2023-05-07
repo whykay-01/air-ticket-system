@@ -1216,21 +1216,28 @@ def staff_revenue_report():
     values_last_year = [direct_sales_last_year, indirect_sales_last_year]
     colors = ["#F7464A", "#46BFBD"]
 
-    def label_function(val):
-        return (
-            f"{val:.1f}%\n(${values_last_month[int(val/100.*len(values_last_month))]})"
-        )
+    def label_function(val, values):
+        index = int(val / 100.0 * len(values))
+        return f"{val:.1f}%\n(${values[index]})"
 
-    # Create the first pie chart
-    plt.pie(values_last_month, labels=labels, colors=colors, autopct=label_function)
+    plt.pie(
+        values_last_month,
+        labels=labels,
+        colors=colors,
+        autopct=lambda val: label_function(val, values_last_month),
+    )
     plt.title("Direct/Indirect Sales in the Last Month")
     filename_a = "direct_indirect_sales_last_month.png"
     file_path_a = os.path.join(app.config["UPLOAD_FOLDER"], filename_a)
     plt.savefig(file_path_a)
     plt.clf()
 
-    # Create the second pie chart
-    plt.pie(values_last_year, labels=labels, colors=colors, autopct=label_function)
+    plt.pie(
+        values_last_year,
+        labels=labels,
+        colors=colors,
+        autopct=lambda val: label_function(val, values_last_year),
+    )
     plt.title("Direct/Indirect Sales in the Last Year")
     filename_b = "direct_indirect_sales_last_year.png"
     file_path_b = os.path.join(app.config["UPLOAD_FOLDER"], filename_b)
@@ -1240,7 +1247,6 @@ def staff_revenue_report():
         "staff_revenue_report.html",
         filepath_a="/static/" + filename_a,
         filepath_b="/static/" + filename_b,
-        airline_name=airline_name,
     )
 
 
