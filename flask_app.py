@@ -1027,6 +1027,52 @@ def draw_barchart(sql_data, title, xlabel, ylabel, filename, color, name):
     return filename
 
 
+@app.route("/staff_view_top_destinations")
+def staff_view_top_destinations():
+    # get the airline name of the staff
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    # find the top 3 destinations based on number of tickets sold
+    query = "SELECT f.arrival_airport_name, a.city, COUNT(p.ticket_id) as times FROM purchases p JOIN ticket t on p.ticket_id = t.id JOIN flight f on (t.flight_id = f.flight_num and t.airline_name = f.airline_name) JOIN airport a on f.arrival_airport_name = a.name WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND f.airline_name = '{}' GROUP BY (a.name) ORDER BY times DESC LIMIT 3;"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    top_destinations_3_months = cursor.fetchall()
+    cursor.close()
+
+    query_1 = "SELECT f.arrival_airport_name, a.city, COUNT(p.ticket_id) as times FROM purchases p JOIN ticket t on p.ticket_id = t.id JOIN flight f on (t.flight_id = f.flight_num and t.airline_name = f.airline_name) JOIN airport a on f.arrival_airport_name = a.name WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND f.airline_name = '{}' GROUP BY (a.name) ORDER BY times DESC LIMIT 3;"
+    cursor = mysql.cursor()
+    cursor.execute(query_1.format(airline_name))
+    top_destinations_1_year = cursor.fetchall()
+    cursor.close()
+
+    top_dest_month = []
+    for i in range(3):
+        var = top_destinations_3_months[i]
+        if var:
+            top_dest_month.append(var)
+        else:
+            top_dest_month.append("Not enough data")
+
+    top_dest_year = []
+    for i in range(3):
+        var = top_destinations_1_year[i]
+        if var:
+            top_dest_year.append(var)
+        else:
+            top_dest_year.append("Not enough data")
+
+    return render_template(
+        "staff_view_top_destinations.html",
+        airline_name=airline_name,
+        top_dest_month=top_dest_month,
+        top_dest_year=top_dest_year,
+    )
+
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Top Destinations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h3 class="text-center my-3">View <strong>{{airline_name}}'s</strong> top destinations</h3>
+      <p>Details about top destinations for the past month:</p>
+      <ul class="list-group mb-4">
+        <li class="list-group-item">Top 1 destination: <strong>{{top_dest_month[0][1]}}</strong></li>
+        <li class="list-group-item">Top 2 destination: <strong>{{top_dest_month[1][1]}}</strong></li>
+        <li class="list-group-item">Top 3 destination: <strong>{{top_dest_month[2][1]}}</strong></li>
+      </ul>
+      <p>Details about top destinations for the past year:</p>
+      <ul class="list-group mb-4">
+        <li class="list-group-item">Top 1 destination: <strong>{{top_dest_year[0][1]}}</strong></li>
+        <li class="list-group-item">Top 2 destination: <strong>{{top_dest_year[1][1]}}</strong></li>
+        <li class="list-group-item">Top 3 destination: <strong>{{top_dest_year[2][1]}}</strong></li>
+      </ul>
+      <a href="/home" class="btn btn-secondary">Go Back</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+  </body>
+</html> 
