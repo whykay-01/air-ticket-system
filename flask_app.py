@@ -428,18 +428,31 @@ def staffFlightSearch():
 
 @app.route("/staff_add_airplane")
 def staffAddAirplane():
-    query = "SELECT permission FROM airline_staff WHERE username = '{}';"
+    query = "SELECT permission, airline_name FROM airline_staff WHERE username = '{}';"
     staff_email = session["email"]
 
     cursor = mysql.cursor()
     cursor.execute(query.format(staff_email))
-    permission = cursor.fetchone()[0]
+    output = cursor.fetchone()
+    permission = output[0]
+    airline_name = output[1]
     cursor.close()
 
     if permission != "admin":
         return render_template("invalid_auth.html")
     else:
-        return render_template("staff_add_airplane.html")
+        # get the list of airplanes
+        query = "SELECT id, seats FROM airplane WHERE airline_name = '{}' ORDER BY id;"
+        cursor = mysql.cursor()
+        cursor.execute(query.format(airline_name))
+        airplanes = cursor.fetchall()
+        cursor.close()
+
+        return render_template(
+            "staff_add_airplane.html",
+            airline_name=airline_name,
+            table_content=airplanes,
+        )
 
 
 @app.route("/addAirplane", methods=["POST"])
@@ -511,7 +524,12 @@ def staffAddAirport():
     if permission != "admin":
         return render_template("invalid_auth.html")
     else:
-        return render_template("staff_add_airport.html")
+        query = "SELECT name, city FROM airport ORDER BY city;"
+        cursor = mysql.cursor()
+        cursor.execute(query)
+        airports = cursor.fetchall()
+        cursor.close()
+        return render_template("staff_add_airport.html", table_content=airports)
 
 
 @app.route("/addAirport", methods=["POST"])
