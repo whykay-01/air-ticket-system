@@ -167,7 +167,7 @@
 
 	{% if user_type == "Airline Staff" %}
 	<div class="container">
-		<h3 class="my-5">Airline Staff View Page: welcome, {{email}}!</h3>
+		<h3 class="my-5">Airline Staff View Page: welcome, {{first_name}} {{last_name}}!</h3>
 		{% with message = get_flashed_messages(category_filter=["success"]) %}
 				{% if message %}
 				<div class="alert alert-success">
@@ -186,9 +186,9 @@
 			<div class="col-md-4">
 				<div class="card shadow-sm mb-5">
 				  <div class="card-body text-left">
-					<h5 class="card-title mb-0">Name: {{first_name}} {{last_name}}</h5>
-					<h5 class="card-title mb-0">Airline you work for: {{airline_name}}</h5>
-					<h5 class="card-title mb-0">Your permission level: {{permission}}</h5>
+					<h5 class="card-title mb-0">Your email-username: <strong>{{ email }}</strong></h5>
+					<h5 class="card-title mb-0">Airline you work for: <strong>{{airline_name}}</strong></h5>
+					<h5 class="card-title mb-0">Your permission level: <strong>{{permission}}</strong></h5>
 					<p> </p>
 				  </div>
 				</div>
