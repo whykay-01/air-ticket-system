@@ -1255,6 +1255,135 @@ def staff_view_reports():
     return render_template("staff_view_reports.html")
 
 
+@app.route("/staff_customized_view_reports", methods=["POST"])
+def staff_customized_view_reports():
+    # get the airline name of the staff
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    request_filter = request.form["request_filter"]
+
+    if request_filter == "Select the request criteria...":
+        error = "Select a request criteria!"
+        flash(error, "error")
+        return redirect(url_for("staff_view_reports"))
+
+    if request_filter == "Date Range":
+        start_date = request.form["start-date"]
+        end_date = request.form["end-date"]
+
+        if start_date == "" or end_date == "":
+            error = "Specify the range! Results below are default results."
+            flash(error, "error")
+            return redirect(url_for("staff_view_reports"))
+
+        if start_date == "" and end_date != "":
+            error = "Specify a start date! Results below are default results."
+            flash(error, "error")
+            return redirect(url_for("staff_view_reports"))
+
+        if start_date != "" and end_date == "":
+            error = "Specify an end date! Results below are default results."
+            flash(error, "error")
+            return redirect(url_for("staff_view_reports"))
+        # figure out how many tickets were sold based on the date range
+        cursor = mysql.cursor()
+        query = "SELECT COUNT(*) as tickets_sold, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id WHERE P.purchase_date >= '{}' AND P.purchase_date <= '{}' AND T.airline_name = '{}' GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date);"
+        cursor.execute(query.format(start_date, end_date, airline_name))
+        results = cursor.fetchall()
+        cursor.close()
+
+        total_amounts = []
+        labels = []
+        for result in results:
+            total_amounts.append(result[0])
+            labels.append(f"{result[1]}-{result[2]:02}")
+
+        # Create a vertical bar chart
+        with plt.ion():
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.bar(labels, total_amounts)
+            ax.set_xlabel("Month and Year")
+            ax.set_ylabel("Total Number of Tickets Sold")
+            ax.set_title("Tickets Sold in the Date Range on Monthly Basis")
+            ax.set_xticklabels(labels)
+
+            # Display the exact value of each bar
+            for i, v in enumerate(total_amounts):
+                ax.text(i, v / 2, "{:.0f}".format(v), ha="center", fontsize=12)
+
+        flash("Your customzied report based on the date range is generated!", "success")
+
+    elif request_filter == "Last Year Report":
+        # figure out how many tickets were sold in the last year on monthly basis
+        cursor = mysql.cursor()
+        query = "SELECT COUNT(*) as tickets_sold, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month FROM purchases as P JOIN ticket as T on P.ticket_id = T.id WHERE P.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND T.airline_name = '{}' GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date);"
+        cursor.execute(query.format(airline_name))
+        results = cursor.fetchall()
+        cursor.close()
+
+        total_amounts = []
+        labels = []
+        for result in results:
+            total_amounts.append(result[0])
+            labels.append(f"{result[1]}-{result[2]:02}")
+
+        # Create a vertical bar chart
+        with plt.ion():
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.bar(labels, total_amounts)
+            ax.set_xlabel("Month and Year")
+            ax.set_ylabel("Total Number of Tickets Sold")
+            ax.set_title("Tickets Sold in the Past Year on Monthly Basis")
+            ax.set_xticklabels(labels)
+
+            # Display the exact value of each bar
+            for i, v in enumerate(total_amounts):
+                ax.text(i, v / 2, "{:.0f}".format(v), ha="center", fontsize=12)
+
+        flash("Your customized year report has been generated!", "success")
+
+    else:
+        # figure out how many tickets were sold in the last month on daily basis
+        cursor = mysql.cursor()
+        query = "SELECT COUNT(*) as tickets_sold, YEAR(P.purchase_date) AS year, MONTH(P.purchase_date) AS month, DAY(P.purchase_date) AS day FROM purchases as P JOIN ticket as T on P.ticket_id = T.id WHERE P.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND T.airline_name = '{}' GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date), DAY(P.purchase_date) ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date), DAY(P.purchase_date);"
+        cursor.execute(query.format(airline_name))
+        results = cursor.fetchall()
+        cursor.close()
+
+        total_amounts = []
+        labels = []
+        for result in results:
+            total_amounts.append(result[0])
+            date_str = f"{result[3]:02}-{result[2]:02}-{result[1]}"
+            labels.append(date_str)
+
+        # Create a vertical bar chart
+        with plt.ion():
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.bar(labels, total_amounts)
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Total Number of Tickets Sold")
+            ax.set_title("Tickets Sold in the last Month on Daily Basis")
+            ax.set_xticklabels(labels, ha="right")
+
+            # Display the exact value of each bar
+            for i, v in enumerate(total_amounts):
+                ax.text(i, v / 2, "{:.0f}".format(v), ha="center", fontsize=12)
+
+        flash("Your customized month report has been generated!", "success")
+
+    filename = "view_customized_report.png"
+
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    fig.savefig(file_path)
+    flash("Your customized report has been generated!", "success")
+    return render_template("staff_view_reports.html", filepath="/static/" + filename)
+
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]

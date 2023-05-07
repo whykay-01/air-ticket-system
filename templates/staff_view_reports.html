@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+	<style>
+		.error {
+			color:red; /* Red border color for error */
+			margin-top: 15px;
+		}
+
+		.btn-primary {
+			margin-top: 20px;
+		}
+
+		.btn-secondary {
+			margin-top: 20px;
+		}
+
+		.form-group{
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="p-5 form-signin w-50 m-auto">
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+		{% with message = get_flashed_messages(category_filter=["success"]) %}
+			{% if message %}
+				<div class="alert alert-success">
+					{{message[0]}}
+				</div>
+			{% endif %}
+		{% endwith %}
+		{% with message = get_flashed_messages(category_filter=["error"]) %}
+			{% if message %}
+				<div class="alert alert-danger">
+					{{message[0]}}
+				</div>
+			{% endif %}
+		{% endwith %}
+
+        <h4>Generate the report based on your criteria:</h4>
+
+		<div class="container">
+            <form class="form-inline" action="/staff_customized_view_reports" method="POST">
+                <div class="form-group mr-2">
+                    <label for="request_filter" class="mr-2">Request filter:</label>
+                    <select class="form-control" name="request_filter">
+                        <option selected>Select the request criteria...</option>
+                        <option>Date Range</option>
+                        <option>Last Year Report</option>
+                        <option>Last Month Report</option>
+                    </select>
+                </div>
+                <br>
+                <div class="form-group mr-2">
+                    <label for="start-date" class="mr-2">Start Date:</label>
+                    <input type="date" class="form-control" name="start-date">
+                </div>
+                <br>
+                <div class="form-group mr-2">
+                    <label for="end-date" class="mr-2">End Date:</label>
+                    <input type="date" class="form-control" name="end-date">
+                </div>
+                <br>
+              <button type="submit" class="btn btn-primary ml-auto">Request</button>
+              <a href="/home" class="btn btn-secondary">Go Back</a>
+            </form>
+        </div>
+        <br>
+        <br>
+
+		<h4>Detailed Report Based on Your Criteria:</h4>
+
+        <div class="card">
+            <div class="card-body">
+                <img src="{{ filepath }}" alt="Bar chart" class="img-fluid">
+            </div>
+        </div>
+        <br>
+    </div>
+</body>
+</html>
+        
+
+
+
