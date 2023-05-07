@@ -1384,6 +1384,67 @@ def staff_customized_view_reports():
     return render_template("staff_view_reports.html", filepath="/static/" + filename)
 
 
+@app.route("/staff_view_my_flight")
+def staff_view_my_flight():
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    # get all the flights of the airline
+    cursor = mysql.cursor()
+    query = "SELECT flight_num FROM flight WHERE airline_name = '{}'"
+    cursor.execute(query.format(airline_name))
+    flights = cursor.fetchall()
+    cursor.close()
+
+    return render_template("staff_view_my_flight.html", flights=flights)
+
+
+@app.route("/staff_display_passenger_info", methods=["POST"])
+def staff_display_passenger_info():
+    flight_num = request.form["flight_num"]
+
+    if flight_num == "Select":
+        flash("Please select a flight number!", "error")
+        return redirect(url_for("staff_view_my_flight"))
+
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    # get the list of passengers on the flight given flight_num
+    cursor = mysql.cursor()
+    query = "SELECT DISTINCT c.email, c.name, c.date_of_birth, c.passport_country, c.passport_number FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN customer c on c.email = P.customer_email WHERE T.airline_name = '{}' AND T.flight_id = '{}' ORDER BY c.name;"
+    cursor.execute(query.format(airline_name, flight_num))
+    passengers = cursor.fetchall()
+    cursor.close()
+
+    if len(passengers) == 0:
+        flash("There are no passengers on this flight!", "error")
+        return redirect(url_for("staff_view_my_flight"))
+
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    # get all the flights of the airline
+    cursor = mysql.cursor()
+    query = "SELECT flight_num FROM flight WHERE airline_name = '{}'"
+    cursor.execute(query.format(airline_name))
+    flights = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "staff_view_my_flight.html", passengers=passengers, flights=flights
+    )
+
+
 @app.route("/flightSearchA", methods=["POST"])
 def fligthSearchA():
     method = request.form["searchFactorA"]
