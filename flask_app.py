@@ -16,8 +16,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import io
-import uuid
+
+import pygal
 
 
 app = Flask(__name__)
@@ -1162,6 +1162,91 @@ def requestCustomerFlights():
         customer_exp=total_spent,
         cust_email=cust_email,
     )
+
+
+@app.route("/staff_revenue_report")
+def staff_revenue_report():
+    """
+    Draw a pie chart for showing total amount of revenue
+    earned from direct sales (when customer bought tickets without using a booking agent)
+    and total amount of revenue earned from indirect sales (when customer bought tickets
+    using booking agents) in the last month and last year.
+    """
+    # get the airline name of the staff
+    query = "SELECT airline_name FROM airline_staff WHERE username = '{}'"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(session["email"]))
+    airline_name = cursor.fetchone()[0]
+    cursor.close()
+
+    # get the total revenue from direct sales in the last month
+    query = "SELECT SUM(f.price) FROM purchases p JOIN ticket t ON t.id = p.ticket_id JOIN flight f ON (t.flight_id = f.flight_num AND t.airline_name = f.airline_name) WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND f.airline_name = '{}' AND p.booking_agent_id IS NULL"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    result = cursor.fetchone()
+    direct_sales_last_month = 0 if result is None else result[0]
+    cursor.close()
+
+    # get the total revenue from direct sales in the last year
+    query = "SELECT SUM(f.price) FROM purchases p JOIN ticket t ON t.id = p.ticket_id JOIN flight f ON (t.flight_id = f.flight_num AND t.airline_name = f.airline_name) WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND f.airline_name = '{}' AND p.booking_agent_id IS NULL"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    result = cursor.fetchone()
+    direct_sales_last_year = 0 if result is None else result[0]
+    cursor.close()
+
+    # get the total revenue from indirect sales in the last month
+    query = "SELECT SUM(f.price) FROM purchases p JOIN ticket t ON t.id = p.ticket_id JOIN flight f ON (t.flight_id = f.flight_num AND t.airline_name = f.airline_name) WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND f.airline_name = '{}' AND p.booking_agent_id IS NOT NULL"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    result = cursor.fetchone()
+    indirect_sales_last_month = 0 if result is None else result[0]
+    cursor.close()
+
+    # get the total revenue from indirect sales in the last year
+    query = "SELECT SUM(f.price) FROM purchases p JOIN ticket t ON t.id = p.ticket_id JOIN flight f ON (t.flight_id = f.flight_num AND t.airline_name = f.airline_name) WHERE p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND f.airline_name = '{}' AND p.booking_agent_id IS NOT NULL"
+    cursor = mysql.cursor()
+    cursor.execute(query.format(airline_name))
+    result = cursor.fetchone()
+    indirect_sales_last_year = 0 if result is None else result[0]
+    cursor.close()
+
+    labels = ["Direct Sales", "Indirect Sales"]
+    values_last_month = [direct_sales_last_month, indirect_sales_last_month]
+    values_last_year = [direct_sales_last_year, indirect_sales_last_year]
+    colors = ["#F7464A", "#46BFBD"]
+
+    def label_function(val):
+        return (
+            f"{val:.1f}%\n(${values_last_month[int(val/100.*len(values_last_month))]})"
+        )
+
+    # Create the first pie chart
+    plt.pie(values_last_month, labels=labels, colors=colors, autopct=label_function)
+    plt.title("Direct/Indirect Sales in the Last Month")
+    filename_a = "direct_indirect_sales_last_month.png"
+    file_path_a = os.path.join(app.config["UPLOAD_FOLDER"], filename_a)
+    plt.savefig(file_path_a)
+    plt.clf()
+
+    # Create the second pie chart
+    plt.pie(values_last_year, labels=labels, colors=colors, autopct=label_function)
+    plt.title("Direct/Indirect Sales in the Last Year")
+    filename_b = "direct_indirect_sales_last_year.png"
+    file_path_b = os.path.join(app.config["UPLOAD_FOLDER"], filename_b)
+    plt.savefig(file_path_b)
+
+    return render_template(
+        "staff_revenue_report.html",
+        filepath_a="/static/" + filename_a,
+        filepath_b="/static/" + filename_b,
+        airline_name=airline_name,
+    )
+
+
+@app.route("/staff_view_reports")
+def staff_view_reports():
+    return render_template("staff_view_reports.html")
 
 
 @app.route("/flightSearchA", methods=["POST"])
