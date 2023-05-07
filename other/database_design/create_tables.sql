@@ -58,7 +58,7 @@ create table
     booking_agent (
         email varchar(255) primary key not null,
         password varchar(255) not null,
-        booking_agent_id int not null
+        booking_agent_id int DEFAULT null
     );
 
 create table
