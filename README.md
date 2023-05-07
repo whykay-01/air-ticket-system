@@ -43,8 +43,10 @@ This project is licensed under the MIT license. See MIT Licence for more details
 1. JS script to handle password confirmation
 2. Commit statements only in the end (after all the intermediary queries have been sucessfully executed)
 3. No SQL injections possible, as all the queries are pre-written, static strings
-4. Solo work
+4. Solo work for the whole project
 5. Easy to deploy 
 6. New technology of using Docker image for the database deployment
 7. Front end design
 8. One more "permission" in the airline_staff N/A for security reasons
+9. The newly registered booking agent cannot view anything until they are approved by the airline staff
+
