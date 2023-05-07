@@ -16,78 +16,92 @@
 		{% if error %}
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 		{% endif %}
+		{% with message = get_flashed_messages(category_filter=["success"]) %}
+				{% if message %}
+				<div class="alert alert-success">
+  					{{message[0]}}
+				</div>
+				{% endif %}
+		{% endwith %}
+		{% with message = get_flashed_messages(category_filter=["error"]) %}
+			{% if message %}
+				<div class="alert alert-danger">
+					{{message[0]}}
+				</div>
+			{% endif %}
+		{% endwith %}
 
-<form id="myForm" action="/createFlight" method="POST">
-    <div class="form-group">
-		<label for="flight_num">Flight Number</label>
-		<input type="text" class="form-control" name="flight_num" id="flight_num" placeholder="Flight Number (must be unique)" required/>
-	</div>
-    <div class="form-group">
-		<label for="departure_airport">Departure Airport</label>
-		<select class="form-control" name="departure_airport" id="departure_airport" required>
-			<option selected>Select an airport...</option>
-			{% for airport in airports %}
-				<option value="{{ airport }}">{{ airport }}</option>
-			{% endfor %}
-		</select>
-	</div>
-    <div class="form-group">
-		<label for="departure_time">Departure Time</label>
-		<input type="datetime-local" class="form-control" name="departure_time" required/>
-	</div>
-    <div class="form-group">
-		<label for="arrival_airport">Arrival Airport</label>
-		<select class="form-control" name="arrival_airport" id="arrival_airport" required>
-			<option selected>Select an airport...</option>
-			{% for airport in airports %}
-				<option value="{{ airport }}">{{ airport }}</option>
-			{% endfor %}
-		</select>
-	</div>
-    <div class="form-group">
-		<label for="arrival_time">Arrival Time</label>
-		<input type="datetime-local" class="form-control" name="arrival_time" required/>
-	</div>
-    <div class="form-group">
-        <label for="price">Price</label>
-        <input type="number" class="form-control" name="price" placeholder="price per seat" required/>
-    </div>
-    <div class="form-group">
-        <label for="airplane_id">Airplane ID</label>
-        <select class="form-control" name="airplane_id" required>
-            <option selected>Select an airplane ID...</option>
-            {% for airplane_id in airplane_ids %}
-                <option value="{{ airplane_id }}">{{ airplane_id }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="airplane_id">Departure Status</label>
-        <select class="form-control" name="departure_status" required>
-            <option selected>Select departure status...</option>
-            <option>Upcoming</option>
-            <option>In-progress</option>
-            <option>Delayed</option>
-        </select>
-    </div>
-	<button type="submit" class="btn btn-primary flex-bottom-right" value = "Add">Add a Flight</button>
-    <a href="/home" class="btn btn-secondary">Go to Home Page</a>
-	{% if error %}
-		<p class="error"><strong>Error:</strong> {{error}}</p>
-	{% endif %}
-</form>
+		<form id="myForm" action="/createFlight" method="POST">
+			<div class="form-group">
+				<label for="flight_num">Flight Number</label>
+				<input type="text" class="form-control" name="flight_num" id="flight_num" placeholder="Flight Number (must be unique)" required/>
+			</div>
+			<div class="form-group">
+				<label for="departure_airport">Departure Airport</label>
+				<select class="form-control" name="departure_airport" id="departure_airport" required>
+					<option selected>Select an airport...</option>
+					{% for airport in airports %}
+						<option value="{{ airport }}">{{ airport }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="departure_time">Departure Time</label>
+				<input type="datetime-local" class="form-control" name="departure_time" required/>
+			</div>
+			<div class="form-group">
+				<label for="arrival_airport">Arrival Airport</label>
+				<select class="form-control" name="arrival_airport" id="arrival_airport" required>
+					<option selected>Select an airport...</option>
+					{% for airport in airports %}
+						<option value="{{ airport }}">{{ airport }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="arrival_time">Arrival Time</label>
+				<input type="datetime-local" class="form-control" name="arrival_time" required/>
+			</div>
+			<div class="form-group">
+				<label for="price">Price</label>
+				<input type="number" class="form-control" name="price" placeholder="price per seat" required/>
+			</div>
+			<div class="form-group">
+				<label for="airplane_id">Airplane ID</label>
+				<select class="form-control" name="airplane_id" required>
+					<option selected>Select an airplane ID...</option>
+					{% for airplane_id in airplane_ids %}
+						<option value="{{ airplane_id }}">{{ airplane_id }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="airplane_id">Departure Status</label>
+				<select class="form-control" name="departure_status" required>
+					<option selected>Select departure status...</option>
+					<option>Upcoming</option>
+					<option>In-progress</option>
+					<option>Delayed</option>
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary flex-bottom-right" value = "Add">Add a Flight</button>
+			<a href="/home" class="btn btn-secondary">Go to Home Page</a>
+			{% if error %}
+				<p class="error"><strong>Error:</strong> {{error}}</p>
+			{% endif %}
+		</form>
 
-<style>
-	.btn-primary {
-		margin-top: 20px;
-	}
-    .btn-secondary {
-		margin-top: 20px;
-	}
-	.form-group{
-		margin-top: 10px;
-	}
-</style>
+		<style>
+			.btn-primary {
+				margin-top: 20px;
+			}
+			.btn-secondary {
+				margin-top: 20px;
+			}
+			.form-group{
+				margin-top: 10px;
+			}
+		</style>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.min.js" integrity="sha384-heAjqF+bCxXpCWLa6Zhcp4fu20XoNIA98ecBC1YkdXhszjoejr5y9Q77hIrv8R9i" crossorigin="anonymous"></script>

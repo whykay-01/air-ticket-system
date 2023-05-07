@@ -606,9 +606,9 @@ def createFlight():
     departure_status = request.form["departure_status"]
 
     # check if the flight already exists
-    query = "SELECT * FROM flight WHERE flight_num = '{}';"
+    query = "SELECT * FROM flight WHERE flight_num = '{}' AND airline_name = '{}';"
     cursor = mysql.cursor()
-    cursor.execute(query.format(flight_num))
+    cursor.execute(query.format(flight_num, airline_name))
     data = cursor.fetchall()
     cursor.close()
 
