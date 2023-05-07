@@ -107,7 +107,7 @@ def registerAgent():
     # grabs information from the forms
     email = request.form["email"]
     password = request.form["password"]
-    booking_agent_id = request.form["booking_agent_id"]
+    # booking_agent_id = request.form["booking_agent_id"]
 
     # cursor used to send queries
     cursor = mysql.cursor()
@@ -126,8 +126,8 @@ def registerAgent():
 
     else:
         # encrypting the password
-        ins = "INSERT INTO booking_agent VALUES('{}', MD5('{}'), '{}')"
-        cursor.execute(ins.format(email, password, booking_agent_id))
+        ins = "INSERT INTO booking_agent (email, password) VALUES('{}', MD5('{}'))"
+        cursor.execute(ins.format(email, password))
         mysql.commit()  # commit the newly registered entry to the table
         cursor.close()
         return render_template("success.html")
@@ -309,7 +309,11 @@ def home():
         cursor = mysql.cursor()
         cursor.execute(query.format(email))
         output = cursor.fetchone()
-        airline_name = output[0]
+        # FIXME: think abot this!
+        if output:
+            airline_name = output[0]
+        else:
+            airline_name = "N/A"
 
         query = "SELECT F.airline_name, F.flight_num, F.departure_airport_name, F.departure_time, F.arrival_airport_name, F.arrival_time, F.dep_status, T.customer_email FROM purchases as P JOIN ticket as T on P.ticket_id = T.id JOIN flight F on (T.flight_id = F.flight_num AND T.airline_name = F.airline_name) WHERE F.airline_name = '{}' AND P.booking_agent_id = '{}' AND F.dep_status = 'Upcoming';"
         cursor.execute(query.format(airline_name, email))
