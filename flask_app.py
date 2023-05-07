@@ -1419,6 +1419,90 @@ def agent_view_customized_commission():
     )
 
 
+@app.route("/agent_top_customer")
+def agent_top_customer():
+    email = session["email"]
+
+    airline_name_query = (
+        "SELECT airline_name FROM booking_agent_work_for WHERE email = '{}'".format(
+            email
+        )
+    )
+    cursor = mysql.cursor()
+    cursor.execute(airline_name_query)
+    airline_name = cursor.fetchone()[0]
+
+    query_top_5_commissions = "SELECT t.customer_email, SUM(cpa.commission) as total_commission_per_customer FROM commission_per_agent cpa JOIN ticket t ON t.id = cpa.ticket_id JOIN purchases p on t.id = p.ticket_id WHERE cpa.booking_agent_email = '{}' AND p.purchase_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY t.customer_email ORDER BY SUM(cpa.commission) DESC LIMIT 5;".format(
+        email
+    )
+    cursor.execute(query_top_5_commissions)
+    top_5_commissions = cursor.fetchall()
+
+    query_top_5_tickets = "SELECT t.customer_email, COUNT(t.id) as total_tickets_per_customer FROM ticket t JOIN purchases p ON t.id = p.ticket_id WHERE p.booking_agent_id = '{}' AND p.purchase_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY t.customer_email ORDER BY COUNT(t.id) DESC LIMIT 5;".format(
+        email
+    )
+    cursor.execute(query_top_5_tickets)
+    top_5_tickets = cursor.fetchall()
+
+    # _________________________________________________________
+
+    total_commissions = []
+    labels = []
+    for row in top_5_commissions:
+        labels.append(row[0])
+        total_commissions.append(row[1])
+
+    # Create a vertical bar chart
+    with plt.ion():
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.bar(labels, total_commissions, color="green")
+        ax.set_xlabel("Customers")
+        ax.set_ylabel("Total commission received from each customer")
+        ax.set_title("Commission per customer")
+        ax.set_xticklabels(labels)
+
+        # Display the exact value of each bar
+        for i, v in enumerate(total_commissions):
+            ax.text(i, v / 2, "${:.2f}".format(v), ha="center", fontsize=12)
+
+    filename_a = "top_5_customers_by_commission.png"
+
+    file_path_a = os.path.join(app.config["UPLOAD_FOLDER"], filename_a)
+    fig.savefig(file_path_a)
+
+    # _________________________________________________________
+
+    total_tickets_per_customer = []
+    labels = []
+    for row in top_5_tickets:
+        labels.append(row[0])
+        total_tickets_per_customer.append(row[1])
+
+    # Create a vertical bar chart
+    with plt.ion():
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.bar(labels, total_tickets_per_customer)
+        ax.set_xlabel("Customers")
+        ax.set_ylabel("Tickets sold to each customer")
+        ax.set_title("Tickets per customer")
+        ax.set_xticklabels(labels)
+
+        # Display the exact value of each bar
+        for i, v in enumerate(total_tickets_per_customer):
+            ax.text(i, v / 2, "{:.0f}".format(v), ha="center", fontsize=12)
+
+    filename_b = "top_5_customers_by_num_of_tickets.png"
+
+    file_path_b = os.path.join(app.config["UPLOAD_FOLDER"], filename_b)
+    fig.savefig(file_path_b)
+
+    return render_template(
+        "agent_top_customer.html",
+        filepath_a="/static/" + filename_a,
+        filepath_b="/static/" + filename_b,
+    )
+
+
 @app.route("/confirmation_page", methods=["GET", "POST"])
 def confirmation_page():
     email = session["email"]

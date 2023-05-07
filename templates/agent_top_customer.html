@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Top Customers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+    <style>
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input[type="date"] {
+            width: 300px;
+        }
+        .card {
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <br>
+        <h3>Detalization About Top Customers For The Past 6 Months:</h3>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <img src="{{ filepath_a }}" alt="Bar chart" class="img-fluid">
+                </div>
+                <div class="card-body">
+                    <img src="{{ filepath_b }}" alt="Bar chart" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <br>
+        <a href="/home" class="btn btn-secondary">Go Back</a>
+    </div>
+</body>
+</html>
