@@ -1456,15 +1456,15 @@ def fligthSearchA():
     cursor = mysql.cursor()
 
     if method == "Source City/Airport":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}'"
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE departure_airport_name = '{}' AND dep_status ='Upcoming';"
         parameter = request.form["sourceCityA"]
 
     elif method == "Destination City/Airport":
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}'"
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE arrival_airport_name = '{}' AND dep_status ='Upcoming';"
         parameter = request.form["destinationCityA"]
 
     else:
-        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}'"
+        query = "SELECT flight_num, airline_name, departure_airport_name, arrival_airport_name, departure_time, arrival_time, dep_status FROM flight WHERE DATE(departure_time) = '{}' AND dep_status ='Upcoming';"
         parameter = request.form["dateA"]
 
     cursor.execute(query.format(parameter))
