@@ -56,9 +56,6 @@ print("Connected to database:", data[0])
 # close the cursor and connection objects
 cursor.close()
 
-# TODO: is it generally okay if we do not close the connection to the database?
-# mysql.close()
-
 
 @app.route("/")
 def welcome():
