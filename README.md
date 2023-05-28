@@ -12,7 +12,7 @@ Before deploying the system, ensure that the following prerequisites are met:
 - The MySQL image is available on your Docker. Refer to the docker-compose.yml file for details.
 - A .env file is created in the cloned repository (in the main folder), and the following parameters are set manually:
   - MYSQL_ROOT_PASSWORD=<your_password>
-  - MYSQL_DATABASE=<the_name_of_your_database> (in the case of this repository, it's "reservation_system")
+  - MYSQL_DATABASE=<the_name_of_your_database>
 - DataGrip is recommended for database management, but you can choose any preferred method.
 - Bootstrap library is installed on your local machine (https://getbootstrap.com/)
 
