@@ -22,6 +22,8 @@ import pygal
 
 app = Flask(__name__)
 
+# here you are supposed to load the environment variables from the .env file
+# so make sure to change them to your own values
 my_password = os.getenv("MYSQL_ROOT_PASSWORD")
 my_database = os.getenv("MYSQL_DATABASE")
 
@@ -31,6 +33,7 @@ app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = my_password
 app.config["MYSQL_DB"] = my_database
 
+# creating the variable for the static folder path
 app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static")
 print("Destination folder: ", app.config["UPLOAD_FOLDER"])
 
@@ -40,7 +43,8 @@ mysql = mysql.connector.connect(
     user=app.config["MYSQL_USER"],
     password=app.config["MYSQL_PASSWORD"],
     database=app.config["MYSQL_DB"],
-    # you might not even need the "port" part of the code, unless you have multiple MySQL instances running on your machine
+    # you might not even need the "port" part of the code,
+    # unless you have multiple MySQL instances running on your machine
     port=3306,
 )
 
@@ -50,6 +54,7 @@ cursor = mysql.cursor()
 # test the connection
 cursor.execute("SELECT DATABASE()")
 data = cursor.fetchone()
+# if you see the following message in your terminal -- you did everything correct
 print("_________________________SUCCESS!___________________________")
 print("Connected to database:", data[0])
 
