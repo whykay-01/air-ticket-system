@@ -19,10 +19,24 @@ Before deploying the system, ensure that the following prerequisites are met:
 ## Deployment
 
 To deploy the system, follow these steps:
+0. Create your own virtual environment and install the required packages from the requirements.txt file.
+
+```bash
+python3 -m venv .venv
+```
+
+```bash
+source venv/bin/activate
+```
+
+```bash
+pip install -r requirements.txt
+```
 
 1. Start the Docker image of the MySQL server.
 2. Create the database and run the create_tables.sql file, then insert_data.sql to populate the database with mock data.
 3. In the flask_app.py file, run the file manually to start the system. The system can be accessed at http://127.0.0.1:5000. If you encounter any errors, check if your port 5000 is available.
+
 
 ## System Requirements
 
