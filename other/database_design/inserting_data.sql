@@ -1,8 +1,6 @@
 -- a. One Airline name "China Eastern".
-insert into
-    airline (name)
-values
-    ("China Southern"),
+INSERT INTO airline (name)
+VALUES ("China Southern"),
     ("Delta"),
     ("China Eastern"),
     ("Emirates"),
@@ -10,11 +8,10 @@ values
     ("Qatar Airlines"),
     ("Air Astana");
 
+
 -- b. At least Two airports named "JFK" in NYC and "PVG" in Shanghai.
-insert into
-    airport (name, city)
-values
-    ("JFK", "New York"),
+INSERT INTO airport (name, city)
+VALUES ("JFK", "New York"),
     ("PVG", "Shanghai"),
     ("LAX", "Los Angeles"),
     ("CDG", "Paris"),
@@ -28,12 +25,12 @@ values
     ("CAN", "Guangzhou"),
     ("SIN", "Singapore");
 
+
 -- c. Insert at least two customers with appropriate names and other attributes.
-insert into
-    customer (
+INSERT INTO customer (
         email,
         name,
-        password,
+        PASSWORD,
         building_number,
         street,
         city,
@@ -44,8 +41,7 @@ insert into
         passport_country,
         date_of_birth
     )
-values
-    (
+VALUES (
         "yan.k@nyu.edu",
         "Yan Konichshev",
         "123is_a_bad_password",
@@ -102,11 +98,11 @@ values
         "1985-01-01"
     );
 
-INSERT INTO
-    customer (
+
+INSERT INTO customer (
         email,
         name,
-        password,
+        PASSWORD,
         building_number,
         street,
         city,
@@ -117,8 +113,7 @@ INSERT INTO
         passport_country,
         date_of_birth
     )
-VALUES
-    (
+VALUES (
         'john@example.com',
         'John Smith',
         MD5 ('password123'),
@@ -273,28 +268,25 @@ VALUES
         '1984-11-11'
     );
 
+
 -- Insert one booking agent with appropriate name and other attributes.
-insert into
-    booking_agent (email, password, booking_agent_id)
-values
-    ("bookingme@booking.com", "ghghuuj4", "12122"),
+INSERT INTO booking_agent (email, PASSWORD, booking_agent_id)
+VALUES ("bookingme@booking.com", "ghghuuj4", "12122"),
     ("traveler@booking.com", "qwerty12345", "67890");
 
+
 -- d. Insert at least two airplanes.
-insert into
-    airplane (id, seats, airline_name)
-values
-    (1223445, 340, "China Southern"),
+INSERT INTO airplane (id, seats, airline_name)
+VALUES (1223445, 340, "China Southern"),
     (2122234, 120, "China Southern"),
     (11111, 200, "Delta"),
     (22222, 100, "Delta");
 
+
 -- Each Airline Staff will also be able to see all in-progress, upcoming, and previous flights 
 -- for the airline that they work for, as well as a list of passengers for the flights.
-insert into
-    permission (type, description)
-values
-    (
+INSERT INTO permission (TYPE, description)
+VALUES (
         "admin",
         "able to add new airplanes and flight for the airline they work for"
     ),
@@ -307,19 +299,18 @@ values
         "ADMIN MANUALLY ASSIGNS NEW USER'S PERMISSION"
     );
 
+
 -- e. Insert At least One airline Staff working for China Eastern.
-insert into
-    airline_staff (
+INSERT INTO airline_staff (
         username,
-        password,
+        PASSWORD,
         first_name,
         last_name,
         date_of_birth,
         airline_name,
         permission
     )
-values
-    (
+VALUES (
         "number_1_employee",
         "dasda122dsdklsd!@@#)WEW",
         "Adam",
@@ -338,9 +329,9 @@ values
         "operator"
     );
 
+
 -- f. Insert several flights with upcoming, in-progress, delayed statuses.
-insert into
-    flight (
+INSERT INTO flight (
         flight_num,
         departure_time,
         arrival_time,
@@ -351,8 +342,7 @@ insert into
         arrival_airport_name,
         dep_status
     )
-values
-    (
+VALUES (
         'CS1020',
         '2023-03-15 12:05:00.000000',
         '2023-03-16 11:00:00.000000',
@@ -408,20 +398,18 @@ values
         'Delayed'
     );
 
+
 -- g. Insert some tickets for corresponding flights. One customer buy ticket directly 
 -- and one customer buy ticket using a booking agent.
-insert into
-    ticket (
+INSERT INTO ticket (
         -- id int primary key auto_increment not null, 
         customer_email,
         airline_name,
         flight_id
     )
-values
-    ("yan.k@nyu.edu", "China Southern", "CS1020"),
+VALUES ("yan.k@nyu.edu", "China Southern", "CS1020"),
     ("ll4715@nyu.edu", "China Southern", "CS1021");
 
-insert into
-    tickets_by_booking_agent (booking_agent_email, ticket_id)
-values
-    ("bookingme@booking.com", 2);
+
+INSERT INTO tickets_by_booking_agent (booking_agent_email, ticket_id)
+VALUES ("bookingme@booking.com", 2);
