@@ -6,7 +6,6 @@ from flask import (
     url_for,
     redirect,
     session,
-    Response,
 )
 import mysql.connector
 import os
@@ -16,8 +15,6 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
-import pygal
 
 
 app = Flask(__name__)
