@@ -42,34 +42,6 @@ INSERT INTO customer (
         date_of_birth
     )
 VALUES (
-        "yan.k@nyu.edu",
-        "Yan Konichshev",
-        "123is_a_bad_password",
-        "1",
-        "Jane Street",
-        "New York City",
-        "New York",
-        "61349087",
-        "N7312058",
-        "2030-11-20",
-        "Kazakhstan",
-        "2002-11-30"
-    ),
-    (
-        "ll4715@nyu.edu",
-        "Lawrence Lim",
-        "1919192002020",
-        "1019",
-        "Lawrence Street",
-        "Sometown",
-        "New Jersey",
-        "61349099",
-        "N7312656",
-        "2040-12-21",
-        "The United States",
-        "2002-04-15"
-    ),
-    (
         "jane.smith@gmail.com",
         "Jane Smith",
         "sdfg12345",
@@ -401,15 +373,13 @@ VALUES (
 
 -- g. Insert some tickets for corresponding flights. One customer buy ticket directly 
 -- and one customer buy ticket using a booking agent.
-INSERT INTO ticket (
-        -- id int primary key auto_increment not null, 
-        customer_email,
-        airline_name,
-        flight_id
-    )
-VALUES ("yan.k@nyu.edu", "China Southern", "CS1020"),
-    ("ll4715@nyu.edu", "China Southern", "CS1021");
-
-
+-- INSERT INTO ticket (
+--         -- id int primary key auto_increment not null, 
+--         customer_email,
+--         airline_name,
+--         flight_id
+--     )
+-- VALUES ("yan.k@nyu.edu", "China Southern", "CS1020"),
+--     ("ll4715@nyu.edu", "China Southern", "CS1021");
 INSERT INTO tickets_by_booking_agent (booking_agent_email, ticket_id)
 VALUES ("bookingme@booking.com", 2);
