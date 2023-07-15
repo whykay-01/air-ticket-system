@@ -1,14 +1,14 @@
 ## Overview
 
-This repository contains codebase fot the airline ticket reservation system. The system is built using Python 3 and Flask framework, and the database is deployed using Docker image of MySQL server. 
+This repository contains codebase fot the airline ticket reservation system. The system is built using Python 3 and Flask framework, and the database is deployed using Docker image of MySQL server.
 
-The system is designed to be used by three types of users: airline staff, booking agent, and customer. 
+The system is designed to be used by three types of users: airline staff, booking agent, and customer.
 
-The airline staff can add new flights, view the list of flights, and view the list of customers on a specific flight. Apart from that, airline staff who have the admin access can add / delete / modify the booking agents, view the top customers, and view the commission. Also, they could add new airports and view the list of airports. 
+The airline staff can add new flights, view the list of flights, and view the list of customers on a specific flight. Apart from that, airline staff who have the admin access can add / delete / modify the booking agents, view the top customers, and view the commission. Also, they could add new airports and view the list of airports.
 
-The booking agent can book a flight for a customer, view the top customers, and view their own commission for the specified period of time. 
+The booking agent can book a flight for a customer, view the top customers, and view their own commission for the specified period of time.
 
-The customer can search flights, book flights, and view their own flight history. 
+The customer can search flights, book flights, and view their own flight history.
 
 The system is designed and intended to be user-friendly and easy to deploy. The front-end design is based on Bootstrap library.
 
@@ -26,7 +26,7 @@ Before deploying the system, ensure that the following prerequisites are met:
 - DataGrip is recommended for database management, but you can choose any other GUI to interact with the data.
 - [Bootstrap-3.4] (https://getbootstrap.com/docs/3.4/getting-started/) library is installed on your local machine
 
-Note: the database we refer to is stored in other/database_design/create_tables.sql file. The database is created using the SQL script, and the mock data is inserted using the insert_data.sql file in the same folder. 
+Note: the database we refer to is stored in other/database_design/create_tables.sql file. The database is created using the SQL script, and the mock data is inserted using the insert_data.sql file in the same folder.
 
 You could run those files manually to create the database and populate it with mock data.
 
@@ -74,9 +74,9 @@ docker-compose up
 docker-compose start
 ```
 
-3. Create the database and run the create_tables.sql file, then insert_data.sql to populate the database with mock data. To do this simply go to your SQL GUI and run the files manually. I was in a rush, so I didn't have time to automate this process. Sorry :) 
+3. Create the database and run the create_tables.sql file, then insert_data.sql to populate the database with mock data. To do this simply go to your SQL GUI and run the files manually. I was in a rush, so I didn't have time to automate this process. Sorry :)
 
-3. In the flask_app.py file, run the file manually to start the system. The system can be accessed at http://127.0.0.1:5000. If you encounter any errors, check if your port 5000 is available. Again, I was in a rush, so I didn't have time to automate this process.
+4. In the flask_app.py file, run the file manually to start the system. The system can be accessed at http://127.0.0.1:5000. If you encounter any errors, check if your port 5000 is available. Again, I was in a rush, so I didn't have time to automate this process.
 
 ## Contributions
 
@@ -92,8 +92,12 @@ This project is licensed under the MIT license. See MIT Licence for more details
 2. In the app, all the commit statements appear only in the end (after all the intermediary queries have been sucessfully executed)
 3. Security concerns: no SQL injections would be possible, as all the queries are pre-written, static strings
 4. Contributors: there are no contributors, I worked alone for this project.
-5. Easy to deploy 
+5. Easy to deploy
 6. New technology of using Docker image for the database deployment
 7. Front end is based on Bootstrap library
 8. One more "permission" in the airline_staff N/A for security reasons
 9. The newly registered booking agent cannot view anything until they are approved by the airline staff
+
+```
+docker run --name air-ticket-system -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3306 -d mysql:latest
+```
