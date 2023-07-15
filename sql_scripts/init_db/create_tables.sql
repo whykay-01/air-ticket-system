@@ -125,15 +125,6 @@ CREATE TABLE booking_agent_work_for (
 );
 
 
-CREATE TABLE permission_by_user (
-    username varchar(50) NOT NULL,
-    permission_type varchar(50) NOT NULL,
-    PRIMARY KEY (username, permission_type),
-    FOREIGN KEY (username) REFERENCES airline_staff (username),
-    FOREIGN KEY (permission_type) REFERENCES permission (TYPE)
-);
-
-
 CREATE TABLE commission_per_agent (
     booking_agent_email varchar(255) NOT NULL,
     ticket_id int NOT NULL,
