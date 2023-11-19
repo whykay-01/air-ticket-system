@@ -14,6 +14,8 @@ The system is designed and intended to be user-friendly and easy to deploy. The 
 
 I am currently working on reorganizing the structure of the project, so if you want to help me with that -- be my guest and submit a pull request. I would be very glad to review it!
 
+For more information of how the database design is implemented please refer to `sql_scripts/` folder, as it contains all the information about the database design and the mock data.
+
 ## Prerequisites
 
 Before deploying the system, ensure that the following prerequisites are met:
@@ -21,8 +23,13 @@ Before deploying the system, ensure that the following prerequisites are met:
 - Docker is installed on your system (latest version should be fine)
 - MySQL image is installed on your Docker. Use the docker-compose.yml file to create an image of the SQL server.
 - A .env file is created in the cloned repository (in the main folder), and the following parameters are set manually (refer to `.env.example` file for more information):
-  - MYSQL_ROOT_PASSWORD=<your_password>
-  - MYSQL_DATABASE=<the_name_of_your_database> (in our case, in the create_tables.sql file, the database name is set as "reservation_system")
+
+```bash
+make copy-env
+```
+
+- MYSQL_ROOT_PASSWORD=<your_password>
+- MYSQL_DATABASE=<the_name_of_your_database> (in our case, in the create_tables.sql file, the database name is set as "reservation_system")
 - DataGrip is recommended for database management, but you can choose any other GUI to interact with the data.
 - [Bootstrap-3.4] (https://getbootstrap.com/docs/3.4/getting-started/) library is installed on your local machine
 
@@ -36,7 +43,7 @@ To deploy the system, follow these steps:
 
 Note: the following commands are for Mac OS. If you are using Windows, please refer to the official documentation of Python 3 and Docker.
 
-Note: Please ensure that you are in the main folder of the cloned repository prior to running any commands.
+Note2: Please ensure that you are in the main folder of the cloned repository prior to running any commands.
 
 ```bash
 cd air-ticket-system
@@ -74,9 +81,9 @@ docker-compose up
 docker-compose start
 ```
 
-3. Create the database and run the create_tables.sql file, then insert_data.sql to populate the database with mock data. To do this simply go to your SQL GUI and run the files manually. I was in a rush, so I didn't have time to automate this process. Sorry :)
+3. Create the database and run the `create_tables.sql` file, then `insert_data.sql` to populate the database with mock data. To do this simply go to your SQL GUI and run the files manually. I was in a rush, so I didn't have time to automate this process. Sorry :)
 
-4. In the flask_app.py file, run the file manually to start the system. The system can be accessed at http://127.0.0.1:5000. If you encounter any errors, check if your port 5000 is available. Again, I was in a rush, so I didn't have time to automate this process.
+4. In the `flask_app.py` file, run the file manually to start the system. The system can be accessed at http://127.0.0.1:5000. If you encounter any errors, check if your port 5000 is available. Again, I was in a rush, so I didn't have time to automate this process either.
 
 ## Contributions
 
@@ -98,6 +105,6 @@ This project is licensed under the MIT license. See MIT Licence for more details
 8. One more "permission" in the airline_staff N/A for security reasons
 9. The newly registered booking agent cannot view anything until they are approved by the airline staff
 
-```
+```bash
 docker run --name air-ticket-system -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3306 -d mysql:latest
 ```
