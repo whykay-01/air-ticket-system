@@ -1,20 +1,5 @@
 version: "3"
 services:
-# THIS IS STILL IN PROGRESS
-  app:
-    build: .
-    container_name: airline-ticket-system
-    ports:
-      - 8000:8000
-    environment:
-      MYSQLHOST: mysqldb
-      MYSQLUSER: root
-      MYSQLPASSWORD: root
-      MYSQLDATABASE: airline
-    depends_on:
-      - mysqldb
-    volumes:
-      - .:/app
 
   mysql:
     image: mysql:8.0.32
@@ -36,16 +21,3 @@ volumes:
 networks:
   default:
     driver: bridge
-
-
-# THIS IS ADDITIONAL PART
-  mysqldb:
-    image: mysql:8.0.33
-    restart: always
-    ports:
-      - 9999:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: airline
-    volumes:
-      - ./airline/init_db:/docker-entrypoint-initdb.d
