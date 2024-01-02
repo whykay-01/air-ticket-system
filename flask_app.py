@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 
 
 app = Flask(__name__)
+load_dotenv()
 
 # here you are supposed to load the environment variables from the .env file
 # so make sure to change them to your own values
@@ -1048,21 +1049,24 @@ def staff_view_top_destinations():
     top_destinations_1_year = cursor.fetchall()
     cursor.close()
 
-    top_dest_month = []
-    for i in range(3):
-        var = top_destinations_3_months[i]
-        if var:
-            top_dest_month.append(var)
-        else:
-            top_dest_month.append("Not enough data")
+    # TODO: find the top 3 destinations if they exist ONLY
+    if len(top_destinations_3_months) == 0:
+        top_destinations_3_months = ["Not enough data"] * 3
 
-    top_dest_year = []
-    for i in range(3):
-        var = top_destinations_1_year[i]
-        if var:
+    else:
+        top_dest_month = []
+        for i in range(3):
+            var = top_destinations_3_months[i]
+            top_dest_month.append(var)
+
+    if len(top_destinations_1_year) == 0:
+        top_destinations_1_year = ["Not enough data"] * 3
+
+    else:
+        top_dest_year = []
+        for i in range(3):
+            var = top_destinations_1_year[i]
             top_dest_year.append(var)
-        else:
-            top_dest_year.append("Not enough data")
 
     return render_template(
         "staff_view_top_destinations.html",
